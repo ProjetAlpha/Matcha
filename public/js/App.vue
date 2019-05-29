@@ -1,19 +1,14 @@
 <template>
-  <div>
-    <h1>Hello {{name}}</h1>
-    <div>
-      <h1>Hello {{name}}</h1>
-    </div>
-    <div>
-      <h1>Hello {{name}}</h1>
-    </div>
-  </div>
+    <say-Hi></say-Hi>
 </template>
 
 <script>
+    import sayHi from './sayHi.vue'
+    import navBar from './navBar.vue'
+
     export default{
-        data(){
-            props: ['name']
+        components: {
+            sayHi
         }
     }
 </script>

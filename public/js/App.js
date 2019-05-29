@@ -1,11 +1,15 @@
 import Vue from 'vue'
-import App from './App.vue'
-import 'materialize-css'
+import navBar from './navBar.vue'
+import sayHi from './sayHi.vue'
+import searchMatch from './searchMatch.vue'
+import axios from 'axios'
 
-Vue.component('say-hi', App);
-
+Vue.prototype.$noUiSlider = noUiSlider;
+Vue.component('nav-bar', navBar);
+Vue.component('say-hi', sayHi);
+Vue.component('search-match', searchMatch);
 
 new Vue({
-  el: '#app',
-  render: h => h(App)
+  el: '#app'
+  //render: h => h(App)
 })
