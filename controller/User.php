@@ -9,7 +9,7 @@ class User
 
     public function loginPage()
     {
-        view('login_form.php');
+        view('user_register_forms.php', ['type' => 'register']);
     }
 
     public function logoutPage()
@@ -22,5 +22,3 @@ class User
         view('search.php');
     }
 }
-
- ?>

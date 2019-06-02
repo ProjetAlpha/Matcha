@@ -4,12 +4,25 @@ require_once("Route.php");
 
 $route = new Route();
 
-$route->add('/', 'get', 'Home@homePage');
-$route->add('/login', 'get', 'User@loginPage');
-$route->add('/logout', 'post', 'User@logoutPage');
-$route->add('/authenticate', 'post', 'User@login');
+$route->add('/', 'get', function () {
+    view('home.php');
+});
 
-$route->add('/search', 'post', 'User@searchPage');
+$route->add('/login', 'get', function () {
+    view('user_register_forms.php', ['type' => 'login']);
+});
+$route->add('/register', 'get', function () {
+    view('user_register_forms.php', ['type' => 'register']);
+});
+$route->add('/reset', 'get', function () {
+    view('user_register_forms.php', ['type' => 'reset']);
+});
+
+$route->add('/logout', 'post', 'User@logoutPage');
+
+$route->add('/search', 'post', function () {
+    view('search.php');
+});
 //$route->add('/page/:digits', 'get', 'Image@getAllImg');*/
 
 $route->loadRoutes();

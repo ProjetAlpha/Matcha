@@ -1,10 +1,8 @@
 <?php
 
-include_once("database.php");
-include_once("ManageSetup.php");
+include_once("CreateScheme.php");
 
-
-if ($argv[1] == "-create" && $argc == 2) {
+/*if ($argv[1] == "-create" && $argc == 2) {
     $info['host'] = $DB_DSN;
     $info['username'] = $DB_USER;
     $info['password'] = $DB_PASSWORD;
@@ -30,4 +28,4 @@ if ($argv[1] == "-modif" && $argc == 2) {
 
 if ($argv[1] == "-help" && $argc == 2){
     vprintf("\e[4mUsage\e[0m\n \e[92m%s\e[0m\n \e[92m%s\e[0m\n \e[92m%s\e[0m\n", ['-create', '-reset', '-modif']);
-}
+}*/

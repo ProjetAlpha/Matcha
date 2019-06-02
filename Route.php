@@ -18,15 +18,19 @@ class Route
         if (!isset($url) || !is_string($url)) {
             throw new Exception("Bad url format. Url must be a string.");
         }
-        $info = explode('@', $dst);
+        if (!is_callable($dst)) {
+            $info = explode('@', $dst);
+        }
         if (isset($info[1]) && isset($info[0])) {
             $call = $info[1];
             $class = $info[0];
+        } elseif (is_callable($dst)) {
+            $call = $dst;
         } else {
-            throw new Exception("No class or method call in route");
+            throw new Exception("No class or function call in route");
         }
         $this->routeCounter++;
-        $this->addRequest($url, $method, $class, $call);
+        $this->addRequest($url, $method, $class ?? '', $call);
     }
 
     private function addRequest($url, $method, $class, $call)
@@ -58,13 +62,13 @@ class Route
     private function getClass($name, $method, $param = null)
     {
         require_once(__DIR__."/controller/".$name.".php");
-        if (class_exists($name) && method_exists($name, $method))
-        {
+        if (class_exists($name) && method_exists($name, $method)) {
             $init = new $name();
-            if (isset($param))
+            if (isset($param)) {
                 $init->{$method}($param);
-            else
+            } else {
                 $init->{$method}();
+            }
             return (1);
         }
         return (0);
@@ -82,9 +86,18 @@ class Route
             $class = $route['class'];
             $classMethod = $route['method_call'];
 
+            if ($class == '' && is_callable($classMethod)
+              && $method == strtolower($serverMethod)
+              && $currentUrl == $url) {
+                return ($classMethod());
+            }
+
             if ($this->getRegex($url, $currentUrl) && $method == strtolower($serverMethod)) {
-                return ($this->getClass($class, $classMethod,
-                array_values(array_slice(explode('/', $currentUrl), -1))[0]));
+                return ($this->getClass(
+                    $class,
+                    $classMethod,
+                array_values(array_slice(explode('/', $currentUrl), -1))[0]
+                ));
             }
             if (isset($_GET) && $method == 'get') {
                 if ($currentUrl == $url) {

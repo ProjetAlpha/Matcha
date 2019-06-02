@@ -12,6 +12,12 @@
                     <li>
                         <a href="/login" class="btn green waves-effect waves-light">{{loginType}}</a>
                     </li>
+                    <li>
+                        <a href="/register" class="btn green waves-effect waves-light">{{loginType}}</a>
+                    </li>
+                    <li>
+                        <a href="/reset" class="btn green waves-effect waves-light">{{loginType}}</a>
+                    </li>
                 </ul>
             </div>
         </nav>
