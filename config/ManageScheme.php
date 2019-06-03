@@ -8,7 +8,7 @@ class ManageScheme
     private $db;
     private $create;
     private $dbName;
-    const MAX_COLUMN_WIDTH = 27;
+    const MAX_COLUMN_WIDTH = 20;
 
     public function __construct($info)
     {
@@ -22,7 +22,7 @@ class ManageScheme
     private function initDB($info)
     {
         try {
-            $this->db = new PDO('mysql:host=mysql;port=3307;dbname=Matcha', $info['username'], $info['password']);
+            $this->db = new PDO('mysql:host=127.0.0.1;port=3306;dbname=Matcha', $info['username'], $info['password']);
             $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
             $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->dbName = $info['db_name'];
@@ -38,7 +38,10 @@ class ManageScheme
             return (1);
         foreach ($this->sqlModel as $model) {
             if ($model->table == $table && $model->type == $type)
+            {
+                var_dump($model->table, $model->type);
                 return (1);
+            }
         }
         return (0);
     }
@@ -62,9 +65,10 @@ class ManageScheme
         throw new Exception("This type".$type."doesnt need an sql query !". PHP_EOL);
       if (($type == "create" || $type == 'refresh') && $sql == null)
         throw new Exception("This type : ".$type." need an sql query !". PHP_EOL);
-      if (!isModelRegistered($table, $type))
-        throw new Exception($table."is already associated with a type !". PHP_EOL);
+      if ($this->isModelRegistered($table, $type))
+        throw new Exception($table." is already associated with a type !". PHP_EOL);
       $this->sqlModel[] = (object)['type' => $type, 'sql' => $sql, 'table' => $table];
+      var_dump($this->sqlModel);
     }
 
     private function putError($table, $type, $msg)
@@ -116,7 +120,7 @@ class ManageScheme
       $pad = self::MAX_COLUMN_WIDTH - strlen($table);
       try {
         $this->db->exec($query);
-        $this->putSucess($table, $type, 'success');
+        $this->putSuccess($table, $type, 'success');
       }catch (PDOException $e) {
         $this->putError($table, $type, 'DB error');
         echo $e->getMessage();
@@ -127,7 +131,7 @@ class ManageScheme
     private function create($table, $sql)
     {
       $pad = self::MAX_COLUMN_WIDTH - strlen($table);
-      $query.= "CREATE TABLE IF NOT EXISTS";
+      $query.= "CREATE TABLE IF NOT EXISTS ";
       $query.= $table."(";
       $query.= $sql.")";
       $this->execute("Create", $table, $query);

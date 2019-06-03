@@ -23,6 +23,7 @@ $scheme->add('Users', 'create',
       lastname VARCHAR(30) NOT NULL,
       reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
 
+
 if ($argv[1] == "-reset" && is_string($argv[2]) && $argc == 3) {
     $scheme->add($argv[2], 'reset');
 }
