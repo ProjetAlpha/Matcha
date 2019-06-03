@@ -42,7 +42,7 @@ class Setup
     private function initDB($info)
     {
         try {
-            self::$db = new PDO('mysql:host=127.0.0.1;port=3306;dbname=Camagru', $info['username'], $info['password']);
+            self::$db = new PDO($DB_DSN, $info['username'], $info['password']);
             self::$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
             self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->db_name = $info['db_name'];
