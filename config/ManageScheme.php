@@ -8,7 +8,7 @@ class ManageScheme
     private $db;
     private $create;
     private $dbName;
-    public  $displayCreate = true;
+    public $displayCreate = true;
     const MAX_COLUMN_WIDTH = 25;
 
     public function __construct($info)
@@ -35,11 +35,13 @@ class ManageScheme
 
     private function isModelRegistered($table, $type)
     {
-        if (!isset($this->sqlModel))
+        if (!isset($this->sqlModel)) {
             return (0);
+        }
         foreach ($this->sqlModel as $model) {
-            if ($model->table == $table && $model->type == $type)
+            if ($model->table == $table && $model->type == $type) {
                 return (1);
+            }
         }
         return (0);
     }
@@ -47,41 +49,51 @@ class ManageScheme
     private function findModelQuery($table)
     {
         foreach ($this->sqlModel as $model) {
-            if ($model->table == $table && $model->type == "create")
+            if ($model->table == $table && $model->type == "create") {
                 return ($model->sql);
+            }
         }
         return (0);
     }
 
     public function add($table, $type, $sql = null)
     {
-      if (!isset($type) || $type == "" || !$this->isSupportedType($type))
-        throw new Exception("Unsupported type !");
-      if (!isset($table) || $table == "")
-        throw new Exception("Invalid table name !");
-      if (($type == "reset" || $type == "delete") && $sql !== null)
-        throw new Exception("This type".$type."doesnt need an sql query !" . PHP_EOL);
-      if (($type == "create" || $type == 'refresh') && $sql == null)
-        throw new Exception("This type : ".$type." need an sql query !" . PHP_EOL);
-      if ($this->isModelRegistered($table, $type))
-        throw new Exception($table." is already associated with a type !" . PHP_EOL);
-      $this->sqlModel[] = (object)['type' => $type, 'sql' => $sql, 'table' => $table];
+        if (!isset($type) || $type == "" || !$this->isSupportedType($type)) {
+            throw new Exception("Unsupported type !");
+        }
+        if (!isset($table) || $table == "") {
+            throw new Exception("Invalid table name !");
+        }
+        if (($type == "reset" || $type == "delete") && $sql !== null) {
+            throw new Exception("This type".$type."doesnt need an sql query !" . PHP_EOL);
+        }
+        if (($type == "create" || $type == 'refresh') && $sql == null) {
+            throw new Exception("This type : ".$type." need an sql query !" . PHP_EOL);
+        }
+        if ($this->isModelRegistered($table, $type)) {
+            throw new Exception($table." is already associated with a type !" . PHP_EOL);
+        }
+        $this->sqlModel[] = (object)['type' => $type, 'sql' => $sql, 'table' => $table];
     }
 
     private function putError($table, $type, $msg)
     {
         $len = (strlen($table) + strlen($type));
         $pad = self::MAX_COLUMN_WIDTH - $len;
-        vprintf("%s %s".str_repeat(" ", $pad)."\e[31m%s\e[0m" . PHP_EOL,
-        [$type, $table, $msg]);
+        vprintf(
+            "%s %s".str_repeat(" ", $pad)."\e[31m%s\e[0m" . PHP_EOL,
+            [$type, $table, $msg]
+        );
     }
 
     private function putSuccess($table, $type, $msg)
     {
         $len = (strlen($table) + strlen($type));
         $pad = self::MAX_COLUMN_WIDTH - $len;
-        vprintf("%s %s".str_repeat(" ", $pad)."\e[92m%s\e[0m" . PHP_EOL,
-        [$type, $table, 'sucess']);
+        vprintf(
+            "%s %s".str_repeat(" ", $pad)."\e[92m%s\e[0m" . PHP_EOL,
+            [$type, $table, 'sucess']
+        );
     }
 
     private function isSupportedType($type)
@@ -91,73 +103,75 @@ class ManageScheme
 
     public function run()
     {
-      if (!isset($this->sqlModel) || !is_array($this->sqlModel))
-          throw new Exception("No sql model added !");
+        if (!isset($this->sqlModel) || !is_array($this->sqlModel)) {
+            throw new Exception("No sql model added !");
+        }
         foreach ($this->sqlModel as $model) {
-          if ($model->type == "create"){
-              $this->create($model->table, $model->sql);
-          }
-          if ($model->type == "reset"){
-            $this->reset($model->table);
-          }
-          if ($model->type == "delete"){
-            $this->delete($model->table);
-          }
-          if ($model->type == "refresh"){
-            if (!($query = findModelQuery($model->table)))
-                $this->putError($model->table, $model->type, "Error : ".$table." doesnt have a model query !");
-            else{
-                $this->delete($model->table);
-                $this->create($model->table, $query);
+            if ($model->type == "create") {
+                $this->create($model->table, $model->sql);
             }
-          }
+            if ($model->type == "reset") {
+                $this->reset($model->table);
+            }
+            if ($model->type == "delete") {
+                $this->delete($model->table);
+            }
+            if ($model->type == "refresh") {
+                if (!($query = findModelQuery($model->table))) {
+                    $this->putError($model->table, $model->type, "Error : ".$table." doesnt have a model query !");
+                } else {
+                    $this->delete($model->table);
+                    $this->create($model->table, $query);
+                }
+            }
         }
     }
 
     private function execute($type, $table, $query)
     {
-      $pad = self::MAX_COLUMN_WIDTH - strlen($table);
-      try {
-        $this->db->exec($query);
-        if ($type !== 'Create')
-          $this->putSuccess($table, $type, 'success');
-        elseif ($type == 'Create' && $this->displayCreate === true) {
-          $this->putSuccess($table, $type, 'success');
+        $pad = self::MAX_COLUMN_WIDTH - strlen($table);
+        try {
+            $this->db->exec($query);
+            if ($type !== 'Create') {
+                $this->putSuccess($table, $type, 'success');
+            } elseif ($type == 'Create' && $this->displayCreate === true) {
+                $this->putSuccess($table, $type, 'success');
+            }
+        } catch (PDOException $e) {
+            $this->putError($table, $type, 'DB error');
+            echo $e->getMessage() . PHP_EOL;
+            die();
         }
-      }catch (PDOException $e) {
-        $this->putError($table, $type, 'DB error');
-        echo $e->getMessage() . PHP_EOL;
-        die();
-      }
     }
 
     private function create($table, $sql)
     {
-      $pad = self::MAX_COLUMN_WIDTH - strlen($table);
-      $query.= "CREATE TABLE IF NOT EXISTS ";
-      $query.= $table."(";
-      $query.= $sql.")";
-      $this->execute("Create", $table, $query);
+        $pad = self::MAX_COLUMN_WIDTH - strlen($table);
+        $query.= "CREATE TABLE IF NOT EXISTS ";
+        $query.= $table."(";
+        $query.= $sql.")";
+        $this->execute("Create", $table, $query);
     }
 
     private function reset($table)
     {
-      $query.= "TRUNCATE TABLE ";
-      $query.= $table;
-      $this->execute("Reset", $table, $query);
+        $query.= "TRUNCATE TABLE ";
+        $query.= $table;
+        $this->execute("Reset", $table, $query);
     }
 
     private function delete($table)
     {
-      $query.= "DROP TABLE IF EXISTS ";
-      $query.= $table;
-      $this->execute("Delete", $table, $query);
+        $query.= "DROP TABLE IF EXISTS ";
+        $query.= $table;
+        $this->execute("Delete", $table, $query);
     }
 
     public function resetAll()
     {
-        if (!isset($this->sqlModel) || !is_array($this->sqlModel))
+        if (!isset($this->sqlModel) || !is_array($this->sqlModel)) {
             throw new Exception("No sql model added !");
+        }
         foreach ($this->sqlModel as $model) {
             $this->reset($model->table);
         }
@@ -165,21 +179,23 @@ class ManageScheme
 
     public function deleteAll()
     {
-        if (!isset($this->sqlModel) || !is_array($this->sqlModel))
+        if (!isset($this->sqlModel) || !is_array($this->sqlModel)) {
             throw new Exception("No sql model added !");
+        }
         foreach ($this->sqlModel as $model) {
-                $this->delete($model->table);
+            $this->delete($model->table);
         }
     }
 
     public function refreshAll()
     {
-        if (!isset($this->sqlModel) || !is_array($this->sqlModel))
+        if (!isset($this->sqlModel) || !is_array($this->sqlModel)) {
             throw new Exception("No sql model added !");
+        }
         foreach ($this->sqlModel as $model) {
-            if (!($query = findModelQuery($model->table)))
+            if (!($query = findModelQuery($model->table))) {
                 $this->putError($model->table, $model->type, "Error : ".$table." doesnt have a model query !");
-            else{
+            } else {
                 $this->delete($model->table);
                 $this->create($model->table, $query);
             }

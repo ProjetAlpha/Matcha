@@ -61,7 +61,12 @@ class Route
 
     private function getClass($name, $method, $param = null)
     {
-        require_once(__DIR__."/controller/".$name.".php");
+        if (!isset($name, $method)) {
+            return ;
+        }
+        if (file_exists(__DIR__."/controller/".$name.".php")) {
+            require_once(__DIR__."/controller/".$name.".php");
+        }
         if (class_exists($name) && method_exists($name, $method)) {
             $init = new $name();
             if (isset($param)) {
@@ -96,7 +101,7 @@ class Route
                 return ($this->getClass(
                     $class,
                     $classMethod,
-                array_values(array_slice(explode('/', $currentUrl), -1))[0]
+                    array_values(array_slice(explode('/', $currentUrl), -1))[0]
                 ));
             }
             if (isset($_GET) && $method == 'get') {

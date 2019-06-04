@@ -20,8 +20,12 @@ $route->add('/reset', 'get', function () {
 
 $route->add('/logout', 'post', 'User@logoutPage');
 
-$route->add('/search', 'post', function () {
+$route->add('/search', 'get', function () {
     view('search.php');
+});
+
+$route->add('/settings', 'get', function () {
+    view('settings.php');
 });
 //$route->add('/page/:digits', 'get', 'Image@getAllImg');*/
 
