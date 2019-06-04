@@ -24,12 +24,19 @@ $scheme->add('Users', 'create',
       reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
 
 
+if (isset($argv[1]) && !empty($argv[1]))
+    $scheme->displayCreate = false;
+
 if ($argv[1] == "-reset" && is_string($argv[2]) && $argc == 3) {
     $scheme->add($argv[2], 'reset');
 }
 
 if ($argv[1] == "-modify" && is_string($argv[2]) && $argc == 3) {
     $scheme->add($argv[2], 'modify');
+}
+
+if ($argv[1] == "-delete" && is_string($argv[2]) && $argc == 3) {
+    $scheme->add($argv[2], 'delete');
 }
 
 $scheme->run();

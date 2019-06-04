@@ -8,7 +8,8 @@ class ManageScheme
     private $db;
     private $create;
     private $dbName;
-    const MAX_COLUMN_WIDTH = 20;
+    public  $displayCreate = true;
+    const MAX_COLUMN_WIDTH = 25;
 
     public function __construct($info)
     {
@@ -35,13 +36,10 @@ class ManageScheme
     private function isModelRegistered($table, $type)
     {
         if (!isset($this->sqlModel))
-            return (1);
+            return (0);
         foreach ($this->sqlModel as $model) {
             if ($model->table == $table && $model->type == $type)
-            {
-                var_dump($model->table, $model->type);
                 return (1);
-            }
         }
         return (0);
     }
@@ -62,26 +60,27 @@ class ManageScheme
       if (!isset($table) || $table == "")
         throw new Exception("Invalid table name !");
       if (($type == "reset" || $type == "delete") && $sql !== null)
-        throw new Exception("This type".$type."doesnt need an sql query !". PHP_EOL);
+        throw new Exception("This type".$type."doesnt need an sql query !" . PHP_EOL);
       if (($type == "create" || $type == 'refresh') && $sql == null)
-        throw new Exception("This type : ".$type." need an sql query !". PHP_EOL);
+        throw new Exception("This type : ".$type." need an sql query !" . PHP_EOL);
       if ($this->isModelRegistered($table, $type))
-        throw new Exception($table." is already associated with a type !". PHP_EOL);
+        throw new Exception($table." is already associated with a type !" . PHP_EOL);
       $this->sqlModel[] = (object)['type' => $type, 'sql' => $sql, 'table' => $table];
-      var_dump($this->sqlModel);
     }
 
     private function putError($table, $type, $msg)
     {
-        $pad = self::MAX_COLUMN_WIDTH - strlen($table);
-        vprintf("%s %s".str_repeat(" ", $pad)."\e[31m%s\e[0m". PHP_EOL,
+        $len = (strlen($table) + strlen($type));
+        $pad = self::MAX_COLUMN_WIDTH - $len;
+        vprintf("%s %s".str_repeat(" ", $pad)."\e[31m%s\e[0m" . PHP_EOL,
         [$type, $table, $msg]);
     }
 
     private function putSuccess($table, $type, $msg)
     {
-        $pad = self::MAX_COLUMN_WIDTH - strlen($table);
-        vprintf("%s %s".str_repeat(" ", $pad)."\e[92m%s\e[0m". PHP_EOL,
+        $len = (strlen($table) + strlen($type));
+        $pad = self::MAX_COLUMN_WIDTH - $len;
+        vprintf("%s %s".str_repeat(" ", $pad)."\e[92m%s\e[0m" . PHP_EOL,
         [$type, $table, 'sucess']);
     }
 
@@ -120,10 +119,14 @@ class ManageScheme
       $pad = self::MAX_COLUMN_WIDTH - strlen($table);
       try {
         $this->db->exec($query);
-        $this->putSuccess($table, $type, 'success');
+        if ($type !== 'Create')
+          $this->putSuccess($table, $type, 'success');
+        elseif ($type == 'Create' && $this->displayCreate === true) {
+          $this->putSuccess($table, $type, 'success');
+        }
       }catch (PDOException $e) {
         $this->putError($table, $type, 'DB error');
-        echo $e->getMessage();
+        echo $e->getMessage() . PHP_EOL;
         die();
       }
     }
@@ -146,7 +149,7 @@ class ManageScheme
 
     private function delete($table)
     {
-      $query.= "DELETE TABLE IF EXISTS ";
+      $query.= "DROP TABLE IF EXISTS ";
       $query.= $table;
       $this->execute("Delete", $table, $query);
     }
@@ -165,7 +168,7 @@ class ManageScheme
         if (!isset($this->sqlModel) || !is_array($this->sqlModel))
             throw new Exception("No sql model added !");
         foreach ($this->sqlModel as $model) {
-                $this->reset($model->table);
+                $this->delete($model->table);
         }
     }
 
