@@ -7,4 +7,10 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   var elems = document.querySelectorAll('select');
   var instances = M.FormSelect.init(elems, {});
+
+  var elems = document.querySelectorAll('.collapsible');
+  var instances = M.Collapsible.init(elems, {
+    inDuration: 350,
+    outDuration: 350
+  });
 });

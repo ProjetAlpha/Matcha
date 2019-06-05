@@ -1,94 +1,87 @@
-
-
 <template>
 
 <div class="container" style="height:100%">
-    <div class="col card blue-grey lighten-4 hoverable s10 pull-s1 m6 pull-m3 l4 pull-l4" style="max-height:100%!important">
-        <div class="card-content white-text">
-            <div class="row mr-b-2">
-                <select>
-                    <option value="" disabled selected>Choisir un filtre</option>
-                    <option value="1">Option 1</option>
-                    <option value="2">Option 2</option>
-                    <option value="3">Option 3</option>
-                </select>
-                <label>Selectionner un filtre</label>
-            </div>
-            <div class="row mr-b-2">
-                <select>
-                    <option value="" disabled selected>Choisir un filtre</option>
-                    <option value="1">Option 1</option>
-                    <option value="2">Option 2</option>
-                    <option value="3">Option 3</option>
-                </select>
-                <label>Selectionner un filtre</label>
-            </div>
-            <div class="row mr-t-1 mr-b-2">
-                <select>
-                    <option value="" disabled selected>Choisir un filtre</option>
-                    <option value="1">Option 1</option>
-                    <option value="2">Option 2</option>
-                    <option value="3">Option 3</option>
-                </select>
-                <label>Selectionner un filtre</label>
-            </div>
-            <div class="row">
-                <div ref="testSlider"></div>
-            </div>
-            <div class="row mr-t-3">
-                <div ref="testSlider2"></div>
-            </div>
-        </div>
-    </div>
+  <user-filter
+  :custom-style="{width:'50%'}"
+  :set-style="{value:'mr-b-3 col card teal lighten-5 hoverable s8 push-s2 m6 push-m2 l3 push-l2'}"
+  :title="{name:'Rechercher'}"
+  :range-filter="{age:'Age', popularite:'Popularite'}"
+  :sort-filter="{name:'Age', localisation:'Localisation', popularite:'Popularite', tags:'Tags'}"
+  :sort-filter-name="{name:'Trier les résultats'}"
+  :action-btn="{name:'Confirmer'}"
+  :filter-id="{id:'1'}">
+  </user-filter>
+
+    <user-filter
+    :custom-style="{width:'50%'}"
+    :set-style="{value:'mr-b-3 col card teal lighten-5 hoverable s8 push-s2 m6 push-m2 l3 push-l2'}"
+    :title="{name:'Filtrer les résultats'}"
+    :range-filter="{age:'Age', popularite:'Popularite'}"
+    :sort-filter="{name:'Age', localisation:'Localisation', popularite:'Popularite', tags:'Tags'}"
+    :sort-filter-name="{name:'Trier les résultats'}"
+    :action-btn="{name:''}"
+    :filter-id="{id:'2'}">
+    </user-filter>
 </div>
+
 
 </template>
 
 <script>
 
+import userFilter from './userFilter.vue'
+
 export default {
-    data() {
-            return {
 
-            }
+  mounted() {
+    console.log(this.localisation)
+    //this.initSlider();
+  },
+
+  data() {
+    return {
+      activateTag:false,
+      localisation:''
+    }
+  },
+
+  methods: {
+    initSlider() {
+      const slider = this.$refs.testSlider;
+      this.$noUiSlider.create(slider, {
+        start: [0, 0],
+        connect: true,
+        step: 1,
+        orientation: 'horizontal', // 'horizontal' or 'vertical'
+        range: {
+          'min': 0,
+          'max': 100
         },
-
-        methods: {
-            initSlider() {
-                const slider = this.$refs.testSlider;
-                this.$noUiSlider.create(slider, {
-                    start: [30, 60],
-                    connect: true,
-                    step: 1,
-                    orientation: 'horizontal', // 'horizontal' or 'vertical'
-                    range: {
-                        'min': 0,
-                        'max': 100
-                    },
-                    format: wNumb({
-                        decimals: 0
-                    })
-                });
-                const slider2 = this.$refs.testSlider2;
-                this.$noUiSlider.create(slider2, {
-                    start: [30, 60],
-                    connect: true,
-                    step: 1,
-                    orientation: 'horizontal', // 'horizontal' or 'vertical'
-                    range: {
-                        'min': 0,
-                        'max': 100
-                    },
-                    format: wNumb({
-                        decimals: 0
-                    })
-                });
-            }
+        format: wNumb({
+          decimals: 0
+        })
+      });
+      const slider2 = this.$refs.testSlider2;
+      this.$noUiSlider.create(slider2, {
+        start: [0, 0],
+        connect: true,
+        step: 1,
+        orientation: 'horizontal', // 'horizontal' or 'vertical'
+        range: {
+          'min': 0,
+          'max': 100
         },
+        format: wNumb({
+          decimals: 0
+        })
+      });
+    },
 
-        mounted() {
-            this.initSlider();
-        }
+    sendData(){
+      // this.localisation && slider value... && tags value = refs
+      console.log(this.$refs)
+    }
+  }
 }
 
 </script>

@@ -1,7 +1,7 @@
 
 <?php require_once(dirname(__DIR__).'/views/header.php'); ?>
 
-<section class="hero is-light is-fullheight-with-navbar" id="app">
+<section class="hero blue-grey lighten-5 is-fullheight-with-navbar" id="app">
     <nav-bar></nav-bar>
     <?php if (isset($type) && $type == 'login'): ?>
       <user-register action="/doLog" title="Identifiants" :inputs="{username:'Nom d\'utilisateur', password:'Mot de passe'}"

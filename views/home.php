@@ -1,7 +1,7 @@
 <?php require_once(dirname(__DIR__).'/views/header.php'); ?>
 
 <body>
-        <section class="hero is-light is-fullheight-with-navbar" id="app">
+        <section class="hero blue-grey lighten-5 is-fullheight-with-navbar" id="app">
             <nav-bar></nav-bar>
             <div class="hero-body">
                 <say-hi></say-hi>
