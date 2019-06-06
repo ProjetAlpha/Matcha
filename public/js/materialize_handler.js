@@ -13,4 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
     inDuration: 350,
     outDuration: 350
   });
+
+  //console.log(elems.chips());
 });

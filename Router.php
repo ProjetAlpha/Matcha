@@ -21,7 +21,15 @@ $route->add('/reset', 'get', function () {
 $route->add('/logout', 'post', 'User@logoutPage');
 
 $route->add('/search', 'get', function () {
-    view('search.php');
+    view('search.php', ['type' => 'search']);
+});
+
+$route->add('/', 'get', function () {
+    view('sugestions.php');
+});
+
+$route->add('/search/result', 'get', function () {
+    view('search.php', ['type' => 'result']);
 });
 
 $route->add('/settings', 'get', function () {

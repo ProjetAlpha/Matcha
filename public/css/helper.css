@@ -73,3 +73,41 @@
 .basic-txt{
   text-transform:initial!important;
 }
+
+@media only screen and (min-width: 720px) and (max-width: 1250px){
+  .s-responsive-row{
+
+  }
+}
+
+
+@media only screen and (min-width: 980px){
+  .s-v-align{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+  }
+}
+
+@media only screen and (min-width: 200px) and (max-width: 640px){
+  .s-responsive-row{
+    width:100%!important;
+  }
+  .s-v-align{
+    margin:0!important;
+    padding:0!important;
+  }
+}
+
+.card-action{
+  padding:2%!important;
+}
+
+.circle{
+  border-radius:50%;
+}
