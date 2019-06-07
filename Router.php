@@ -31,6 +31,10 @@ $route->add('/search/result', 'get', function () {
 $route->add('/settings', 'get', function () {
     view('settings.php');
 });
+
+$route->add('/profil', 'get', function () {
+    view('profil.php');
+});
 //$route->add('/page/:digits', 'get', 'Image@getAllImg');*/
 
 $route->loadRoutes();

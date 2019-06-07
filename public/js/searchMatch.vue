@@ -32,7 +32,7 @@
     <div class="col s12 m10 push-m1 l9 push-l1">
       <div class="card horizontal">
         <div class="card-image">
-          <img class="responsive-image circle" src="https://lorempixel.com/100/190/nature/6">
+          <img class="responsive-img circle" src="https://lorempixel.com/100/190/nature/6">
         </div>
         <div class="card-stacked">
           <div class="card-content">
@@ -47,7 +47,7 @@
     <div class="col s12 m10 push-m1 l9 push-l1">
       <div class="card horizontal">
         <div class="card-image">
-          <img class="responsive-image circle" src="https://lorempixel.com/100/190/nature/6">
+          <img class="responsive-img circle" src="https://lorempixel.com/100/190/nature/6">
         </div>
         <div class="card-stacked">
           <div class="card-content">
@@ -62,7 +62,7 @@
     <div class="col s12 m10 push-m1 l9 push-l1">
       <div class="card horizontal">
         <div class="card-image">
-          <img class="responsive-image circle" src="https://lorempixel.com/100/190/nature/6">
+          <img class="responsive-img circle" src="https://lorempixel.com/100/190/nature/6">
         </div>
         <div class="card-stacked">
           <div class="card-content">
