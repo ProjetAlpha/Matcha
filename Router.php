@@ -4,10 +4,6 @@ require_once("Route.php");
 
 $route = new Route();
 
-$route->add('/', 'get', function () {
-    view('home.php');
-});
-
 $route->add('/login', 'get', function () {
     view('user_register_forms.php', ['type' => 'login']);
 });

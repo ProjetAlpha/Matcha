@@ -12337,7 +12337,6 @@ var $jscomp$this = this;
         }
 
         // Create dropdown
-        console.log(this.$el)
         this.$selectOptions = this.$el.children('option, optgroup');
         this.dropdownOptions = document.createElement('ul');
         this.dropdownOptions.id = "select-options-" + M.guid();

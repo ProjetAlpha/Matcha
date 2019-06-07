@@ -10,13 +10,13 @@
             <p class="black-text center-align mr-b-3">{{ name }}</p>
             <div :id="setId(name, index)" :value="value" :name="name"></div>
           </div>
-          <div class="row">
-            <div class="input-field col s12">
+          <div class="row" style="margin-bottom:0!important">
+            <div class="input-field col s12" style="margin-top:1%">
               <input  @change="sendInput($event.target.value)" :id="createLoc(filterId.id)" type="text" class="validate">
               <label :for="createLoc(filterId.id)">Localisation</label>
             </div>
           </div>
-          <div class="chips chips-autocomplete"></div>
+          <div class="chips chips-autocomplete mr-b-1" id="chips-filter" style="margin-top:0!important"></div>
           <div v-if="actionBtn.name" class="card-action mr-t-2" style="border-top:none;">
             <button type="" @click="sendData()" class="btn green waves-effect waves-light" value="">{{ actionBtn.name }} </button>
           </div>
@@ -33,8 +33,6 @@ export default {
   props:['actionBtn', 'rangeFilter', 'sortFilter', 'sortFilterName', 'title', 'customStyle', 'customStyleCard', 'setStyle', 'filterId'],
 
   mounted(){
-    //this.setStyle.value += 'vertical-align'
-    console.log(this.setStyle.value)
     this.initSlider()
     this.initChips()
     this.isDomReady = true
@@ -95,7 +93,7 @@ export default {
     },
 
     initChips(){
-      var elems = document.querySelectorAll('.chips');
+      var elems = document.getElementById('chips-filter')
       var vm = this
       var options = {
         placeholder: 'Entrer un tag',

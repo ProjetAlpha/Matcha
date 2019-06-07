@@ -13,6 +13,11 @@ document.addEventListener('DOMContentLoaded', function() {
     inDuration: 350,
     outDuration: 350
   });
-
+  var elems = document.querySelectorAll('.collapsible');
+  var instances = M.Collapsible.init(elems, {
+    inDuration: 350,
+    outDuration: 350,
+    accordion: false
+  });
   //console.log(elems.chips());
 });
