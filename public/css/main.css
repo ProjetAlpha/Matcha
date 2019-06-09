@@ -15,3 +15,13 @@ hr {
   background: white;
   text-align: center;
 }
+
+.collection .collection-item.avatar{
+  min-height: 0!important;
+  padding-left:3%!important;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+    display: inline-block;
+    width: 100%;
+}

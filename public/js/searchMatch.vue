@@ -27,71 +27,88 @@
           </li>
         </ul>
       </div>
-    <!-- Ici le sort des resultats... OMG -->
-  <div class="row">
-    <div class="col s12 m10 push-m1 l9 push-l1">
-      <div class="card horizontal">
-        <div class="card-image">
-          <img class="responsive-img circle" src="https://lorempixel.com/100/190/nature/6">
-        </div>
-        <div class="card-stacked">
-          <div class="card-content">
-            <p>I am a very simple card. I am good at containing small bits of information.</p>
-          </div>
-          <div class="card-action">
-            <a href="#">Consulter le profil</a>
-          </div>
-        </div>
+      <!-- Ici le sort des resultats... OMG -->
+      <div class="row">
+        <ul class="col s12 m10 push-m1 l9 push-l1">
+          <ul class="collection">
+            <li class="row ml-v-align collection-item avatar">
+              <div class="col s11 m6 l6">
+                <img src="/Photo_profil" alt="" class="s-responsive-img rounded-img">
+              </div>
+              <div class="col s8 m4 l4">
+                <p class="black-text">
+                  Thomas Broussoux <br>
+                  <span class="black-text">
+                    23 ans
+                  </span> <br>
+                  <span class="black-text">
+                    Toulouse
+                  </span>
+                </p>
+                <div class="row mr-t-4">
+                  <div class="chip blue white-text">
+                    #php
+                  </div>
+                  <div class="chip blue white-text">
+                    #java
+                  </div>
+                  <div class="chip blue white-text">
+                    #css
+                  </div>
+                </div>
+                <a href="#!" class="secondary-content"><i class="material-icons right" style="color:#4caf50">lens</i>En ligne</a>
+              </div>
+              <!-- <a href="#!" class="secondary-content"><i class="material-icons right" style="color:#ef5350">lens</i>Deconnecter</a> -->
+            </li>
+            <li class="row ml-v-align collection-item avatar">
+              <div class="col s11 m6 l6">
+                <img src="/Photo_profil" alt="" class="s-responsive-img rounded-img">
+              </div> <!-- notice the "circle" class -->
+              <div class="col s8 m4 l4">
+                <p class="black-text">
+                  Thomas Broussoux <br>
+                  <span class="black-text">
+                    23 ans
+                  </span> <br>
+                  <span class="black-text">
+                    Toulouse
+                  </span>
+                </p>
+                <div class="row mr-t-4">
+                  <div class="chip blue white-text">
+                    #php
+                  </div>
+                  <div class="chip blue white-text">
+                    #java
+                  </div>
+                  <div class="chip blue white-text">
+                    #css
+                  </div>
+                </div>
+              </div> <br>
+              <a href="#!" class="secondary-content"><i class="material-icons right" style="color:#4caf50">lens</i>En ligne</a>
+              <!-- <a href="#!" class="secondary-content"><i class="material-icons right" style="color:#ef5350">lens</i>Deconnecter</a> -->
+            </li>
+          </ul>
+        </ul>
       </div>
     </div>
-    <div class="col s12 m10 push-m1 l9 push-l1">
-      <div class="card horizontal">
-        <div class="card-image">
-          <img class="responsive-img circle" src="https://lorempixel.com/100/190/nature/6">
-        </div>
-        <div class="card-stacked">
-          <div class="card-content">
-            <p>I am a very simple card. I am good at containing small bits of information.</p>
-          </div>
-          <div class="card-action">
-            <a href="#">Consulter le profil</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col s12 m10 push-m1 l9 push-l1">
-      <div class="card horizontal">
-        <div class="card-image">
-          <img class="responsive-img circle" src="https://lorempixel.com/100/190/nature/6">
-        </div>
-        <div class="card-stacked">
-          <div class="card-content">
-            <p>I am a very simple card. I am good at containing small bits of information.</p>
-          </div>
-          <div class="card-action">
-            <a href="#">Consulter le profil</a>
-          </div>
-        </div>
-      </div>
+    <div v-if="type === 'search'" class="row">
+      <div class="col s12 m8 push-m2 l6 push-l2">
+        <user-filter
+        :custom-style="{width:'100%', height:'100%'}"
+        :custom-style-card="{width:'100%', height:'100%'}"
+        :set-style="{value:'mr-b-3 col card teal lighten-5 hoverable s8 m6 push-m2 push-s2 push-l2 l3'}"
+        :title="{name:'Rechercher'}"
+        :range-filter="{age:'Age', popularite:'Popularite'}"
+        :sort-filter="{name:'Age', localisation:'Localisation', popularite:'Popularite', tags:'Tags'}"
+        :sort-filter-name="{name:'Trier les résultats'}"
+        :action-btn="{name:'Confirmer'}"
+        :filter-id="{id:'1'}"
+        v-on:sendFilterData="handleData($event)">
+      </user-filter>
     </div>
   </div>
-</div>
-<div v-if="type === 'search'" class="row">
-  <div class="col s12 m8 push-m2 l6 push-l2">
-    <user-filter
-    :custom-style="{width:'100%', height:'100%'}"
-    :custom-style-card="{width:'100%', height:'100%'}"
-    :set-style="{value:'mr-b-3 col card teal lighten-5 hoverable s8 m6 push-m2 push-s2 push-l2 l3'}"
-    :title="{name:'Rechercher'}"
-    :range-filter="{age:'Age', popularite:'Popularite'}"
-    :sort-filter="{name:'Age', localisation:'Localisation', popularite:'Popularite', tags:'Tags'}"
-    :sort-filter-name="{name:'Trier les résultats'}"
-    :action-btn="{name:'Confirmer'}"
-    :filter-id="{id:'1'}"
-    v-on:sendFilterData="handleData($event)">
-  </user-filter>
-</div>
-</div>
 </div>
 </template>
 
