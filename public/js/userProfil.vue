@@ -8,7 +8,13 @@
             <ul class="collection">
               <li class="row ml-v-align collection-item avatar">
                 <div class="col s11 m6 l6">
-                  <img src="/Photo_profil" alt="" class="responsive-img" style="border-radius:50%" /> <!-- notice the "circle" class -->
+                  <div class="image">
+                  <img src="/Photo_profil.jpg" alt="" class="responsive-img" style="border-radius:50%" />
+                    <button class="btn-small blue waves-effect waves-light text-img basic-txt"
+                    href="/edit" style="border-radius: 12px;">
+                      <a class="white-text" href="/profil/edit"><i class="material-icons" style="float:right">edit</i>Editer</a>
+                    </button>
+                  </div>
                 </div>
                 <div class="col s8 m4 l4">
                   <a href="#!"><i class="material-icons" style="color:#4caf50;">lens</i>En ligne</a>

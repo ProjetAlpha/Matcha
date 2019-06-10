@@ -32,6 +32,10 @@ $route->add('/settings', 'get', function () {
     view('settings.php');
 });
 
+$route->add('/profil/edit', 'get', function () {
+    view('editProfil.php');
+});
+
 $route->add('/profil', 'get', function () {
     view('profil.php');
 });

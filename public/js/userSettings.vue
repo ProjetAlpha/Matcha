@@ -1,5 +1,5 @@
 <template>
-  <div class="hero-body" style="width:100%;height:100%">
+
     <div class="row valign-wrapper" style="width:100%;height:100%">
       <div class="col card teal lighten-5 hoverable s10 pull-s1 m7 pull-m2 l6 pull-l3">
         <div class="card-content" style="width:100%;height:100%">
@@ -24,7 +24,6 @@
           </div>
         </div>
       </div>
-    </div>
   </template>
 
 <script>

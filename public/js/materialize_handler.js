@@ -19,5 +19,14 @@ document.addEventListener('DOMContentLoaded', function() {
     outDuration: 350,
     accordion: false
   });
+  var elems = document.querySelectorAll('.dropdown-trigger');
+  var instances = M.Dropdown.init(elems, {
+    inDuration: 350,
+    outDuration: 350,
+    coverTrigger: false,
+    constrainWidth: false
+  });
+  //var elems = document.querySelectorAll('.materialboxed');
+  //var instances = M.Materialbox.init(elems, options);
   //console.log(elems.chips());
 });

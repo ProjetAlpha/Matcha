@@ -8,6 +8,7 @@ import userFilter from './userFilter.vue'
 import userSortResult from './userSortResult.vue'
 import userProfil from './userProfil.vue'
 import userProfilInfo from './userProfilInfo.vue'
+import userProfilEdit from './userProfilEdit.vue'
 import axios from 'axios'
 
 Vue.prototype.$noUiSlider = noUiSlider;
@@ -29,6 +30,7 @@ Vue.component('user-filter', userFilter);
 Vue.component('user-sort-result', userSortResult);
 Vue.component('user-profil', userProfil);
 Vue.component('user-profil-info', userProfilInfo);
+Vue.component('user-profil-edit', userProfilEdit);
 
 new Vue({
   el: '#app'

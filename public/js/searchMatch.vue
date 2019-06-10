@@ -33,9 +33,9 @@
           <ul class="collection">
             <li class="row ml-v-align collection-item avatar">
               <div class="col s11 m6 l6">
-                <img src="/Photo_profil" alt="" class="s-responsive-img rounded-img">
+                <img src="/Photo_profil.jpg" alt="" class="s-responsive-img rounded-img">
               </div>
-              <div class="col s8 m4 l4">
+              <div class="col s8 m9 l6">
                 <p class="black-text">
                   Thomas Broussoux <br>
                   <span class="black-text">
@@ -62,9 +62,9 @@
             </li>
             <li class="row ml-v-align collection-item avatar">
               <div class="col s11 m6 l6">
-                <img src="/Photo_profil" alt="" class="s-responsive-img rounded-img">
+                <img src="/Photo_profil.jpg" alt="" class="s-responsive-img rounded-img">
               </div> <!-- notice the "circle" class -->
-              <div class="col s8 m4 l4">
+              <div class="col s8 m9 l6">
                 <p class="black-text">
                   Thomas Broussoux <br>
                   <span class="black-text">
@@ -74,7 +74,7 @@
                     Toulouse
                   </span>
                 </p>
-                <div class="row mr-t-4">
+                <div class="row mr-t-4" style="width:100%!important">
                   <div class="chip blue white-text">
                     #php
                   </div>

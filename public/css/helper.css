@@ -42,6 +42,14 @@
     margin-left:3%!important;
 }
 
+.mr-l-4{
+    margin-left:4%!important;
+}
+
+.mr-l-5{
+    margin-left:5%!important;
+}
+
 .mr-b-1{
   margin-bottom:1%!important;
 }
@@ -137,4 +145,10 @@
 .s-responsive-img{
   height:auto;
   max-width:50%;
+}
+
+.p-wbreak{
+  -ms-word-break: break-all;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
