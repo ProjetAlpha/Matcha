@@ -1,7 +1,7 @@
 <template>
 
     <div class="row valign-wrapper" style="width:100%;height:100%">
-      <div class="col card teal lighten-5 hoverable s10 pull-s1 m7 pull-m2 l6 pull-l3">
+      <div class="col card teal lighten-5 hoverable s12 m8 pull-m2 l6 pull-l3">
         <div class="card-content" style="width:100%;height:100%">
           <div class="mr-t-3 mr-b-2" v-for="(value, name, index) in data">
             <span class="card-title">{{ title[name] }} </span>

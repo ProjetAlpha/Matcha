@@ -4,14 +4,14 @@
   <div class="container" style="width:100%!important;height:100%!important;max-width:80%!important">
     <div v-if="type === 'result'" class="row" style="width:100%!important">
       <div class="row">
-        <ul class="col push-l2 l7 push-m1 m10 s12 collapsible expandable" style="padding:0!important;margin-right:0!important">
+        <ul class="col push-l2 l7 m12 s12 collapsible expandable" style="padding:0!important;margin-right:0!important">
           <li style="row border:none!important padding:0!important;margin:0!important">
             <div class="collapsible-header"><i class="material-icons">sort</i>Filtrer</div>
             <div class="collapsible-body" style="padding:0!important;margin:0!important">
               <user-filter
               :custom-style="{width:'100%', height:'100%', margin:0, padding:0}"
               :custom-style-card="{width:'100%', height:'100%', margin:'0!important'}"
-              :set-style="{value:'mr-b-3 col card teal lighten-5 hoverable s8 m6 l3 s-responsive-row'}"
+              :set-style="{value:'mr-b-3 col card teal lighten-5 hoverable s12 m6 l3 s-responsive-row'}"
               :title="{name:'Filtrer'}"
               :range-filter="{age:'Age', popularite:'Popularite'}"
               :sort-filter="{name:'Age', localisation:'Localisation', popularite:'Popularite', tags:'Tags'}"
@@ -31,9 +31,9 @@
       <div class="row">
         <ul class="col s12 m10 push-m1 l9 push-l1">
           <ul class="collection">
-            <li class="row ml-v-align collection-item avatar">
-              <div class="col s11 m6 l6">
-                <img src="/Photo_profil.jpg" alt="" class="s-responsive-img rounded-img">
+            <li class="row collection-item avatar">
+              <div class="col s12 m6 l6">
+                <img src="/Photo_profil.jpg" alt="" class="s-responsive-img rounded-img materialboxed">
               </div>
               <div class="col s8 m9 l6">
                 <p class="black-text">
@@ -60,9 +60,9 @@
               </div>
               <!-- <a href="#!" class="secondary-content"><i class="material-icons right" style="color:#ef5350">lens</i>Deconnecter</a> -->
             </li>
-            <li class="row ml-v-align collection-item avatar">
-              <div class="col s11 m6 l6">
-                <img src="/Photo_profil.jpg" alt="" class="s-responsive-img rounded-img">
+            <li class="row collection-item avatar">
+              <div class="col s12 m6 l6">
+                <img src="/Photo_profil.jpg" alt="" class="s-responsive-img rounded-img materialboxed">
               </div> <!-- notice the "circle" class -->
               <div class="col s8 m9 l6">
                 <p class="black-text">
@@ -93,12 +93,12 @@
         </ul>
       </div>
     </div>
-    <div v-if="type === 'search'" class="row">
-      <div class="col s12 m8 push-m2 l6 push-l2">
+    <div v-if="type === 'search'" class="row" style="width:100%!important">
+      <div class="col s12 push-m1 m10 l8 push-l1 offset-l1">
         <user-filter
         :custom-style="{width:'100%', height:'100%'}"
         :custom-style-card="{width:'100%', height:'100%'}"
-        :set-style="{value:'mr-b-3 col card teal lighten-5 hoverable s8 m6 push-m2 push-s2 push-l2 l3'}"
+        :set-style="{value:'mr-b-3 col card teal lighten-5 hoverable s12 m8 l3'}"
         :title="{name:'Rechercher'}"
         :range-filter="{age:'Age', popularite:'Popularite'}"
         :sort-filter="{name:'Age', localisation:'Localisation', popularite:'Popularite', tags:'Tags'}"

@@ -8,8 +8,8 @@
         <div class="collapsible-body">
           <ul class="collection">
             <li class="row ml-v-align collection-item avatar">
-              <div class="col s11 m6 l6">
-                <img src="/Photo_profil.jpg" alt="" class="s-responsive-img rounded-img">
+              <div class="col s12 m6 l6">
+                <img src="/Photo_profil.jpg" alt="" class="s-responsive-img rounded-img materialboxed">
               </div>
               <div class="col s8 m4 l4">
                 <p class="black-text">
@@ -38,10 +38,10 @@
               <!-- <a href="#!" class="secondary-content"><i class="material-icons right" style="color:#ef5350">lens</i>Deconnecter</a> -->
             </li>
             <li class="row ml-v-align collection-item avatar">
-              <div class="col s11 m6 l6">
-                <img src="/Photo_profil.jpg" alt="" class="s-responsive-img rounded-img">
+              <div class="col s12 m6 l6">
+                <img src="/Photo_profil.jpg" alt="" class="s-responsive-img rounded-img materialboxed">
               </div> <!-- notice the "circle" class -->
-              <div class="col s8 m4 l4">
+              <div class="col s12 m4 l4">
                 <p class="black-text">
                   Thomas Broussoux <br>
                   <span class="black-text">
@@ -77,8 +77,8 @@
         <div class="collapsible-body">
           <ul class="collection">
             <li class="row ml-v-align collection-item avatar">
-              <div class="col s11 m6 l6">
-                <img src="/Photo_profil.jpg" alt="" class="s-responsive-img rounded-img">
+              <div class="col s12 m6 l6">
+                <img src="/Photo_profil.jpg" alt="" class="s-responsive-img rounded-img materialboxed">
               </div>
               <div class="col s8 m4 l4">
                 <p class="black-text">

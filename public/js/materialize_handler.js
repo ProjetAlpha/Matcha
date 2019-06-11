@@ -26,6 +26,12 @@ document.addEventListener('DOMContentLoaded', function() {
     coverTrigger: false,
     constrainWidth: false
   });
+  var elems = document.querySelectorAll('.materialboxed');
+  M.Materialbox.init(elems, {
+
+  })
+  var elems = document.querySelectorAll('.modal');
+  var instances = M.Modal.init(elems, {});
   //var elems = document.querySelectorAll('.materialboxed');
   //var instances = M.Materialbox.init(elems, options);
   //console.log(elems.chips());

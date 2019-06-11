@@ -1,6 +1,30 @@
 <template>
   <div class="row valign-wrapper" style="width:100%;height:100%">
-    <div class="col card teal lighten-5 hoverable s10 pull-s1 m7 pull-m2 l6 pull-l3">
+    <div id="modal1" class="teal lighten-5 modal modal-fixed-footer">
+      <div class="modal-content">
+        <div class="row">
+          <div class="col s12 m4 l4 mr-t-1">
+            <div class="image">
+              <img src="/Photo_profil.jpg" alt="" class="responsive-img">
+              <a class="tag cyan cyan lighten-4 delete-overlay"
+              style="border-radius:0!important;text-decoration:none;margin:0!important;padding:0!important">
+                <label class="mr-l-4">
+                  <!-- v-if : si image de pofil => checked -->
+                  <!-- v-if : si on selectionne une autre image, check la nouvel image et decheck celle qui est check -->
+                  <input type="checkbox"></input>
+                  <span></span>
+                </label>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="text-align:center">
+        <a href="#!" @click="addProfilImg" class="waves-effect waves-green btn blue">Confirmer</a>
+        <a href="#!" @click="closeModal" class="waves-effect waves-green btn blue">Annuler</a>
+      </div>
+    </div>
+    <div class="col card teal lighten-5 hoverable s12 m12 l8 pull-l2">
       <div class="card-content" style="width:100%;height:100%">
         <span class="card-title">Genre</span>
         <p>
@@ -40,20 +64,68 @@
             <button type="submit" class="btn green waves-effect waves-light" @click="showModifBio">Modifier</button>
           </div>
         </div>
+        <span class="card-title">Tags</span>
         <div class="chips chips-autocomplete mr-b-1" id="chips-filter" style="margin-top:0!important"></div>
+        <span class="card-title">Photo de profil</span>
+        <div class="row">
+          <div class="col s12 m4 l4 mr-t-1">
+            <div class="image">
+              <img src="/Photo_profil.jpg" alt="" class="responsive-img">
+              <a class="tag is-info text-img" style="border-radius:0!important;text-decoration:none" @click="openModal">
+                <i class="material-icons" style="color:black;float:right">edit</i>
+                Editer
+              </a>
+            </div>
+          </div>
+        </div>
+        <span class="card-title">Images</span>
+        <div class="row">
+          <div class="col s12 m4 l4 mr-t-1">
+            <div class="image">
+              <img src="https://source.unsplash.com/800x600/?beach" alt="" class="responsive-img">
+              <a class="tag is-info delete-overlay" style="border-radius:0!important;text-decoration:none" @click="deleteImg">
+                <i class="material-icons" style="color:black">delete</i>
+                Supprimer
+              </a>
+            </div>
+          </div>
+          <div class="col s12 m4 l4 mr-t-1">
+            <div class="image">
+              <img src="https://source.unsplash.com/800x600/?boat" alt="" class="responsive-img">
+              <a class="tag is-info delete-overlay" style="border-radius:0!important;text-decoration:none" @click="deleteImg">
+                <i class="material-icons" style="color:black">delete</i>
+                Supprimer
+              </a>
+            </div>
+          </div>
+          <div class="col s12 m4 l4 mr-t-1">
+            <div class="image">
+              <img src="https://source.unsplash.com/800x600/?boat" alt="" class="responsive-img">
+              <a class="tag is-info delete-overlay" style="border-radius:0!important;text-decoration:none" @click="deleteImg">
+                <i class="material-icons" style="color:black">delete</i>
+                Supprimer
+              </a>
+            </div>
+          </div>
+        </div>
         <div class="file-field input-field">
           <div class="btn">
-            <span>Image</span>
-            <input type="file" accept=".png, .jpg, .jpeg" />
+            <span>Ajouter</span>
+            <input type="file" ref="fileInput" accept=".png, .jpg, .jpeg" @change="previewImage"/>
           </div>
           <div class="file-path-wrapper">
             <input class="file-path validate" type="text">
           </div>
         </div>
-        <div class="card-action right-align">
-            <button type="submit" class="btn green waves-effect waves-light" @click="sendData">
+        <div class="row" v-show="isPreview">
+          <div class="col s12 m4 l4 mr-t-1">
+            <img :src="imageData" alt="" class="responsive-img">
+          </div>
+          <div class="card-action right-align">
+            <button type="submit" class="mr-t-2 btn green waves-effect waves-light" @click="addImg">
               Confirmer</button>
-        </div>
+            </div>
+          </div>
       </div>
     </div>
   </div>
@@ -75,6 +147,10 @@
 
     data(){
       return {
+        instance:'',
+        input:'',
+        isPreview:false,
+        imageData: "",
         tags:[],
         bio:'Ma bio de fou woooowwowoowowowowowoowowowowoow',
         tmpBio:'',
@@ -175,6 +251,50 @@
 
       resizeTextarea(e){
         this.textAreaHeight = e.target.style.height;
+      },
+
+      deleteImg(e){
+        // supprimer l'image avec cette id cote serveur.
+        e.target.parentElement.style.display = 'none';
+      },
+
+      previewImage(){
+           const input = event.target;
+           if (input.files && input.files[0]) {
+               const reader = new FileReader();
+               reader.onload = (e) => {
+                   this.imageData = e.target.result;
+                   this.isPreview = true;
+               }
+               reader.readAsDataURL(input.files[0]);
+           }
+      },
+
+      addImg(){
+          this.isPreview = false;
+          this.imageData = '';
+          this.$refs.fileInput.value = '';
+          // 1 - requete serveur.
+          // 2 - ajouter l'image dans les datas => v-for(images) => ajoute une nouvelle image au DOM.
+      },
+
+      addProfilImg(){
+        // 1 - changer l'image de profil dans le DOM.
+        // 2 - prend l'image ID associée avec l'image checked.
+        // 3 - requéte serveur avec l'image id + user id => change la table profil.
+        this.instance.close();
+      },
+
+      openModal(){
+        const elem = document.querySelector('.modal');
+        this.instance = M.Modal.init(elem);
+        // load les images dans la modal avec une checkbox pour chaque image.
+        this.instance.open();
+      },
+
+      closeModal(){
+        // annuler => reset la check box a son etat intial.
+        this.instance.close();
       }
     }
   }

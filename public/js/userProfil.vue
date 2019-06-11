@@ -2,12 +2,12 @@
 
   <div class="container" style="max-width:100%!important">
     <div class="row">
-      <div class="col push-l2 l7 push-m1 m10 s12">
+      <div class="col push-l2 l7 m12 s12">
         <div class="card-panel teal lighten-5 lighten-5 z-depth-1" style="width:100%!important">
           <div class="row" style="margin-bottom:0!important">
             <ul class="collection">
               <li class="row ml-v-align collection-item avatar">
-                <div class="col s11 m6 l6">
+                <div class="col s12 m6 l6">
                   <div class="image">
                   <img src="/Photo_profil.jpg" alt="" class="responsive-img" style="border-radius:50%" />
                     <button class="btn-small blue waves-effect waves-light text-img basic-txt"
@@ -16,7 +16,7 @@
                     </button>
                   </div>
                 </div>
-                <div class="col s8 m4 l4">
+                <div class="col s12 m4 l4">
                   <a href="#!"><i class="material-icons" style="color:#4caf50;">lens</i>En ligne</a>
                   <p class="black-text mr-t-4">
                     Thomas Broussoux <br>
