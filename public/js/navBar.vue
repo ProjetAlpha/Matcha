@@ -14,7 +14,8 @@
             <li><a href="/profil/edit"><i class="material-icons">account_circle</i>Profil</a></li>
           </ul>
           <!-- <li><a href="/settings"><i class="material-icons">settings</i></a></li> -->
-          <li><a href="/notifications"><i class="material-icons">notifications</i></a></li>
+          <li><a class='dropdown-trigger' data-target='dropdown3'><i class="material-icons">notifications</i></a></li>
+          <notifications notification-id="dropdown3"></notifications>
           <li><a href="/chat"><i class="material-icons">chat_bubble</i></a></li>
           <li><a href="/search"><i class="material-icons">search</i></a></li>
           <li>
@@ -43,7 +44,8 @@
           </div>
         </li>
       </ul>
-      <li><a href="/notifications"><i class="material-icons">notifications</i>Notifications</a></li>
+      <li><a class='dropdown-trigger' data-target='dropdown4'><i class="material-icons">notifications</i>Notifications</a></li>
+      <notifications notification-id="dropdown4"></notifications>
       <li><a href="/chat"><i class="material-icons">chat_bubble</i>Chat</a></li>
       <li><a href="/search" class="mr-t-3"><i class="material-icons">search</i>Rechercher</a></li>
       <hr>
