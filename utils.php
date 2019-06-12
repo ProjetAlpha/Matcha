@@ -28,9 +28,9 @@ if (!function_exists('filterData')) {
 }
 // 100.
 // Lien vers la ressource cible de l'image, Lien vers la ressource source de l'image, coordonnée du point de destination, coordonnée du point de destination
-if (!function_exists('imagecopymerge_alpha'))
-{
-    function imagecopymerge_alpha($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct){
+if (!function_exists('imagecopymerge_alpha')) {
+    function imagecopymerge_alpha($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct)
+    {
         // creating a cut resource
         $cut = imagecreatetruecolor($src_w, $src_h);
 
@@ -59,6 +59,9 @@ if (!function_exists('sendHtmlMail')) {
         $headers[] = 'MIME-Version: 1.0';
         $headers[] = 'Content-type: text/html; charset=iso-8859-1';
 
+        //$headers[] = 'To: Mary <mary@example.com>, Kelly <kelly@example.com>';
+        //$headers[] = 'From: Birthday Reminder <birthday@example.com>';
+
         $message = "
         <html>
         <head>
@@ -68,15 +71,6 @@ if (!function_exists('sendHtmlMail')) {
         $message.= $content;
         $message.= "</body></html>";
         mail($to, $subject, $message, implode("\r\n", $headers));
-    }
-}
-
-if (!function_exists('startSession')) {
-    function startSession()
-    {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
     }
 }
 
@@ -136,8 +130,9 @@ if (!function_exists('isAuth')) {
     }
 }
 
-if (!function_exists('checkBase64Format')){
-    function checkBase64Format($value) {
+if (!function_exists('checkBase64Format')) {
+    function checkBase64Format($value)
+    {
         $explode = explode(',', $image);
         $allow = ['png', 'jpg', 'jpeg'];
         $format = str_replace(
@@ -163,16 +158,16 @@ if (!function_exists('checkBase64Format')){
     }
 }
 
-if (!function_exists('isXmlHttpRequest')){
+if (!function_exists('isXmlHttpRequest')) {
     function isXmlHttpRequest()
     {
         return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest');
     }
 }
 
-if (!function_exists('base64ToImage'))
-{
-    function base64ToImage($base64_string, $path) {
+if (!function_exists('base64ToImage')) {
+    function base64ToImage($base64_string, $path)
+    {
         $ifp = fopen($path, 'wb');
         $data = explode(',', $base64_string);
         $str = str_replace(' ', '+', trim($data[1]));
@@ -183,12 +178,11 @@ if (!function_exists('base64ToImage'))
     }
 }
 
-if (!function_exists('calc_pagination'))
-{
-    function calc_pagination($count){
+if (!function_exists('calc_pagination')) {
+    function calc_pagination($count)
+    {
         $pagination = 0;
-        if ($count > 0)
-        {
+        if ($count > 0) {
             $pagination = (int)($count / 5);
             $count % 5 !== 0 ? $pagination++ : 0;
         }
@@ -196,8 +190,7 @@ if (!function_exists('calc_pagination'))
     }
 }
 
-if (!function_exists('createClassArray'))
-{
+if (!function_exists('createClassArray')) {
     function createClassArray($path)
     {
         $arrayClass = [];
@@ -206,7 +199,7 @@ if (!function_exists('createClassArray'))
                 $fullName = $file->getFilename();
                 $name = strtolower(str_replace(['.php', ucfirst($path)], '', $fullName));
                 $className = str_replace('.php', '', $fullName);
-                if (!array_key_exists($name, $arrayClass)){
+                if (!array_key_exists($name, $arrayClass)) {
                     require_once($file->getRealPath());
                     $arrayClass[$name] = new $className();
                 }
@@ -215,11 +208,35 @@ if (!function_exists('createClassArray'))
         return ($arrayClass);
     }
 }
-if (!function_exists('extract_base64') ){
+if (!function_exists('extract_base64')) {
     function extract_base64($base64)
     {
         $data = explode(',', $base64);
         $str = str_replace(' ', '+', trim($data[1]));
         return (base64_decode($str));
+    }
+}
+
+if (!function_exists('loadSession')) {
+    function loadSession()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+    }
+}
+
+if (!function_exists('implodeToPdo')) {
+    function implodeToPdo($glueKV, $gluePair, $KVarray, $isInsert = false)
+    {
+        $tmp = array();
+        foreach ($KVarray as $key => $val) {
+            if ($isInsert) {
+                $tmp[] = $glueKV;
+            } else {
+                $tmp[] = $key . $glueKV . '?';
+            }
+        }
+        return implode($gluePair, $tmp);
     }
 }

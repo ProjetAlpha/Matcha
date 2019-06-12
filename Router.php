@@ -5,13 +5,16 @@ require_once("Route.php");
 $route = new Route();
 
 $route->add('/login', 'get', function () {
-    view('user_register_forms.php', ['type' => 'login']);
+    view('user_register_forms.php', ['registerType' => 'login']);
 });
 $route->add('/register', 'get', function () {
-    view('user_register_forms.php', ['type' => 'register']);
+    view('user_register_forms.php', ['registerType' => 'register']);
 });
+
+$route->add('/create', 'post', 'UserController@create');
+
 $route->add('/reset', 'get', function () {
-    view('user_register_forms.php', ['type' => 'reset']);
+    view('user_register_forms.php', ['registerType' => 'reset']);
 });
 
 $route->add('/logout', 'post', 'User@logoutPage');

@@ -3,20 +3,30 @@
 
 <section class="hero blue-grey lighten-5 is-fullheight-with-navbar" id="app">
     <nav-bar></nav-bar>
-    <?php if (isset($type) && $type == 'login'): ?>
+    <?php if (isset($registerType) && $registerType == 'login'): ?>
       <user-register action="/doLog" title="Identifiants" :inputs="{username:'Nom d\'utilisateur', password:'Mot de passe'}"
-      :submit="{name:'Se connecter', value:'login'}" :type="['text', 'password']"></user-register>
+      :submit="{name:'Se connecter', value:'login'}" :type="['text', 'password']"
+      message="<?php if (isset($warning)) {
+    echo $warning;
+}?>"></user-register>
     <?php endif; ?>
 
-    <?php if (isset($type) && $type == 'reset'): ?>
+    <?php if (isset($registerType) && $registerType == 'reset'): ?>
       <user-register action="/doReset" title="Réinitialiser le mot de passe" :inputs="{password:'Mot de passe'}"
-      :submit="{name:'Confirmer', value:'password'}" :type="['password']"></user-register>
+      :submit="{name:'Confirmer', value:'password'}" :type="['password']"
+      message="<?php if (isset($warning)) {
+    echo $warning;
+}?>">
+      </user-register>
     <?php endif; ?>
 
-    <?php if (isset($type) && $type == 'register'): ?>
-      <user-register action="/doRegister" title="Inscription"
-      :inputs="{username:'Nom d\'utilisateur', last_name:'Nom', first_name:'Prenom', email:'Email', password:'Mot de passe'}"
-      :submit="{name:'S\'inscrire', value:'register'}" :type="['text', 'text', 'text', 'email', 'password']"></user-register>
+    <?php if (isset($registerType) && $registerType == 'register'): ?>
+      <user-register action="/create" title="Inscription"
+      :inputs="{username:'Nom d\'utilisateur', lastname:'Nom', firstname:'Prenom', email:'Email', password:'Mot de passe'}"
+      :submit="{name:'S\'inscrire', value:'register'}" :type="['text', 'text', 'text', 'email', 'password']"
+      message="<?php if (isset($warning)) {
+    echo $warning;
+}?>"></user-register>
     <?php endif; ?>
 </section>
 

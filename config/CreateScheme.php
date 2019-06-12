@@ -11,7 +11,7 @@ $info['db_name'] = "Matcha";
 $scheme = new ManageScheme($info);
 
 $scheme->add(
-    'Users',
+    'User',
     'create',
     "id INT AUTO_INCREMENT PRIMARY KEY,
       is_confirmed boolean not null default 0,
@@ -21,13 +21,10 @@ $scheme->add(
       email VARCHAR(50) NOT NULL,
       username VARCHAR(30) NOT NULL,
       password VARCHAR(256) NOT NULL,
-      name VARCHAR(30) NOT NULL,
+      firstname VARCHAR(30) NOT NULL,
       lastname VARCHAR(30) NOT NULL,
       reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
 );
-
-
-//if (($argv[1] == "-reset" || $argv[1] == "-modify" || $argv[1] == "-delete") && (!isset($argv[2]) || empty()))
 
 
 if (isset($argv[1]) && !empty($argv[1])) {
@@ -43,10 +40,13 @@ if ($argv[1] == "-modify" && is_string($argv[2]) && $argc == 3) {
 }
 
 if ($argv[1] == "-delete" && is_string($argv[2]) && $argc == 3) {
-    $scheme->add($argv[2], 'delete');
+    $scheme->delete($argv[2]);
 }
 
-$scheme->run();
+if ($argv[1] !== "-delete") {
+    // enleve create table si on delete.
+    $scheme->run();
+}
 
 if ($argv[1] == "-resetAll" && $argc == 2) {
     $scheme->resetAll();

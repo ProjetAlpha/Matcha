@@ -31,6 +31,7 @@ Vue.component('user-filter', userFilter);
 Vue.component('user-sort-result', userSortResult);
 Vue.component('user-profil', userProfil);
 Vue.component('user-profil-info', userProfilInfo);
+Vue.component('user-profil-edit', userProfilEdit);
 Vue.component('notifications', notifications);
 
 new Vue({

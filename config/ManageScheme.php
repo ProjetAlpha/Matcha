@@ -73,6 +73,8 @@ class ManageScheme
         if ($this->isModelRegistered($table, $type)) {
             throw new Exception($table." is already associated with a type !" . PHP_EOL);
         }
+        //if ($type == 'delete')
+        // ne creer pas la table.
         $this->sqlModel[] = (object)['type' => $type, 'sql' => $sql, 'table' => $table];
     }
 
@@ -144,7 +146,7 @@ class ManageScheme
         }
     }
 
-    private function create($table, $sql)
+    public function create($table, $sql)
     {
         $pad = self::MAX_COLUMN_WIDTH - strlen($table);
         $query.= "CREATE TABLE IF NOT EXISTS ";
@@ -153,16 +155,16 @@ class ManageScheme
         $this->execute("Create", $table, $query);
     }
 
-    private function reset($table)
+    public function reset($table)
     {
         $query.= "TRUNCATE TABLE ";
         $query.= $table;
         $this->execute("Reset", $table, $query);
     }
 
-    private function delete($table)
+    public function delete($table)
     {
-        $query.= "DROP TABLE IF EXISTS ";
+        $query.= "DROP TABLE ";
         $query.= $table;
         $this->execute("Delete", $table, $query);
     }

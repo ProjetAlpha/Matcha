@@ -8,7 +8,7 @@
                               <div v-for="(value, name, index) in inputs" class="row">
                                   <div class="input-field col s12">
                                       <label :for="name" style="color:black!important">{{ value }}</label>
-                                      <input :type="isTypeDefined(index) ? type[index] : ''" class="validate" :name="name" :id="name" />
+                                      <input :type="isTypeDefined(index) ? type[index] : ''" class="validate" :name="name" :id="name" required/>
                                   </div>
                               </div>
                           </div>
@@ -16,6 +16,11 @@
                               <button type="submit" class="btn green waves-effect waves-light" :value="submit.value">
                                 {{ submit.name }}</button>
                           </div>
+                          <article class="message" v-if="message.length !== 0">
+                                    <div class="message-body">
+                                        {{message}}
+                                    </div>
+                          </article>
                       </form>
                   </div>
               </div>
@@ -24,7 +29,7 @@
 
 <script>
   export default {
-    props:['action', 'title', 'inputs','submit', 'type'],
+    props:['action', 'title', 'inputs','submit', 'type', 'message'],
     data() {
       return {
 
