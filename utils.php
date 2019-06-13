@@ -54,13 +54,13 @@ if (!function_exists('keysExist')) {
 
 
 if (!function_exists('sendHtmlMail')) {
-    function sendHtmlMail($to, $content, $subject)
+    function sendHtmlMail($to, $name, $content, $subject)
     {
         $headers[] = 'MIME-Version: 1.0';
         $headers[] = 'Content-type: text/html; charset=iso-8859-1';
 
-        //$headers[] = 'To: Mary <mary@example.com>, Kelly <kelly@example.com>';
-        //$headers[] = 'From: Birthday Reminder <birthday@example.com>';
+        $headers[] = 'To: '.$name.' <'.$to.'>';
+        $headers[] = 'From: Matcha <no-reply@matcha.fr>';
 
         $message = "
         <html>
@@ -99,30 +99,32 @@ if (!function_exists('view')) {
     }
 }
 
+if (!function_exists('getDbConnection')) {
+    function getDbConnection()
+    {
+    }
+}
+
 if (!function_exists('isAuth')) {
     function isAuth()
     {
-        if (keysExist(['name', 'token'], $_SESSION)) {
-            $db = new PDO('mysql:dbname=Camagru;host=mysql;port=3306', 'root', 'rootpass');
-            $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
-            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sql = "SELECT password FROM Users WHERE name=?";
-            $prepare = $db->prepare($sql);
-            $prepare->execute([$_SESSION['name']]);
-            $result = $prepare->fetch(PDO::FETCH_ASSOC);
+        if (!isset($_SESSION)) {
+            return (0);
+        }
 
-            $sql = "SELECT is_confirmed FROM Users WHERE name=?";
-            $prepare = $db->prepare($sql);
-            $prepare->execute([$_SESSION['name']]);
-            $confirmed = $prepare->fetch(PDO::FETCH_ASSOC);
+        if (!keysExist(['user_id', 'token'], $_SESSION)) {
+            return (0);
+        }
+        $db = new PDO(DB_DSN, DB_USER, DB_PASSWORD);
+        $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $sql = "SELECT password, is_reset, is_confirmed FROM User WHERE id=?";
+        $prepare = $db->prepare($sql);
+        $prepare->execute([$_SESSION['user_id']]);
+        $result = $prepare->fetch(PDO::FETCH_ASSOC);
 
-            $sql = "SELECT is_reset FROM Users WHERE name=?";
-            $prepare = $db->prepare($sql);
-            $prepare->execute([$_SESSION['name']]);
-            $reset = $prepare->fetch(PDO::FETCH_ASSOC);
-            if (isset($result, $result['password']) && hash_equals($result['password'], $_SESSION['token'])
-            && isset($confirmed['is_confirmed'], $reset['is_reset']) && !empty($confirmed['is_confirmed'])
-            && ($confirmed['is_confirmed'] == 1 || ($reset['is_reset'] == IS_RESET && $confirmed['is_confirmed'] == 1))) {
+        if (hash_equals($result['password'], $_SESSION['token'])) {
+            if ($result['is_confirmed'] === '1' && ($result['is_reset'] === '0' || $result['is_reset'] === '1')) {
                 return (1);
             }
         }

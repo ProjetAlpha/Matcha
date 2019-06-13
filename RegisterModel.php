@@ -20,7 +20,8 @@ class Models
             if (!property_exists($this, $key)) {
                 $propertyName = str_replace('models', '', strtolower($key));
                 if (property_exists($value, 'linkTable') && isset($_SESSION, $_SESSION['user_id'])) {
-                    $this->{strtolower($linkTable)} = $this->fetchAll($linkTable, ['user_id' => $_SESSION['user_id']], PDO::FETCH_OBJ);
+                    // Todo : relations entre les tables (inner join, left join...)
+                    //$this->{strtolower($linkTable)} = $this->fetchAll($linkTable, ['user_id' => $_SESSION['user_id']], PDO::FETCH_OBJ);
                 }
                 $this->{$propertyName} = $value;
             }

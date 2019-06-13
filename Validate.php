@@ -1,130 +1,152 @@
 <?php
 class Validate
 {
-    private static $typeKey;
-    private static $typeValue;
+    private $path;
+    private $message;
+    private $customType;
 
-    public static function check($names, $path, $messages, $type, $formType = null)
+    public function __construct($data, $filter, $path, $message, $customType = null)
     {
-        self::$typeKey = $formType ? key($formType) : 'type';
-        self::$typeValue = $formType ? $formType[key($formType)] : $type;
-        self::validData($names, $path, $messages, $type);
+        $this->path = $path;
+        $this->message = $message;
+        $this->customType = $customType ?? null;
+        $this->filterData($data, $filter);
     }
 
-    private static function validData($names, $path, $messages, $type)
+    private function filterData($data, $filter)
     {
-        foreach ($names as $key => $name) {
-            $method = 'valid'.ucfirst(strtolower($key));
-            if (method_exists(__CLASS__, $method) && isset($name) && !empty($name)) {
-                self::{$method}($name, $path, $messages, $type);
-            }
-        }
-    }
-
-    public static function validUsername($name, $path, $messages, $type)
-    {
-        if (!isValidRegex(ALPHA_NUM, $name) && isset($messages['username'])) {
-            view(
-                $path,
-                [
-                    'warning' =>  $messages['username'],
-                    self::$typeKey => self::$typeValue
-                ]
-            );
-        }
-    }
-
-    public static function validPassword($password, $path, $messages, $type)
-    {
-        if (!isValidRegex(PASSWORD, $password) && isset($messages['password'])) {
-            view(
-                $path,
-                [
-                    'warning' => $messages['password'],
-                    self::$typeKey => self::$typeValue
-                ]
-            );
-        }
-    }
-    public static function validMail($mail, $path, $messages, $type)
-    {
-        if (!filterData($mail, "mail") && isset($messages['email'])) {
-            view(
-                $path,
-                [
-                    'warning' =>  $messages['mail'],
-                    self::$typeKey => self::$typeValue
-                ]
-            );
-        }
-    }
-
-    public static function validBase64Image($image, $path, $messages, $type)
-    {
-        if (!checkBase64Format($image) && isset($messages['image'])) {
-            view(
-                $path,
-                [
-                    'warning' => $messages['image'],
-                    self::$typeKey => self::$typeValue
-                ]
-            );
-        }
-    }
-
-    public static function validDigits($digit, $path, $messages, $type)
-    {
-        if (!isValidRegex(DIGITS, $digit) && isset($messages['digit'])) {
-            view(
-                $path,
-                [
-                    'warning' => $messages['digit'],
-                    self::$typeKey => self::$typeValue
-                ]
-            );
-        }
-    }
-
-    public static function validLastname($string, $path, $messages, $type)
-    {
-        if (!isValidRegex(ALPHA, $string) && isset($messages['lastname'])) {
-            view(
-                $path,
-                [
-                    'warning' => $messages['lastname'],
-                    self::$typeKey => self::$typeValue
-                ]
-            );
-        }
-    }
-
-    public static function validFirstname($string, $path, $messages, $type)
-    {
-        if (!isValidRegex(ALPHA, $string) && isset($messages['firstname'])) {
-            view(
-                $path,
-                [
-                    'warning' => $messages['firstname'],
-                    self::$typeKey => self::$typeValue
-                ]
-            );
-        }
-    }
-
-    public static function validLengthData($data, $maxLen, $path, $type)
-    {
-        foreach ($data as $key => $value) {
-            if (isset($maxLen[$key])) {
-                if (strlen($value) > $maxLen[$key]) {
-                    view(
-                        $path,
-                        [
-                      'warning' => $key.' contient trop de charactéres (taille maximale : '.$maxLen[$key].')',
-                      self::$typeKey => self::$typeValue
-                  ]
-              );
+        foreach ($filter as $column => $filterValue) {
+            if (isset($data[$column])) {
+                $filterArray = explode('|', $filterValue);
+                foreach ($filterArray as $value) {
+                    if (strpos($value, ':') !== false) {
+                        $filterLength = explode(':', $value);
+                        if (count($filterLength) == 2) {
+                            $method = 'valid'.ucfirst(strtolower($filterLength[0]));
+                            if (method_exists(__CLASS__, $method)) {
+                                $this->{$method}($column, $data[$column], $filterLength[1]);
+                            }
+                        }
+                    } else {
+                        $method = 'valid'.ucfirst(strtolower($value));
+                        if (method_exists(__CLASS__, $method)) {
+                            $this->{$method}($column, $data[$column]);
+                        }
+                    }
                 }
             }
+        }
+    }
+
+    public function validAlphanum($column, $data)
+    {
+        if (!isValidRegex(ALPHA_NUM, $data)) {
+            $customTypeKey = key($this->customType);
+            view(
+                $this->path,
+                [
+              'warning' => $this->message[$column] ?? null,
+              $customTypeKey => $this->customType[$customTypeKey]
+            ]
+          );
+        }
+    }
+
+    public function validAlpha($column, $data)
+    {
+        if (!isValidRegex(ALPHA, $data)) {
+            $customTypeKey = key($this->customType);
+            view(
+                $this->path,
+                [
+              'warning' => $this->message[$column] ?? null,
+              $customTypeKey => $this->customType[$customTypeKey]
+            ]
+          );
+        }
+    }
+
+    public function validDigit($column, $data)
+    {
+        if (!isValidRegex(DIGITS, $data)) {
+            $customTypeKey = key($this->customType);
+            view(
+                $this->path,
+                [
+              'warning' => $this->message[$column] ?? null,
+              $customTypeKey => $this->customType[$customTypeKey]
+            ]
+          );
+        }
+    }
+
+    public function validPassword($column, $data)
+    {
+        if (!isValidRegex(PASSWORD, $data)) {
+            $customTypeKey = key($this->customType);
+            view(
+                $this->path,
+                [
+            'warning' => $this->message[$column] ?? null,
+            $customTypeKey => $this->customType[$customTypeKey]
+          ]
+        );
+        }
+    }
+
+    public function validMail($column, $data)
+    {
+        if (!filterData($data, "mail")) {
+            $customTypeKey = key($this->customType);
+            view(
+                $this->path,
+                [
+                'warning' => $this->message[$column] ?? null,
+                $customTypeKey => $this->customType[$customTypeKey]
+              ]
+            );
+        }
+    }
+
+    public function validImage($column, $data)
+    {
+        if (!checkBase64Format($data)) {
+            $customTypeKey = key($this->customType);
+            view(
+                $this->path,
+                [
+            'warning' => $this->message[$column] ?? null,
+            $customTypeKey => $this->customType[$customTypeKey]
+          ]
+        );
+        }
+    }
+
+    public function validMin($column, $data, $length)
+    {
+        if (strlen($data) < $length) {
+            $customTypeKey = key($this->customType);
+            view(
+                $this->path,
+                [
+                'warning' => $column.' n\'a pas assez de charactéres (taille minimale : '.$length.')',
+                $customTypeKey => $this->customType[$customTypeKey]
+              ]
+            );
+        }
+    }
+
+    public function validMax($column, $data, $length)
+    {
+        if (strlen($data) > $length) {
+            $customTypeKey = key($this->customType);
+            view(
+                $this->path,
+                [
+                'warning' => $column.' à trop de charactéres (taille maximale : '.$length.')',
+                $customTypeKey => $this->customType[$customTypeKey]
+              ]
+            );
         }
     }
 }

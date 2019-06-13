@@ -5,7 +5,6 @@
   <div class="hero-body">
     <user-profil></user-profil>
   </div>
-  <?php include_once(dirname(__DIR__)."/views/paginate.php"); ?>
 </section>
 
 

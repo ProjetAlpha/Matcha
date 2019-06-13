@@ -3,26 +3,13 @@
 class Request
 {
     private $request;
-    public $fetchedData = [];
 
-    public function __construct($data)
+    public function __construct()
     {
-        $this->run($data);
+        $this->run();
     }
 
-    private function setData($data)
-    {
-        if ($this->request === null) {
-            return ;
-        }
-        foreach ($data as $value) {
-            if (isset($this->request[$value])) {
-                $this->fetchedData[$value] = $this->request[$value];
-            }
-        }
-    }
-
-    private function run($data)
+    private function run()
     {
         $method = $_SERVER['REQUEST_METHOD'];
         if (isset($_POST) && $method === 'POST') {
@@ -31,19 +18,18 @@ class Request
         if (isset($_GET) && $method === 'GET') {
             $this->request = $_GET;
         }
-        $this->setData($data);
     }
 
     public function get()
     {
-        return ($this->fetchedData ?? null);
+        return ($this->request ?? null);
     }
 
     public function toJson($param = true)
     {
         if (is_bool($param)) {
-            $this->fetchedData = json_decode($this->fetchedData, $param);
+            $this->request = json_decode($this->request, $param);
         }
-        return ($this->fetchedData);
+        return ($this->request);
     }
 }

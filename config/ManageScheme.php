@@ -195,7 +195,7 @@ class ManageScheme
             throw new Exception("No sql model added !");
         }
         foreach ($this->sqlModel as $model) {
-            if (!($query = findModelQuery($model->table))) {
+            if (!($query = $this->findModelQuery($model->table))) {
                 $this->putError($model->table, $model->type, "Error : ".$table." doesnt have a model query !");
             } else {
                 $this->delete($model->table);

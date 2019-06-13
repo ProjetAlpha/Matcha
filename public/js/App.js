@@ -13,13 +13,26 @@ import notifications from './notifications.vue'
 import axios from 'axios'
 
 Vue.prototype.$noUiSlider = noUiSlider;
-Vue.prototype.$widthScreen = function() {
-  var w = window,
-    d = document,
-    e = d.documentElement,
-    g = d.getElementsByTagName('body')[0],
-    x = w.innerWidth || e.clientWidth || g.clientWidth
-  return (x);
+
+Vue.prototype.$checkIfLogged = function() {
+  var vm = this;
+  return new Promise((resolve, reject) => {
+    axios.get('/isAuth')
+      .then(response => {
+        resolve(response.data.user);
+      })
+      .catch(error => {
+        reject(error.response.data);
+      });
+  })
+};
+
+Vue.prototype.$isAuth = function() {
+  var vm = this
+  this.$checkIfLogged().then(response => {
+      vm.isAuth = response ? response : false;
+    })
+    .catch(error => console.log(error));
 };
 
 Vue.component('nav-bar', navBar);

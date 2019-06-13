@@ -15,7 +15,7 @@ $scheme->add(
     'create',
     "id INT AUTO_INCREMENT PRIMARY KEY,
       is_confirmed boolean not null default 0,
-      is_reset boolean not null default 1,
+      is_reset boolean not null default 0,
       confirmation_link VARCHAR(256),
       reset_link VARCHAR(256),
       email VARCHAR(50) NOT NULL,

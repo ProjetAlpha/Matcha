@@ -7,6 +7,8 @@ class Route
     private $idUrlPos = 0;
     private $root;
     private $validRegex = [":alphanum" => ALPHA_NUM, ":alpha" => ALPHA, ":digits" => DIGITS, ":page" => PAGE];
+    private $middleware;
+    private $currentUrl;
 
     public function __construct()
     {
@@ -31,6 +33,8 @@ class Route
         }
         $this->routeCounter++;
         $this->addRequest($url, $method, $class ?? '', $call);
+
+        return $this;
     }
 
     private function addRequest($url, $method, $class, $call)
@@ -61,6 +65,7 @@ class Route
 
     private function getClass($name, $method, $param = null)
     {
+        $this->runMiddleware();
         if (!isset($name, $method)) {
             return ;
         }
@@ -91,9 +96,11 @@ class Route
             $class = $route['class'];
             $classMethod = $route['method_call'];
 
+            $this->currentUrl = $url;
             if ($class == '' && is_callable($classMethod)
               && $method == strtolower($serverMethod)
               && $currentUrl == $url) {
+                $this->runMiddleware();
                 return ($classMethod());
             }
 
@@ -116,5 +123,20 @@ class Route
             }
         }
         require_once(__DIR__."/views/page_404.php");
+    }
+
+    public function addMiddleware($func)
+    {
+        if (is_callable($func)) {
+            $targetUrl = $this->routes[$this->routeCounter]['url'];
+            $this->middleware[$targetUrl] = $func;
+        }
+    }
+
+    public function runMiddleware()
+    {
+        if (isset($this->middleware[$this->currentUrl])) {
+            $this->middleware[$this->currentUrl]();
+        }
     }
 }

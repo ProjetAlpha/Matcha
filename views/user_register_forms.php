@@ -4,7 +4,7 @@
 <section class="hero blue-grey lighten-5 is-fullheight-with-navbar" id="app">
     <nav-bar></nav-bar>
     <?php if (isset($registerType) && $registerType == 'login'): ?>
-      <user-register action="/doLog" title="Identifiants" :inputs="{username:'Nom d\'utilisateur', password:'Mot de passe'}"
+      <user-register action="/doLogin" title="Identifiants" :inputs="{username:'Nom d\'utilisateur', password:'Mot de passe'}"
       :submit="{name:'Se connecter', value:'login'}" :type="['text', 'password']"
       message="<?php if (isset($warning)) {
     echo $warning;
