@@ -20,6 +20,10 @@ class UserController extends Models
             view("user_register_forms.php", array("warning" => "Ce nom d'utilisateur existe déjà.", "registerType" => "register"));
         }
 
+        if ($this->fetch('User', ['email' => $data['email']], PDO::FETCH_ASSOC)) {
+            view("user_register_forms.php", array("warning" => "Cette email existe déjà.", "registerType" => "register"));
+        }
+
         $validate = new Validate(
             $data,
             [
@@ -121,6 +125,111 @@ class UserController extends Models
             unset($_SESSION['user_id']);
             unset($_SESSION['token']);
         }
+        redirect('/');
+    }
+
+    public function sendResetLink()
+    {
+        $request = new Request();
+        $data = $request->get();
+
+        if (!keysExist(['email'], $data)) {
+            redirect('/');
+        }
+
+        $validate = new Validate(
+            $data,
+            [
+            'mail' => 'mail|max:50|min:3'
+          ],
+            'user_register_forms.php',
+            Message::$userMessages,
+            ['registerType' => 'reset']
+      );
+        $query = $this->fetch('User', ['email' => $data['email']], PDO::FETCH_OBJ);
+        if (!$query) {
+            redirect('/');
+        }
+        if (!$query->is_confirmed) {
+            view(
+                'user_register_forms.php',
+                array('warning' =>
+            Message::$userMessages['reset_link_info'],
+            'registerType' => 'reset')
+          );
+        }
+        $link = randomPassword();
+        $this->update('User', ['reset_link' => $link], ['email' => $data['email']]);
+        $_SESSION['user_id'] = $query->id;
+        sendHtmlMail(
+            $data['email'],
+            $query->firstname,
+            "<a href=http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].'/reset/view'.$link.">
+          Confirmer la réinitialisation du mot de passe </a>",
+            "Réinitialisation du mot de passe"
+        );
+        view(
+            'user_register_forms.php',
+            array('warning' =>
+        Message::$userMessages['password_link_info'],
+        'registerType' => 'reset')
+      );
+    }
+
+    public function resetLink($link)
+    {
+        if (!keysExist(['user_id'], $_SESSION)) {
+            redirect('/');
+        }
+        $validate = new Validate(
+            ['link' => $link],
+            [
+              'link' => 'alphanum|min:32'
+            ],
+            'user_register_forms.php',
+            Message::$userMessages,
+            ['registerType' => 'login']
+        );
+        $query = $this->fetch('User', ['id' => $_SESSION['user_id']], PDO::FETCH_OBJ);
+        if (!$query) {
+            redirect('/');
+        }
+        if ($query->reset_link == $link) {
+            $this->update('User', ['is_reset' => 1], ['id' => $_SESSION['user_id']]);
+            view(
+                'user_register_forms.php',
+                array('registerType' => 'resetLink')
+          );
+        } else {
+            redirect('/');
+        }
+    }
+
+    public function confirmReset()
+    {
+        $request = new Request();
+        $data = $request->get();
+
+        if (!keysExist(['password'], $data) || !isset($_SESSION['user_id']) || isAuth()) {
+            redirect('/');
+        }
+
+        $validate = new Validate(
+            $data,
+            [
+            'password' => 'password|max:256|min:8'
+          ],
+            'user_register_forms.php',
+            Message::$userMessages,
+            ['registerType' => 'resetLink']
+        );
+        $query = $this->fetch('User', ['id' => $_SESSION['user_id']], PDO::FETCH_OBJ);
+        if (!$query || !$query->is_reset) {
+            redirect('/');
+        }
+        $hash = password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 12]);
+        $this->update('User', ['is_reset' => 0, 'reset_link' => '', 'password' => $hash], ['id' => $_SESSION['user_id']]);
+        $_SESSION['token'] = $hash;
         redirect('/');
     }
 }

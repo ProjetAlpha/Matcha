@@ -150,8 +150,8 @@ class ManageScheme
     {
         $pad = self::MAX_COLUMN_WIDTH - strlen($table);
         $query.= "CREATE TABLE IF NOT EXISTS ";
-        $query.= $table."(";
-        $query.= $sql.")";
+        $query.= $table." (";
+        $query.= trim($sql).")";
         $this->execute("Create", $table, $query);
     }
 

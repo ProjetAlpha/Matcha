@@ -10,6 +10,7 @@ import userProfil from './userProfil.vue'
 import userProfilInfo from './userProfilInfo.vue'
 import userProfilEdit from './userProfilEdit.vue'
 import notifications from './notifications.vue'
+import seeder from './seeder.vue'
 import axios from 'axios'
 
 Vue.prototype.$noUiSlider = noUiSlider;
@@ -46,6 +47,7 @@ Vue.component('user-profil', userProfil);
 Vue.component('user-profil-info', userProfilInfo);
 Vue.component('user-profil-edit', userProfilEdit);
 Vue.component('notifications', notifications);
+Vue.component('seeder', seeder);
 
 new Vue({
   el: '#app'

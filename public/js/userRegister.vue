@@ -11,6 +11,11 @@
                                       <input :type="isTypeDefined(index) ? type[index] : ''" class="validate" :name="name" :id="name" required/>
                                   </div>
                               </div>
+                              <a href='/reset' class="" v-if="submit.value === 'login'">
+                                <div class="mr-l-1 mr-b-6 under-black is-size-7 has-text-weight-normal is-family-primary field">
+                                      Mot de passe oublie ?
+                                </div>
+                              </a>
                           </div>
                           <div class="card-action right-align">
                               <button type="submit" class="btn green waves-effect waves-light" :value="submit.value">

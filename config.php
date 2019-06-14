@@ -23,3 +23,8 @@
 !defined('DB_DSN') && define('DB_DSN', $DB_DSN);
 !defined('DB_USER') && define('DB_USER', $DB_USER);
 !defined('DB_PASSWORD') && define('DB_PASSWORD', $DB_PASSWORD);
+
+/**
+ * Seeder config
+ */
+!defined('SEEDER') && define('SEEDER', 1);

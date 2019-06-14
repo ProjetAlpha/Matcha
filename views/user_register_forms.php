@@ -12,7 +12,16 @@
     <?php endif; ?>
 
     <?php if (isset($registerType) && $registerType == 'reset'): ?>
-      <user-register action="/doReset" title="Réinitialiser le mot de passe" :inputs="{password:'Mot de passe'}"
+      <user-register action="/reset/sendResetLink" title="Réinitialiser le mot de passe" :inputs="{email:'Email'}"
+      :submit="{name:'Confirmer', value:'email'}" :type="['email']"
+      message="<?php if (isset($warning)) {
+    echo $warning;
+}?>">
+      </user-register>
+    <?php endif; ?>
+
+    <?php if (isset($registerType) && $registerType == 'resetLink'): ?>
+      <user-register action="/reset/doReset" title="Réinitialiser le mot de passe" :inputs="{password:'Mot de passe'}"
       :submit="{name:'Confirmer', value:'password'}" :type="['password']"
       message="<?php if (isset($warning)) {
     echo $warning;

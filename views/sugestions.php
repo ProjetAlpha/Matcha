@@ -2,6 +2,7 @@
 
 
 <section class="hero blue-grey lighten-5 is-fullheight-with-navbar" id="app">
+  <seeder number="100" nationalite="fr"></seeder>
   <nav-bar></nav-bar>
   <?php if (isAuth()): ?>
     <div class="hero-body" style="display:block!important">

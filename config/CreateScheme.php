@@ -26,6 +26,92 @@ $scheme->add(
       reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
 );
 
+$scheme->add(
+    'Profil',
+    'create',
+    "id INT AUTO_INCREMENT PRIMARY KEY,
+      user_id INT(11) NOT NULL,
+      bio TEXT,
+      score INT(3),
+      genre VARCHAR(5),
+      localisation VARCHAR(256),
+      profile_pic VARCHAR(256),
+      longitude INT(30),
+      latitude INT(30)"
+);
+
+$scheme->add(
+    'Tag',
+    'create',
+    "id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT(11) NOT NULL,
+    name VARCHAR(256) NOT NULL"
+);
+
+//user_id INT(11) NOT NULL, liked_by INT(11)
+$scheme->add(
+    'Likes',
+    'create',
+    "id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT(11) NOT NULL,
+    liked_by INT(11) NOT NULL"
+);
+
+$scheme->add(
+    'Visite',
+    'create',
+    "id INT AUTO_INCREMENT PRIMARY KEY, user_id INT(11) NOT NULL, visiter_id INT(11) NOT NULL"
+);
+
+$scheme->add(
+    'Image',
+    'create',
+    "id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT(11) NOT NULL,
+    path VARCHAR(256) NOT NULL,
+    is_profile_pic boolean not null default 0"
+);
+
+$scheme->add(
+    'Blocked',
+    'create',
+    "id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT(11) NOT NULL,
+    blocked_user INT(11) NOT NULL"
+);
+
+$scheme->add(
+    'Reported',
+    'create',
+    "id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT(11) NOT NULL,
+    reported_user INT(11) NOT NULL"
+);
+
+$scheme->add(
+    'Rooms',
+    'create',
+    "id INT AUTO_INCREMENT PRIMARY KEY,
+    user1_id INT(11) NOT NULL,
+    user2_id INT(11) NOT NULL"
+);
+
+$scheme->add(
+    'Message',
+    'create',
+    "id INT AUTO_INCREMENT PRIMARY KEY,
+    room_id INT(11) NOT NULL,
+    msg_src TEXT NOT NULL,
+    msg_dst TEXT NOT NULL"
+);
+
+$scheme->add(
+    'Admin',
+    'create',
+    "id INT AUTO_INCREMENT PRIMARY KEY,
+    is_dev boolean not null default 0,
+    token VARCHAR(256)"
+);
 
 if (isset($argv[1]) && !empty($argv[1])) {
     $scheme->displayCreate = false;
