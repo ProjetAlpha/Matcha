@@ -1,21 +1,21 @@
 <template>
-<div class="blue white-text">
 
-Seeder activated
-
-</div>
-
+  <div class="row">
+      <div class="card teal center-align">
+        <span class="mr-t-1 white-text">
+          Seed activated
+        </span>
+        <div class="card-content" style="width:100%">
+          <span class="white-text">
+          Options [nombre de profil = {{number}}, nationalité = {{nationalite}}]
+          </span>
+        </div>
+      </div>
+  </div>
 </template>
 
 
 <script>
-  // https://randomuser.me/api/?results=100&?gender=female&?gender=male?nat=fr
-  // data.dob.age | data.gender | data.name.last | data.name.first | data.login.username | data.login.password
-  // data.email | data.location.latitude | data.location.longitude | data.picture.large
-  // generate city france = ['Paris', 'Lyon', 'Marseille', 'Toulouse', 'Nice', 'Nantes', 'Strasbourg', 'Montpellier', 'Bordeaux']
-  // bio = https://loripsum.net/api/1/short/plaintext
-  // score de popularite = Math.floor(Math.random()*(100-0+1)+0);
-  // tags = Math.random().toString(36).substring(7);
   // http://extreme-ip-lookup.com/json/?callback=getIP => city + lat + long.
   /*
    ----- Distance a vole d'oiseau entre 2 points.
@@ -54,16 +54,18 @@ console.log(getDistanceFromLatLonInKm(lat1, long1, lat2, long2));
     props:['number', 'nationalite'],
 
     created(){
+      this.generateRandomCityCoord()
       var vm = this
       axios.get('https://randomuser.me/api/?results='+this.number+'&?gender=female&?gender=male?nat='+this.nationalite)
       .then(function(response){
-        vm.userSettings = response.data.results
+        vm.fillData(response.data.results)
       });
     },
 
     data(){
       return {
         userSettings:'',
+        randLocation:'',
         lat:false,
         long:false,
         score:false,
@@ -72,30 +74,122 @@ console.log(getDistanceFromLatLonInKm(lat1, long1, lat2, long2));
     },
 
     methods:{
-      randomCity(){
-        const city = ['Paris', 'Lyon', 'Marseille', 'Toulouse', 'Nice', 'Nantes', 'Strasbourg', 'Montpellier', 'Bordeaux'];
-        let coord = [];
-        coord.push(Math.floor(Math.random()*(51-43+1)+43))
-        coord.push(Math.floor(Math.random()*(3-1+1)+1))
-        // --- distance = n km
-        // random latitude longitude france
-        //<?php /*Lat*/ echo rand(43, 51) ?>
-        //<?php /*Long*/ echo rand(1, 3) ?>
+      randomLocation(){
+        let location = {};
+        let cityLocations = [];
+        const city = ['Paris', 'Lyon', 'Toulouse', 'Marseille']
+        const randomCity = city[Math.floor(Math.random()*city.length)]
+
+        if (randomCity == 'Paris'){
+          cityLocations = this.randLocation.Paris
+          location = cityLocations[Math.floor(Math.random()*cityLocations.length)]
+        }
+        if (randomCity == 'Lyon'){
+          cityLocations = this.randLocation.Lyon
+          location = cityLocations[Math.floor(Math.random()*cityLocations.length)]
+        }
+        if (randomCity == 'Toulouse'){
+          cityLocations = this.randLocation.Toulouse
+          location = cityLocations[Math.floor(Math.random()*cityLocations.length)]
+        }
+        if (randomCity == 'Marseille'){
+          cityLocations = this.randLocation.Marseille
+          location = cityLocations[Math.floor(Math.random()*cityLocations.length)]
+        }
+        location.city = randomCity
+        return (location)
       },
 
       randomTags(){
-        // random tags / user.
-        const tags = ['php', 'java', 'music', 'video', 'film', 'sport', 'cuisine', 'jeux-video', 'pc'];
-        var item = tags[Math.floor(Math.random()*tags.length)];
+        let randomTag = []
+        const tags = [
+          'php', 'java',
+          'music', 'video', 'film', 'sport', 'cuisine',
+          'jeux-video', 'pc', 'gaming', 'cinema', 'fete', 'soirée'
+        ];
+        const randomTagsNumber = this.randomNumberRange(13, 1)
+
+        for (let i = 0; i < randomTagsNumber; i++){
+          const randTagVal = tags[Math.floor(Math.random()*tags.length)]
+          if (!randomTag.includes(randTagVal))
+            randomTag = [...randomTag, randTagVal]
+        }
+        return (randomTag)
       },
 
       randomScore(){
-        // random score / user
-        return (Math.floor(Math.random()*(100-0+1)+0));
+        return (this.randomNumberRange(100, 0))
       },
 
       randomAge(){
-        return (Math.floor(Math.random()*(90-18+1)+18))
+        return (this.randomNumberRange(90, 18))
+      },
+
+      randomNumberRange(max, min){
+        return (Math.floor(Math.random() * (max - min + 1)) + min)
+      },
+
+      randomFloat(maxValue,minValue,precision){
+        if(typeof(precision) == 'undefined'){
+          precision = 2;
+        }
+        return Math.min(minValue + (Math.random() * (maxValue - minValue)),maxValue).toFixed(precision) * 1;
+      },
+
+      fillData(result){
+        for (let i = 0; i < result.length; i++){
+          result[i].score = this.randomScore()
+          result[i].age = this.randomAge()
+          result[i].tags = this.randomTags()
+          result[i].location = this.randomLocation()
+        }
+        this.sendData(result)
+        // ---- console.log(result)
+      },
+
+      sendData(result){
+        const url = window.location.protocol+'//'+window.location.host+'/seeder';
+        axios.post(url, result).then(function (response) {
+          // --- console.log(response.data);
+        })
+        .catch(function (error) {
+          // --- console.log(error);
+        });
+      },
+
+      generateRandomCityCoord(){
+        this.randLocation = {
+          Marseille: this.generateRandomPoints(43.297682, 5.405594, 3000, this.number / 2),
+          Lyon: this.generateRandomPoints(45.754594, 4.833241, 3000, this.number / 2),
+          Toulouse: this.generateRandomPoints(43.602121, 1.437812, 3000, this.number / 2),
+          Paris: this.generateRandomPoints(48.856613, 2.352222, 3000, this.number / 2)
+        }
+      },
+
+      generateRandomPoints(latitude, longitude, radius, count) {
+        let points = [];
+        for (var i = 0; i < count; i++) {
+          points = [...points, this.generateRandomPoint(latitude, longitude, radius)]
+        }
+        return points;
+      },
+
+      generateRandomPoint(latitude, longitude, radius) {
+        const x0 = longitude;
+        const y0 = latitude;
+        const rd = radius/111300;
+
+        const u = Math.random();
+        const v = Math.random();
+
+        const w = rd * Math.sqrt(u);
+        const t = 2 * Math.PI * v;
+        const x = w * Math.cos(t);
+        const y = w * Math.sin(t);
+
+        const xp = x/Math.cos(y0);
+
+        return {latitude: y + y0, longitude: xp + x0};
       }
     }
   }

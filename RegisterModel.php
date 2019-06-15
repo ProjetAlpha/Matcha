@@ -7,8 +7,7 @@ class Models
 
     public function __construct($classArray)
     {
-        require(__DIR__."/config/database.php");
-        $this->db = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD);
+        $this->db = new PDO(DB_DSN, DB_USER, DB_PASSWORD);
         $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->createObjects($classArray);

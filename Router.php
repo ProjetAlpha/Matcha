@@ -84,7 +84,15 @@ $route->add('/profil', 'get', function () {
  * Seeder Route --- DEV ONLY.
  */
  $route->add('/seeder', 'get', 'seederController@storeSeed')->addMiddleware(function () {
-     if (SEEDER !== null) {
+     if (SEEDER === null) {
+         redirect('/');
+     }
+ });
+
+ $route->add('/seeder/create', 'get', function () {
+     view('seeder.php');
+ })->addMiddleware(function () {
+     if (SEEDER === null) {
          redirect('/');
      }
  });

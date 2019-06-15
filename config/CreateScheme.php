@@ -31,13 +31,14 @@ $scheme->add(
     'create',
     "id INT AUTO_INCREMENT PRIMARY KEY,
       user_id INT(11) NOT NULL,
+      age INT(3),
       bio TEXT,
       score INT(3),
       genre VARCHAR(5),
       localisation VARCHAR(256),
       profile_pic VARCHAR(256),
-      longitude INT(30),
-      latitude INT(30)"
+      longitude FLOAT(20),
+      latitude FLOAT(20)"
 );
 
 $scheme->add(
