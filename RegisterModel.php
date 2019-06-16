@@ -22,6 +22,7 @@ class Models
                     // Todo : relations entre les tables (inner join, left join...)
                     //$this->{strtolower($linkTable)} = $this->fetchAll($linkTable, ['user_id' => $_SESSION['user_id']], PDO::FETCH_OBJ);
                 }
+                $value->db = $this->db;
                 $this->{$propertyName} = $value;
             }
         }

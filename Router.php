@@ -72,9 +72,19 @@ $route->add('/profil/edit', 'get', function () {
     }
 });
 
-$route->add('/profil', 'get', function () {
-    view('profil.php');
-})->addMiddleware(function () {
+$route->add('/profil/edit/modif', 'post', 'ProfilController@editProfil')->addMiddleware(function () {
+    if (!isAuth()) {
+        redirect('/');
+    }
+});;;
+
+$route->add('/profil/edit/getProfilData', 'get', 'ProfilController@getData')->addMiddleware(function () {
+    if (!isAuth()) {
+        redirect('/');
+    }
+});;
+
+$route->add('/profil', 'get', 'ProfilController@getUserProfil')->addMiddleware(function () {
     if (!isAuth()) {
         redirect('/');
     }

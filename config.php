@@ -5,7 +5,8 @@
 !defined('DIGITS') && define('DIGITS', '/^\d+$/');
 !defined('PAGE') && define('PAGE', '/(\d)+(#[A-Za-z_-]+)?/');
 !defined('ROOT') && define('ROOT', __DIR__);
-
+!defined('FETCH_ONE') && define('FETCH_ONE', 1);
+!defined('FETCH_ALL') && define('FETCH_ALL', 2);
 /**
  * ---------- Regex Strong Password ----------
  * ^: anchored to beginning of string

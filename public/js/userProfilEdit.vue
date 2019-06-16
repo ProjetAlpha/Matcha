@@ -29,26 +29,26 @@
         <span class="card-title">Genre</span>
         <p>
           <label class="mr-r-1">
-            <input type="checkbox" :disabled="isGenreSelected === true && genreName != 'homme'" @click="handleBox" value="homme"/>
+            <input type="checkbox" :checked="isGenreSelected === true && genreName =='homme'" @click="handleBox" value="homme"/>
             <span>Homme</span>
           </label>
           <label class="mr-r-1">
-            <input type="checkbox" :disabled="isGenreSelected === true && genreName != 'femme'" @click="handleBox" value="femme"/>
+            <input type="checkbox" :checked="isGenreSelected === true && genreName =='femme'" @click="handleBox" value="femme"/>
             <span>Femme</span>
           </label>
         </p>
         <span class="card-title mr-t-2">Orientation sexuelle</span>
         <p>
           <label class="mr-r-1">
-            <input type="checkbox" :disabled="isOrientationSelected === true && orientationName != 'homo'" @click="handleBox" value="homo"/>
+            <input type="checkbox" :checked="isOrientationSelected === true && orientationName == 'homo'" @click="handleBox" value="homo"/>
             <span>Homosexuel</span>
           </label>
           <label class="mr-r-1">
-            <input type="checkbox" :disabled="isOrientationSelected === true && orientationName != 'hetero'" @click="handleBox" value="hetero"/>
+            <input type="checkbox" :checked="isOrientationSelected === true && orientationName == 'hetero'" @click="handleBox" value="hetero"/>
             <span>Hétérosexuel</span>
           </label>
           <label class="mr-r-1">
-            <input type="checkbox" :disabled="isOrientationSelected === true && orientationName != 'bi'" @click="handleBox" value="bi"/>
+            <input type="checkbox" :checked="isOrientationSelected === true && orientationName == 'bi'" @click="handleBox" value="bi"/>
             <span>Bisexuel</span>
           </label>
         </p>
@@ -137,6 +137,19 @@
   export default{
 
     created(){
+      var vm = this
+      this.$http.get('/profil/edit/getProfilData').then(function(response){
+        //console.log(response.data);
+        vm.profilData = response.data
+        if (vm.profilData.hasOwnProperty('genre')){
+          vm.isGenreSelected = true;
+          vm.genreName = vm.profilData.genre;
+        }
+        if (vm.profilData.hasOwnProperty('orientation')){
+          vm.isOrientationSelected = true;
+          vm.orientationName = vm.profilData.orientation;
+        }
+      });
       // ajouter la valeur du textarea + la taille yoooo.
       // initalise les bools des checkboxs + la valeur du paragraphe / textarea (+ sa size).
     },
@@ -147,6 +160,7 @@
 
     data(){
       return {
+        profilData:'',
         instance:'',
         input:'',
         isPreview:false,
@@ -219,19 +233,22 @@
           {
             this.isGenreSelected = true;
             this.genreName = event.target.value;
+            this.$http.post('/profil/edit/modif', {genre:event.target.value});
           }
           if (event.target.value == "homo" || event.target.value == "bi" || event.target.value == "hetero")
           {
             this.isOrientationSelected = true;
             this.orientationName = event.target.value;
+            this.$http.post('/profil/edit/modif', {orientation:event.target.value});
           }
         }
         if (event.target.checked === false){
           if (event.target.value == "homme" || event.target.value == "femme")
-          this.isGenreSelected = false;
+            this.isGenreSelected = false;
           if (event.target.value == "homo" || event.target.value == "bi" || event.target.value == "hetero")
-          this.isOrientationSelected = false;
+            this.isOrientationSelected = false;
         }
+        //axios.post(url, result)
         // envoi de la modife au serveur(valeur + type).
       },
 

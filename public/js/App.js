@@ -14,6 +14,7 @@ import seeder from './seeder.vue'
 import axios from 'axios'
 
 Vue.prototype.$noUiSlider = noUiSlider;
+Vue.prototype.$http = axios;
 
 Vue.prototype.$checkIfLogged = function() {
   var vm = this;

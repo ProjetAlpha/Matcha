@@ -1,7 +1,5 @@
 <?php
 
-require_once(dirname(__DIR__).'/Request.php');
-
 class seederController extends Models
 {
     public function __construct()
@@ -15,7 +13,6 @@ class seederController extends Models
     public function storeSeed()
     {
         $request = new Request();
-        $i = 0;
         $data = $request->toJson();
         $connection = mysqli_connect("mysql", "root", "rootpass");
         $db_select = mysqli_select_db($connection, "Matcha");
@@ -26,6 +23,7 @@ class seederController extends Models
         $currentId = ++$lastId;
         foreach ($data as $value) {
             $id = 0;
+            // todo : test le passowrd hash avec un cout tres faible.
             if (isset($value['login'], $value['name'], $value['email'])) {
                 $sqlUser .= "('".$value['login']['username']."','".$value['login']['password']."','".$value['name']['first']."','"
                 .$value['name']['last']."',1,'".$value['email']."'),";

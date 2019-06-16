@@ -59,6 +59,9 @@ class Route
                 }
             }
         }
+        if (empty($result)) {
+            return (0);
+        }
         $cmp = array_replace($split, $result);
         return ($cmp === $currUrlSplit);
     }

@@ -35,6 +35,7 @@ $scheme->add(
       bio TEXT,
       score INT(3),
       genre VARCHAR(5),
+      orientation VARCHAR(15),
       localisation VARCHAR(256),
       profile_pic VARCHAR(256),
       longitude FLOAT(20),

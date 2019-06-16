@@ -100,7 +100,7 @@ class ManageScheme
 
     private function isSupportedType($type)
     {
-        return ($type == 'delete' || $type == 'create' || $type == 'reset' || $type == 'refresh');
+        return ($type == 'delete' || $type == 'create' || $type == 'reset' || $type == 'modify');
     }
 
     public function run()

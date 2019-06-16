@@ -242,3 +242,27 @@ if (!function_exists('implodeToPdo')) {
         return implode($gluePair, $tmp);
     }
 }
+
+if (!function_exists('execQuery')) {
+    function execQuery($db, $sql, $data, $option, $fetchMethod = false)
+    {
+        $prepare = $db->prepare($sql);
+        try {
+            $prepare->execute($data);
+        } catch (PDOException $e) {
+            echo $e->getMessage() . PHP_EOL;
+            die();
+        }
+
+        if ($fetchMethod !== false && ($fetchMethod == (FETCH_ONE || FETCH_ALL)) && isset($option)) {
+            return ($fetchMethod === FETCH_ALL ? $prepare->fetchAll($option) : $prepare->fetch($option));
+        }
+    }
+}
+
+if (!function_exists('encodeToJs')) {
+    function encodeToJs($data)
+    {
+        return (json_encode($data, JSON_HEX_QUOT|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS));
+    }
+}

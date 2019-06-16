@@ -14,13 +14,13 @@ class Request
         $method = $_SERVER['REQUEST_METHOD'];
         if (isset($_POST)  && !empty($_POST) && $method === 'POST') {
             $this->request = $_POST;
-        }
-        if (isset($_GET) && !empty($_GET) && $method === 'GET') {
+        } elseif (isset($_GET) && !empty($_GET) && $method === 'GET') {
             $this->request = $_GET;
-        }
-        $input = file_get_contents('php://input');
-        if (isset($input) && !empty($input)) {
-            $this->request = $input;
+        } else {
+            $input = file_get_contents('php://input');
+            if (isset($input) && !empty($input)) {
+                $this->request = $input;
+            }
         }
     }
 
