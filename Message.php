@@ -13,6 +13,8 @@ class Message
         'mail' => "Ce mail n'est pas valid.",
         'reset_email' => "Votre mail a été modifié.",
         'password' => "Le mot de passe doit contenir au moins 8 caractéres, une lettre en minuscule, une lettre en majuscule et un chiffre.",
-        'bad_credential' => 'Mot de passe ou login incorrecte.'
+        'bad_credential' => 'Mot de passe ou login incorrecte.',
+        'image' => 'Ce format d\'image n est pas supporté.',
+        'duplicate_img' => 'Le nom est déjá utilisé par une autre image.'
     ];
 }

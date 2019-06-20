@@ -74,10 +74,10 @@ class Models
         return ($result);
     }
 
-    public function fetchAll($table, $colums, $option = false)
+    public function fetchAll($table, $columns, $option = false)
     {
         $sql = $this->buildSelect($table, $columns);
-        $result = $this->exec($sql, $columns, $option);
+        $result = $this->exec($sql, $columns, $option, self::FETCH_ALL);
         return ($result);
     }
 

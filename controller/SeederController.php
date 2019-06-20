@@ -23,9 +23,9 @@ class seederController extends Models
         $currentId = ++$lastId;
         foreach ($data as $value) {
             $id = 0;
-            // todo : test le passowrd hash avec un cout tres faible.
+            // modifier par sha1 + hash_equals au lieu de password_verify si besoin.
             if (isset($value['login'], $value['name'], $value['email'])) {
-                $sqlUser .= "('".$value['login']['username']."','".$value['login']['password']."','".$value['name']['first']."','"
+                $sqlUser .= "('".$value['login']['username']."','".password_hash($value['login']['password'], PASSWORD_BCRYPT, ['cost' => 4])."','".$value['name']['first']."','"
                 .$value['name']['last']."',1,'".$value['email']."'),";
             }
             if (isset($value['location'], $value['age'], $value['gender'], $value['score'], $value['picture']) && isset($id)) {

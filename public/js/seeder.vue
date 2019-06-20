@@ -143,6 +143,7 @@ console.log(getDistanceFromLatLonInKm(lat1, long1, lat2, long2));
           result[i].tags = this.randomTags()
           result[i].location = this.randomLocation()
         }
+        console.log(result)
         this.sendData(result)
         // ---- console.log(result)
       },

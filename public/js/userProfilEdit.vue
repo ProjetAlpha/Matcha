@@ -139,19 +139,24 @@
     created(){
       var vm = this
       this.$http.get('/profil/edit/getProfilData').then(function(response){
-        //console.log(response.data);
         vm.profilData = response.data
         if (vm.profilData.hasOwnProperty('genre')){
-          vm.isGenreSelected = true;
-          vm.genreName = vm.profilData.genre;
+          vm.isGenreSelected = true
+          vm.genreName = vm.profilData.genre
         }
         if (vm.profilData.hasOwnProperty('orientation')){
-          vm.isOrientationSelected = true;
-          vm.orientationName = vm.profilData.orientation;
+          vm.isOrientationSelected = true
+          vm.orientationName = vm.profilData.orientation
+        }
+        if (vm.profilData.hasOwnProperty('bio')){
+          vm.bio = vm.profilData.bio
         }
       });
-      // ajouter la valeur du textarea + la taille yoooo.
-      // initalise les bools des checkboxs + la valeur du paragraphe / textarea (+ sa size).
+      this.$http.get('/profil/edit/getTag').then(function(response){
+        if (response.data){
+          vm.initChips(vm.createInitalTags(response.data))
+        }
+      });
     },
 
     mounted(){
@@ -160,11 +165,13 @@
 
     data(){
       return {
+        fetchedImg:'',
         profilData:'',
         instance:'',
         input:'',
         isPreview:false,
-        imageData: "",
+        imageData: '',
+        imageName:'',
         tags:[],
         bio:'Ma bio de fou woooowwowoowowowowowoowowowowoow',
         tmpBio:'',
@@ -179,11 +186,11 @@
     },
 
     methods:{
-      initChips(){
+      initChips(data){
         var elems = document.getElementById('chips-filter')
-        // si on a des chips dans la db pour cette user => on charge les chips.
-        var vm = this
+        var vm = this, src = data;
         var options = {
+          data: src ? src : [],
           placeholder: 'Entrer un tag',
           secondaryPlaceholder: '+Tag',
           autocompleteOptions: {
@@ -206,15 +213,20 @@
       },
 
       chipAdded(e, data){
-        this.tags = [...this.tags, data.childNodes[0].textContent]
-        // envoi la requete au serveur(ajoute un tags pour cette user).
+        this.$http.post('/profil/edit/addTag', {name:data.childNodes[0].textContent});
       },
 
       chipDelete(e, data){
-        const index = this.tags.indexOf(data.childNodes[0].textContent)
-        if (index !== -1)
-          this.tags.splice(index, 1);
-        // envoi la requete au serveur(enleve un tags pour cette user).
+        this.$http.post('/profil/edit/deleteTag', {name:data.childNodes[0].textContent});
+      },
+
+      createInitalTags(data){
+        let dst = [];
+        for (let i = 0; i < data.length; i++){
+          if (data[i].hasOwnProperty('name'))
+            dst = [...dst, {tag:data[i].name}];
+        }
+        return (dst);
       },
 
       sendData(){
@@ -248,8 +260,6 @@
           if (event.target.value == "homo" || event.target.value == "bi" || event.target.value == "hetero")
             this.isOrientationSelected = false;
         }
-        //axios.post(url, result)
-        // envoi de la modife au serveur(valeur + type).
       },
 
       showModifBio(){
@@ -263,6 +273,7 @@
       },
 
       modifBio(e){
+        this.$http.post('/profil/edit/modif', {bio:this.bio});
         this.isModifBio = false;
       },
 
@@ -272,6 +283,7 @@
 
       deleteImg(e){
         // supprimer l'image avec cette id cote serveur.
+        this.$http.post('/profil/edit/deleteImg', {image:this.imageData, name:this.imageName});
         e.target.parentElement.style.display = 'none';
       },
 
@@ -279,7 +291,9 @@
            const input = event.target;
            if (input.files && input.files[0]) {
                const reader = new FileReader();
+               reader.fileName = input.files[0].name;
                reader.onload = (e) => {
+                   this.imageName = e.target.fileName;
                    this.imageData = e.target.result;
                    this.isPreview = true;
                }
@@ -289,6 +303,9 @@
 
       addImg(){
           this.isPreview = false;
+          this.$http.post('/profil/edit/addImg', {image:this.imageData, name:this.imageName}).then((response) => {
+            this.fetchedImg.push({name:this.imageName, path:response.data.path});
+          });
           this.imageData = '';
           this.$refs.fileInput.value = '';
           // 1 - requete serveur.
@@ -296,6 +313,7 @@
       },
 
       addProfilImg(){
+        //this.$http.post('/profil/edit/addProfilImg', );
         // 1 - changer l'image de profil dans le DOM.
         // 2 - prend l'image ID associée avec l'image checked.
         // 3 - requéte serveur avec l'image id + user id => change la table profil.

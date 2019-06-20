@@ -41,12 +41,12 @@ class Validate
     public function validAlphanum($column, $data)
     {
         if (!isValidRegex(ALPHA_NUM, $data)) {
-            $customTypeKey = key($this->customType);
+            $customTypeKey = $this->customType ? key($this->customType) : 'noKey';
             view(
                 $this->path,
                 [
               'warning' => $this->message[$column] ?? null,
-              $customTypeKey => $this->customType[$customTypeKey]
+              $customTypeKey => $this->customType[$customTypeKey] ?? 'null'
             ]
           );
         }
@@ -55,12 +55,12 @@ class Validate
     public function validAlpha($column, $data)
     {
         if (!isValidRegex(ALPHA, $data)) {
-            $customTypeKey = key($this->customType);
+            $customTypeKey = $this->customType ? key($this->customType) : 'noKey';
             view(
                 $this->path,
                 [
               'warning' => $this->message[$column] ?? null,
-              $customTypeKey => $this->customType[$customTypeKey]
+              $customTypeKey => $this->customType[$customTypeKey] ?? 'null'
             ]
           );
         }
@@ -69,12 +69,12 @@ class Validate
     public function validDigit($column, $data)
     {
         if (!isValidRegex(DIGITS, $data)) {
-            $customTypeKey = key($this->customType);
+            $customTypeKey = $this->customType ? key($this->customType) : 'noKey';
             view(
                 $this->path,
                 [
               'warning' => $this->message[$column] ?? null,
-              $customTypeKey => $this->customType[$customTypeKey]
+              $customTypeKey => $this->customType[$customTypeKey] ?? 'null'
             ]
           );
         }
@@ -83,12 +83,12 @@ class Validate
     public function validPassword($column, $data)
     {
         if (!isValidRegex(PASSWORD, $data)) {
-            $customTypeKey = key($this->customType);
+            $customTypeKey = $this->customType ? key($this->customType) : 'noKey';
             view(
                 $this->path,
                 [
             'warning' => $this->message[$column] ?? null,
-            $customTypeKey => $this->customType[$customTypeKey]
+            $customTypeKey => $this->customType[$customTypeKey] ?? 'null'
           ]
         );
         }
@@ -97,12 +97,12 @@ class Validate
     public function validMail($column, $data)
     {
         if (!filterData($data, "mail")) {
-            $customTypeKey = key($this->customType);
+            $customTypeKey = $this->customType ? key($this->customType) : 'noKey';
             view(
                 $this->path,
                 [
                 'warning' => $this->message[$column] ?? null,
-                $customTypeKey => $this->customType[$customTypeKey]
+                $customTypeKey => $this->customType[$customTypeKey] ?? 'null'
               ]
             );
         }
@@ -111,12 +111,12 @@ class Validate
     public function validImage($column, $data)
     {
         if (!checkBase64Format($data)) {
-            $customTypeKey = key($this->customType);
+            $customTypeKey = $this->customType ? key($this->customType) : 'noKey';
             view(
                 $this->path,
                 [
             'warning' => $this->message[$column] ?? null,
-            $customTypeKey => $this->customType[$customTypeKey]
+            $customTypeKey => $this->customType[$customTypeKey] ?? 'null'
           ]
         );
         }
@@ -125,12 +125,12 @@ class Validate
     public function validMin($column, $data, $length)
     {
         if (strlen($data) < $length) {
-            $customTypeKey = key($this->customType);
+            $customTypeKey = $this->customType ? key($this->customType) : 'noKey';
             view(
                 $this->path,
                 [
                 'warning' => $column.' n\'a pas assez de charactéres (taille minimale : '.$length.')',
-                $customTypeKey => $this->customType[$customTypeKey]
+                $customTypeKey => $this->customType[$customTypeKey] ?? 'null'
               ]
             );
         }
@@ -139,14 +139,28 @@ class Validate
     public function validMax($column, $data, $length)
     {
         if (strlen($data) > $length) {
-            $customTypeKey = key($this->customType);
+            $customTypeKey = $this->customType ? key($this->customType) : 'noKey';
             view(
                 $this->path,
                 [
                 'warning' => $column.' à trop de charactéres (taille maximale : '.$length.')',
-                $customTypeKey => $this->customType[$customTypeKey]
+                $customTypeKey => $this->customType[$customTypeKey] ?? 'null'
               ]
             );
+        }
+    }
+
+    public function validText($column, $data)
+    {
+        if (!isValidRegex(TEXT, $data)) {
+            $customTypeKey = $this->customType ? key($this->customType) : 'noKey';
+            view(
+                $this->path,
+                [
+            'warning' => $this->message[$column] ?? null,
+            $customTypeKey => $this->customType[$customTypeKey] ?? 'null'
+          ]
+        );
         }
     }
 }

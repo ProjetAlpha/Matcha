@@ -84,6 +84,42 @@ $route->add('/profil/edit/getProfilData', 'get', 'ProfilController@getData')->ad
     }
 });;
 
+$route->add('/profil/edit/addTag', 'get', 'TagController@addTag')->addMiddleware(function () {
+    if (!isAuth()) {
+        redirect('/');
+    }
+});
+
+$route->add('/profil/edit/deleteTag', 'get', 'TagController@deleteTag')->addMiddleware(function () {
+    if (!isAuth()) {
+        redirect('/');
+    }
+});
+
+$route->add('/profil/edit/getTag', 'get', 'TagController@getTag')->addMiddleware(function () {
+    if (!isAuth()) {
+        redirect('/');
+    }
+});
+
+$route->add('/profil/edit/addImg', 'get', 'ImageController@addImg')->addMiddleware(function () {
+    if (!isAuth()) {
+        redirect('/');
+    }
+});
+
+$route->add('/profil/edit/deleteImg', 'get', 'ImageController@deleteImg')->addMiddleware(function () {
+    if (!isAuth()) {
+        redirect('/');
+    }
+});
+
+$route->add('/profil/edit/addProfilPic', 'get', 'ImageController@addProfilImg')->addMiddleware(function () {
+    if (!isAuth()) {
+        redirect('/');
+    }
+});
+
 $route->add('/profil', 'get', 'ProfilController@getUserProfil')->addMiddleware(function () {
     if (!isAuth()) {
         redirect('/');

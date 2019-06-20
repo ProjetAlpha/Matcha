@@ -69,6 +69,7 @@ $scheme->add(
     'Image',
     'create',
     "id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(256) NOT NULL,
     user_id INT(11) NOT NULL,
     path VARCHAR(256) NOT NULL,
     is_profile_pic boolean not null default 0"
