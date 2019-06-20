@@ -90,6 +90,12 @@ $route->add('/profil/edit/addTag', 'get', 'TagController@addTag')->addMiddleware
     }
 });
 
+$route->add('/profil/edit/getImg', 'get', 'ImageController@getImg')->addMiddleware(function () {
+    if (!isAuth()) {
+        redirect('/');
+    }
+});
+
 $route->add('/profil/edit/deleteTag', 'get', 'TagController@deleteTag')->addMiddleware(function () {
     if (!isAuth()) {
         redirect('/');
@@ -115,6 +121,12 @@ $route->add('/profil/edit/deleteImg', 'get', 'ImageController@deleteImg')->addMi
 });
 
 $route->add('/profil/edit/addProfilPic', 'get', 'ImageController@addProfilImg')->addMiddleware(function () {
+    if (!isAuth()) {
+        redirect('/');
+    }
+});
+
+$route->add('/profil/edit/getProfilPic', 'get', 'ImageController@getProfilPic')->addMiddleware(function () {
     if (!isAuth()) {
         redirect('/');
     }

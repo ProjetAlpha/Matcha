@@ -3,15 +3,14 @@
     <div id="modal1" class="teal lighten-5 modal modal-fixed-footer">
       <div class="modal-content">
         <div class="row">
-          <div class="col s12 m4 l4 mr-t-1">
+          <div class="col s12 m4 l4 mr-t-1" v-for="(value, name, index) in fetchedImg">
             <div class="image">
-              <img src="/Photo_profil.jpg" alt="" class="responsive-img">
+              <img :src="'data:image/png;base64,'+value.path" alt="" class="responsive-img" :name="value.name">
               <a class="tag cyan cyan lighten-4 delete-overlay"
               style="border-radius:0!important;text-decoration:none;margin:0!important;padding:0!important">
                 <label class="mr-l-4">
-                  <!-- v-if : si image de pofil => checked -->
-                  <!-- v-if : si on selectionne une autre image, check la nouvel image et decheck celle qui est check -->
-                  <input type="checkbox"></input>
+                  <!-- v-if : si image de profil => checked -->
+                  <input type="checkbox" :checked="$el.name === profilPicName" @click="addProfilPic" :name="value.name"></input>
                   <span></span>
                 </label>
               </a>
@@ -70,7 +69,7 @@
         <div class="row">
           <div class="col s12 m4 l4 mr-t-1">
             <div class="image">
-              <img src="/Photo_profil.jpg" alt="" class="responsive-img">
+              <img :src="profilPicSrc" alt="" class="responsive-img" :name="profilPicName">
               <a class="tag is-info text-img" style="border-radius:0!important;text-decoration:none" @click="openModal">
                 <i class="material-icons" style="color:black;float:right">edit</i>
                 Editer
@@ -80,28 +79,10 @@
         </div>
         <span class="card-title">Images</span>
         <div class="row">
-          <div class="col s12 m4 l4 mr-t-1">
+          <div class="col s12 m4 l4 mr-t-1" v-for="(value, name, index) in fetchedImg">
             <div class="image">
-              <img src="https://source.unsplash.com/800x600/?beach" alt="" class="responsive-img">
-              <a class="tag is-info delete-overlay" style="border-radius:0!important;text-decoration:none" @click="deleteImg">
-                <i class="material-icons" style="color:black">delete</i>
-                Supprimer
-              </a>
-            </div>
-          </div>
-          <div class="col s12 m4 l4 mr-t-1">
-            <div class="image">
-              <img src="https://source.unsplash.com/800x600/?boat" alt="" class="responsive-img">
-              <a class="tag is-info delete-overlay" style="border-radius:0!important;text-decoration:none" @click="deleteImg">
-                <i class="material-icons" style="color:black">delete</i>
-                Supprimer
-              </a>
-            </div>
-          </div>
-          <div class="col s12 m4 l4 mr-t-1">
-            <div class="image">
-              <img src="https://source.unsplash.com/800x600/?boat" alt="" class="responsive-img">
-              <a class="tag is-info delete-overlay" style="border-radius:0!important;text-decoration:none" @click="deleteImg">
+              <img :src="'data:image/png;base64,'+value.path" alt="" class="responsive-img" :name="value.name">
+              <a class="tag is-info delete-overlay" style="border-radius:0!important;text-decoration:none" @click="deleteImg" :name="value.name">
                 <i class="material-icons" style="color:black">delete</i>
                 Supprimer
               </a>
@@ -157,6 +138,18 @@
           vm.initChips(vm.createInitalTags(response.data))
         }
       });
+      this.$http.get('/profil/edit/getImg').then(function(response){
+        if (response.data && Array.isArray(response.data)){
+          vm.fetchedImg = response.data;
+        }
+      });
+      this.$http.get('/profil/edit/getProfilPic').then(function(response){
+        console.log(response.data)
+        if (response.data && Array.isArray(response.data)){
+          this.profilPicName = response.data.name;
+          this.profilPicSrc = response.data.path;
+        }
+      });
     },
 
     mounted(){
@@ -165,7 +158,9 @@
 
     data(){
       return {
-        fetchedImg:'',
+        fetchedImg:[],
+        profilPicSrc:'',
+        profilPicName:'',
         profilData:'',
         instance:'',
         input:'',
@@ -220,6 +215,14 @@
         this.$http.post('/profil/edit/deleteTag', {name:data.childNodes[0].textContent});
       },
 
+      addProfilPic(e){
+        this.profilPicName = e.target.name
+        this.$http.post('/profil/edit/addProfilImg', {name:this.profilPicName}).then((response) => {
+          if (response.data.path)
+            this.profilPicSrc = response.data.path
+        });
+      },
+
       createInitalTags(data){
         let dst = [];
         for (let i = 0; i < data.length; i++){
@@ -229,17 +232,7 @@
         return (dst);
       },
 
-      sendData(){
-        //console.log(this.bio)
-        // si bio = afficher la bio + bouton modifier (=> textarea)
-        // envoie des datas si elles ont changes... sinon ballek... => afficher confirmer si les datas on changees
-        // tags + bio + checkbox + file...
-        // image : afficher les images et le bouton supprimer l'image pour chaque image, si
-        // moins de 5 images afficher le bouton ajouter une image.
-      },
-
       handleBox(event){
-        // charge les infos du serveur...si on a un genre + orientation => check les boxes et set les booleans appopriés(name + isSelected).
         if (event.target.checked === true){
           if (event.target.value == "homme" || event.target.value == "femme")
           {
@@ -282,8 +275,7 @@
       },
 
       deleteImg(e){
-        // supprimer l'image avec cette id cote serveur.
-        this.$http.post('/profil/edit/deleteImg', {image:this.imageData, name:this.imageName});
+        this.$http.post('/profil/edit/deleteImg', {name:e.target.parentElement.children[0].name});
         e.target.parentElement.style.display = 'none';
       },
 
@@ -304,16 +296,17 @@
       addImg(){
           this.isPreview = false;
           this.$http.post('/profil/edit/addImg', {image:this.imageData, name:this.imageName}).then((response) => {
-            this.fetchedImg.push({name:this.imageName, path:response.data.path});
+            // si on a une image en double => msg ...
+            if (response.data.path)
+              this.fetchedImg.push({name:this.imageName, path:response.data.path});
           });
           this.imageData = '';
           this.$refs.fileInput.value = '';
-          // 1 - requete serveur.
-          // 2 - ajouter l'image dans les datas => v-for(images) => ajoute une nouvelle image au DOM.
       },
 
       addProfilImg(){
-        //this.$http.post('/profil/edit/addProfilImg', );
+        // name = checkedImgName
+        //this.$http.post('/profil/edit/addProfilImg', {name:});
         // 1 - changer l'image de profil dans le DOM.
         // 2 - prend l'image ID associée avec l'image checked.
         // 3 - requéte serveur avec l'image id + user id => change la table profil.
