@@ -57,8 +57,13 @@ class ProfilController extends Models
                 // si il a pas complete le profil => afficher juste lastname + firstname + photo par defaut.
                 view('page_404.php');
             } else {
-                $result['visitedUserId'] = $userId;
-                view('profil.php', ['userProfilData' => encodeToJs($result), 'profilType' => 'consultUserProfil']);
+                if ($result['user_id'] !== $_SESSION['user_id']) {
+                    // set visited pour cette user_id : $_SESSION['user_id'] => $result['user_id'].
+                    $result['visitedUserId'] = $userId;
+                    view('profil.php', ['userProfilData' => encodeToJs($result), 'profilType' => 'consultUserProfil']);
+                } else {
+                    $this->getUserProfil();
+                }
             }
         }
     }
