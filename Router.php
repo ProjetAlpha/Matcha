@@ -120,7 +120,7 @@ $route->add('/profil/edit/deleteImg', 'get', 'ImageController@deleteImg')->addMi
     }
 });
 
-$route->add('/profil/edit/addProfilPic', 'get', 'ImageController@addProfilImg')->addMiddleware(function () {
+$route->add('/profil/edit/addProfilImg', 'get', 'ImageController@addProfilImg')->addMiddleware(function () {
     if (!isAuth()) {
         redirect('/');
     }
@@ -133,6 +133,18 @@ $route->add('/profil/edit/getProfilPic', 'get', 'ImageController@getProfilPic')-
 });
 
 $route->add('/profil', 'get', 'ProfilController@getUserProfil')->addMiddleware(function () {
+    if (!isAuth()) {
+        redirect('/');
+    }
+});
+
+$route->add('/profil/:digits', 'get', 'ProfilController@getVisitedProfil')->addMiddleware(function () {
+    if (!isAuth()) {
+        redirect('/');
+    }
+});
+
+$route->add('/profil/visit/getConsultedProfilPic', 'get', 'ImageController@getConsultedProfilPic')->addMiddleware(function () {
     if (!isAuth()) {
         redirect('/');
     }

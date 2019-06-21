@@ -30,7 +30,7 @@ class seederController extends Models
             }
             if (isset($value['location'], $value['age'], $value['gender'], $value['score'], $value['picture']) && isset($id)) {
                 $sqlProfil .= "('".$currentId."','".$value['age']."','".'lorem'."','"
-              .$value['score']."','".$value['gender']."','".$value['location']['city'].", France','".$value['picture']['large']."','".$value['location']['longitude']."','".$value['location']['latitude']."'),";
+              .$value['score']."','".$value['gender']."','".$value['location']['city'].", France','".$value['picture']['large']."','".$value['picture']['name']."','".$value['location']['longitude']."','".$value['location']['latitude']."'),";
             }
 
             if (isset($value['tags']) && isset($id)) {
@@ -44,7 +44,7 @@ class seederController extends Models
         $sqlProfilRes = substr($sqlProfil, 0, -1);
         $sqlTagRes = substr($sqlTag, 0, -1);
         mysqli_query($connection, "INSERT INTO User (username,password,firstname,lastname,is_confirmed,email) VALUES {$sqlUserRes}");
-        mysqli_query($connection, "INSERT INTO Profil (user_id,age,bio,score,genre,localisation,profile_pic,longitude,latitude) VALUES {$sqlProfilRes}");
+        mysqli_query($connection, "INSERT INTO Profil (user_id,age,bio,score,genre,localisation,profile_pic_path,profile_pic_name,longitude,latitude) VALUES {$sqlProfilRes}");
         mysqli_query($connection, "INSERT INTO Tag (user_id, name) VALUES {$sqlTagRes}");
         mysqli_close($connection);
     }

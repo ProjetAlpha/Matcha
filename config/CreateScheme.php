@@ -37,7 +37,8 @@ $scheme->add(
       genre VARCHAR(5),
       orientation VARCHAR(15),
       localisation VARCHAR(256),
-      profile_pic VARCHAR(256),
+      profile_pic_path VARCHAR(256),
+      profile_pic_name VARCHAR(256),
       longitude FLOAT(20),
       latitude FLOAT(20)"
 );

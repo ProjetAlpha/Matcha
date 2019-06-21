@@ -142,9 +142,9 @@ console.log(getDistanceFromLatLonInKm(lat1, long1, lat2, long2));
           result[i].age = this.randomAge()
           result[i].tags = this.randomTags()
           result[i].location = this.randomLocation()
+          result[i].picture.name = result[i].picture.large.split('/').splice(-2).join('-')
         }
         // todo : modifier le genre et l'orientation.
-        console.log(result)
         this.sendData(result)
         // ---- console.log(result)
       },

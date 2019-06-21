@@ -17,8 +17,8 @@ class ProfilController extends Models
             if (!$this->fetch('Profil', ['user_id' => $_SESSION['user_id']])) {
                 view('profil.php', ['warning' => 'Veuillez complété votre profil']);
             }
-            $query = $this->profil->fetchUserProfilData($_SESSION['user_id']);
-            view('profil.php', ['userProfilData' => $query]);
+            $query = encodeToJs($this->profil->fetchUserProfilData($_SESSION['user_id']));
+            view('profil.php', ['userProfilData' => $query, 'profilType' => 'userProfilOwner']);
         } else {
             redirect('/');
         }
@@ -47,5 +47,19 @@ class ProfilController extends Models
     {
         $result = $this->fetch('Profil', ['user_id' => $_SESSION['user_id']], PDO::FETCH_ASSOC);
         echo encodeToJs($result);
+    }
+
+    public function getVisitedProfil($userId)
+    {
+        if (isset($userId)) {
+            $result = $this->profil->fetchUserProfilData($userId);
+            if (!$result) {
+                // si il a pas complete le profil => afficher juste lastname + firstname + photo par defaut.
+                view('page_404.php');
+            } else {
+                $result['visitedUserId'] = $userId;
+                view('profil.php', ['userProfilData' => encodeToJs($result), 'profilType' => 'consultUserProfil']);
+            }
+        }
     }
 }
