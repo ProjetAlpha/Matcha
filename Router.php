@@ -56,99 +56,49 @@ $route->add('/', 'get', function () {
     }
 });
 
+$route->addMiddlewareStack(
+    [
+      '/settings',
+      '/profil',
+      '/profil/:digits',
+      '/profil/edit',
+      '/profil/edit/modif',
+      '/profil/edit/getProfilData',
+      '/profil/edit/addTag',
+      '/profil/edit/getImg',
+      '/profil/edit/deleteTag',
+      '/profil/edit/getTag',
+      '/profil/edit/addImg',
+      '/profil/edit/deleteImg',
+      '/profil/edit/addProfilImg',
+      '/profil/edit/getProfilPic',
+      '/profil/visit/getConsultedProfilPic',
+    'function' => function () {
+        if (!isAuth()) {
+            redirect('/');
+        }
+    }]
+);
+
 $route->add('/settings', 'get', function () {
     view('settings.php');
-})->addMiddleware(function () {
-    if (!isAuth()) {
-        redirect('/');
-    }
-});;
-
+});
 $route->add('/profil/edit', 'get', function () {
     view('editProfil.php');
-})->addMiddleware(function () {
-    if (!isAuth()) {
-        redirect('/');
-    }
 });
-
-$route->add('/profil/edit/modif', 'post', 'ProfilController@editProfil')->addMiddleware(function () {
-    if (!isAuth()) {
-        redirect('/');
-    }
-});;;
-
-$route->add('/profil/edit/getProfilData', 'get', 'ProfilController@getData')->addMiddleware(function () {
-    if (!isAuth()) {
-        redirect('/');
-    }
-});;
-
-$route->add('/profil/edit/addTag', 'get', 'TagController@addTag')->addMiddleware(function () {
-    if (!isAuth()) {
-        redirect('/');
-    }
-});
-
-$route->add('/profil/edit/getImg', 'get', 'ImageController@getImg')->addMiddleware(function () {
-    if (!isAuth()) {
-        redirect('/');
-    }
-});
-
-$route->add('/profil/edit/deleteTag', 'get', 'TagController@deleteTag')->addMiddleware(function () {
-    if (!isAuth()) {
-        redirect('/');
-    }
-});
-
-$route->add('/profil/edit/getTag', 'get', 'TagController@getTag')->addMiddleware(function () {
-    if (!isAuth()) {
-        redirect('/');
-    }
-});
-
-$route->add('/profil/edit/addImg', 'get', 'ImageController@addImg')->addMiddleware(function () {
-    if (!isAuth()) {
-        redirect('/');
-    }
-});
-
-$route->add('/profil/edit/deleteImg', 'get', 'ImageController@deleteImg')->addMiddleware(function () {
-    if (!isAuth()) {
-        redirect('/');
-    }
-});
-
-$route->add('/profil/edit/addProfilImg', 'get', 'ImageController@addProfilImg')->addMiddleware(function () {
-    if (!isAuth()) {
-        redirect('/');
-    }
-});
-
-$route->add('/profil/edit/getProfilPic', 'get', 'ImageController@getProfilPic')->addMiddleware(function () {
-    if (!isAuth()) {
-        redirect('/');
-    }
-});
-
-$route->add('/profil', 'get', 'ProfilController@getUserProfil')->addMiddleware(function () {
-    if (!isAuth()) {
-        redirect('/');
-    }
-});
-
-$route->add('/profil/:digits', 'get', 'ProfilController@getVisitedProfil')->addMiddleware(function () {
-    if (!isAuth()) {
-        redirect('/');
-    }
-});
-
-$route->add('/profil/visit/getConsultedProfilPic', 'get', 'ImageController@getConsultedProfilPic')->addMiddleware(function () {
-    if (!isAuth()) {
-        redirect('/');
-    }
-});
+$route->add('/profil/edit/modif', 'post', 'ProfilController@editProfil');
+$route->add('/profil/edit/getProfilData', 'get', 'ProfilController@getData');
+$route->add('/profil/edit/addTag', 'get', 'TagController@addTag');
+$route->add('/profil/edit/getImg', 'get', 'ImageController@getImg');
+$route->add('/profil/edit/deleteTag', 'get', 'TagController@deleteTag');
+$route->add('/profil/edit/getTag', 'get', 'TagController@getTag');
+$route->add('/profil/edit/addImg', 'get', 'ImageController@addImg');
+$route->add('/profil/edit/deleteImg', 'get', 'ImageController@deleteImg');
+$route->add('/profil/edit/addProfilImg', 'get', 'ImageController@addProfilImg');
+$route->add('/profil/edit/getProfilPic', 'get', 'ImageController@getProfilPic');
+$route->add('/profil', 'get', 'ProfilController@getUserProfil');
+$route->add('/profil/:digits', 'get', 'ProfilController@getVisitedProfil');
+$route->add('/profil/visit/getConsultedProfilPic', 'get', 'ImageController@getConsultedProfilPic');
 
 /**
  * Seeder Route --- DEV ONLY.

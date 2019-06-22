@@ -3,17 +3,17 @@
 class Route
 {
     public $routes = [];
-    private $routeCounter = 0;
-    private $idUrlPos = 0;
-    private $root;
-    private $validRegex = [":alphanum" => ALPHA_NUM, ":alpha" => ALPHA, ":digits" => DIGITS, ":page" => PAGE];
+    private $validRegex = [
+      ":alphanum" => ALPHA_NUM,
+      ":alpha" => ALPHA,
+      ":digits" => DIGITS,
+      ":page" => PAGE
+    ];
     private $middleware;
     private $currentUrl;
-
-    public function __construct()
-    {
-        $this->root = realpath($_SERVER["DOCUMENT_ROOT"]);
-    }
+    private $isRegexRouteAdded = false;
+    private $matchedRegex;
+    private $middlewareStack;
 
     public function add($url, $method, $dst)
     {
@@ -31,38 +31,62 @@ class Route
         } else {
             throw new Exception("No class or function call in route");
         }
-        $this->routeCounter++;
         $this->addRequest($url, $method, $class ?? '', $call);
-
         return $this;
+    }
+
+    private function getRegexUrlPos($url)
+    {
+        $regex = [];
+        $splitUrl = explode('/', $url);
+        foreach ($splitUrl as $key => $value) {
+            if (isset($this->validRegex[$value])) {
+                $regex[] = $key;
+            }
+        }
+        return (!empty($regex) ? $regex : null);
     }
 
     private function addRequest($url, $method, $class, $call)
     {
-        $this->routes[$this->routeCounter]['method'] = $method;
-        $this->routes[$this->routeCounter]['url'] = $url;
-        $this->routes[$this->routeCounter]['class'] = $class;
-        $this->routes[$this->routeCounter]['method_call'] = $call;
+        $regexPos = $this->getRegexUrlPos($url);
+        $routeSettings = [
+          'method' => $method,
+          'url' => $url,
+          'class' => $class,
+          'method_call' => $call,
+          'regex_pos' => $regexPos
+        ];
+        if ($regexPos === null) {
+            $this->isRegexRouteAdded = false;
+            array_unshift($this->routes, $routeSettings);
+        } else {
+            $this->isRegexRouteAdded = true;
+            $this->routes[] = $routeSettings;
+        }
     }
 
-    public function getRegex($url, $currentUrl)
+    public function getRegex($url, $currentUrl, $regexPos)
     {
+        if ($regexPos === null) {
+            return (0);
+        }
         $split = explode('/', $url);
         $currUrlSplit = explode('/', $currentUrl);
-        $result = [];
-        foreach ($this->validRegex as $name => $regex) {
-            foreach ($split as $index => $parts) {
-                if ($parts == $name) {
-                    if (isset($currUrlSplit[$index]) && preg_match($regex, $currUrlSplit[$index])) {
-                        $result[$index] = $currUrlSplit[$index];
-                    }
+        $validRegex = [];
+        foreach ($regexPos as $value) {
+            if (isset($currUrlSplit[$value], $split[$value], $this->validRegex[$split[$value]])) {
+                if (preg_match($this->validRegex[$split[$value]], $currUrlSplit[$value])) {
+                    $validRegex[$value] = $currUrlSplit[$value];
                 }
             }
         }
-        if (empty($result)) {
+        $cmp = array_replace($split, $validRegex);
+        if (empty($validRegex)) {
             return (0);
         }
-        $cmp = array_replace($split, $result);
+        $this->matchedRegex = array_values($validRegex);
+        $cmp = array_replace($split, $validRegex);
         return ($cmp === $currUrlSplit);
     }
 
@@ -78,6 +102,7 @@ class Route
         if (class_exists($name) && method_exists($name, $method)) {
             $init = new $name();
             if (isset($param)) {
+                $init->regex = $this->matchedRegex;
                 $init->{$method}($param);
             } else {
                 $init->{$method}();
@@ -92,12 +117,12 @@ class Route
         $store_id = [];
         $currentUrl = $_SERVER['REQUEST_URI'];
         $serverMethod = $_SERVER['REQUEST_METHOD'];
-        $found = 0;
         foreach ($this->routes as $route) {
             $method = $route['method'];
             $url = $route['url'];
             $class = $route['class'];
             $classMethod = $route['method_call'];
+            $regexPos = $route['regex_pos'];
 
             $this->currentUrl = $url;
             if ($class == '' && is_callable($classMethod)
@@ -107,7 +132,7 @@ class Route
                 return ($classMethod());
             }
 
-            if ($this->getRegex($url, $currentUrl) && $method == strtolower($serverMethod)) {
+            if ($this->getRegex($url, $currentUrl, $regexPos) && $method == strtolower($serverMethod)) {
                 return ($this->getClass(
                     $class,
                     $classMethod,
@@ -128,18 +153,42 @@ class Route
         require_once(__DIR__."/views/page_404.php");
     }
 
-    public function addMiddleware($func)
+    public function addMiddleware($target)
     {
-        if (is_callable($func)) {
-            $targetUrl = $this->routes[$this->routeCounter]['url'];
-            $this->middleware[$targetUrl] = $func;
+        if ($this->isRegexRouteAdded === false) {
+            $lastRoute = $this->routes[0]['url'];
+        } else {
+            $lastRoute = $this->routes[key(array_slice($this->routes, -1, 1, true))]['url'];
+        }
+        if (is_callable($target)) {
+            $this->middleware[$lastRoute] = $target;
+        }
+    }
+
+    public function addMiddlewareStack($target)
+    {
+        if (is_array($target) && isset($target['function'])
+          && is_callable($target['function']) && count($target) > 1) {
+            $this->middlewareStack[] = $target;
         }
     }
 
     public function runMiddleware()
     {
-        if (isset($this->middleware[$this->currentUrl])) {
+        if (isset($this->middleware[$this->currentUrl])
+        && is_callable($this->middleware[$this->currentUrl])) {
             $this->middleware[$this->currentUrl]();
+        }
+        // add middleware function pour un tableau de route.
+        // des que l'on rencontre une des routes => applique le middelware.
+        if (isset($this->middlewareStack) && is_array($this->middlewareStack)) {
+            foreach ($this->middlewareStack as $targetRoutes) {
+                foreach ($targetRoutes as $url) {
+                    if ($this->currentUrl == $url) {
+                        return ($targetRoutes['function']());
+                    }
+                }
+            }
         }
     }
 }
