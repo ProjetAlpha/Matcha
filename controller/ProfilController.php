@@ -58,7 +58,7 @@ class ProfilController extends Models
                 view('page_404.php');
             } else {
                 if ($result['user_id'] !== $_SESSION['user_id']) {
-                    // set visited pour cette user_id : $_SESSION['user_id'] => $result['user_id'].
+                    $this->insert('Visite', ['user_id' => $userId, 'visiter_id' => $_SESSION['user_id']]);
                     $result['visitedUserId'] = $userId;
                     view('profil.php', ['userProfilData' => encodeToJs($result), 'profilType' => 'consultUserProfil']);
                 } else {

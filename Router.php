@@ -58,6 +58,10 @@ $route->add('/', 'get', function () {
 
 $route->addMiddlewareStack(
     [
+      '/like/setLike',
+      '/like/getLikeByUser',
+      '/like/setDisLike',
+      '/like/isLikedByUser',
       '/settings',
       '/profil',
       '/profil/:digits',
@@ -80,12 +84,15 @@ $route->addMiddlewareStack(
     }]
 );
 
+
 $route->add('/settings', 'get', function () {
     view('settings.php');
 });
+
 $route->add('/profil/edit', 'get', function () {
     view('editProfil.php');
 });
+
 $route->add('/profil/edit/modif', 'post', 'ProfilController@editProfil');
 $route->add('/profil/edit/getProfilData', 'get', 'ProfilController@getData');
 $route->add('/profil/edit/addTag', 'get', 'TagController@addTag');
@@ -100,6 +107,10 @@ $route->add('/profil', 'get', 'ProfilController@getUserProfil');
 $route->add('/profil/:digits', 'get', 'ProfilController@getVisitedProfil');
 $route->add('/profil/visit/getConsultedProfilPic', 'get', 'ImageController@getConsultedProfilPic');
 
+$route->add('/like/isLikedByUser', 'post', 'LikeController@isLikedByUser');
+$route->add('/like/setLike', 'post', 'LikeController@setLike');
+$route->add('/like/setDisLike', 'post', 'LikeController@setDisLike');
+$route->add('/like/getLikeByUser', 'post', 'LikeController@getLikeByUser');
 /**
  * Seeder Route --- DEV ONLY.
  */

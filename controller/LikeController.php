@@ -12,14 +12,13 @@ class LikeController extends Models
         $request = new Request();
         $data = $request->toJson();
 
-        if (!keysExist(['profil_id'], $data) || empty($data)) {
+        if (!keysExist(['profilId'], $data) || empty($data)) {
             redirect('/');
         }
         // validate...
         // en ligne : middelware qui update la date a chaque fois que le user consulte une page.
-        // en ligne est set a l'inscription ou la connexion => middelware qd on se log.
         // si + de 30 min. inactif => derniere heure / date de visite.
-        $this->insert('Likes', ['user_id' => $data['profil_id'], 'liked_by' => $_SESSION['user_id']]);
+        $this->insert('Likes', ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id']]);
     }
 
     public function setDislike()
@@ -27,41 +26,41 @@ class LikeController extends Models
         $request = new Request();
         $data = $request->toJson();
 
-        if (!keysExist(['profil_id'], $data) || empty($data)) {
+        if (!keysExist(['profilId'], $data) || empty($data)) {
             redirect('/');
         }
         // validate...
-        $this->delete('Likes', ['user_id' => $data['profil_id'], 'liked_by' => $_SESSION['user_id']]);
+        $this->delete('Likes', ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id']]);
     }
 
-    public function isLiked()
+    public function isLikedByUser()
+    {
+        $isLiked = false;
+        $request = new Request();
+        $data = $request->toJson();
+
+        if (!keysExist(['profilId'], $data) || empty($data)) {
+            redirect('/');
+        }
+        $result = $this->fetch('Likes', ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id']], PDO::FETCH_ASSOC);
+        if (isset($result['liked_by']) && $result['liked_by'] == $_SESSION['user_id']) {
+            $isLiked = true;
+        }
+        echo encodeToJs(['isLiked' => $isLiked]);
+    }
+
+    public function getLikeByUser()
     {
         $request = new Request();
         $data = $request->toJson();
 
-        if (!keysExist(['profil_id'], $data) || empty($data)) {
+        if (!keysExist(['profilId'], $data) || empty($data)) {
             redirect('/');
         }
-        $result = $this->fetch('Like', ['user_id' => $data['profil_id'], 'liked_by' => $_SESSION['user_id']], PDO::FETCH_ASSOC);
-        // si liked_by === OK, on a like ce profil.
-    }
-
-    public function getLike()
-    {
-        $request = new Request();
-        $data = $request->toJson();
-
-        if (!keysExist(['profil_id'], $data) || empty($data)) {
-            redirect('/');
+        $result = $this->fetch('Likes', ['user_id' => $_SESSION['user_id'], 'liked_by' => $data['profilId']], PDO::FETCH_ASSOC);
+        if (isset($result['liked_by'])) {
+            $info = $this->fetch('User', ['id' => $result['liked_by']], PDO::FETCH_ASSOC);
+            echo encodeToJs(['name' => $info['firstname']]);
         }
-        // la personne qui a like ce profil
-        // ? : si cette personne a like mon profil.
-        // si $data['profil_id'] a like $_SESSION['user_id'].
-        // 1 - fetch mon profil_id
-        // 2 - check si liked_by = $data['profil_id'].
-        // query : select user_id,liked_by from Profil inner join Likes ON Profil.user_id = Likes.user_id WHERE Likes.liked_by = $data['profil_id'].
-        // ...
-        //$this->fetch('Profil', ['user_id' => $_SESSION['user_id']]);
-        //$result = $this->fetch('Like', ['user_id' => $data['profil_id'], 'liked_by' => $_SESSION['user_id']], PDO::FETCH_ASSOC);
     }
 }
