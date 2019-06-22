@@ -3,7 +3,7 @@
 class Route
 {
     /**
-     * @var array
+     * @var [type]
      */
     public $routes = [];
 
@@ -18,36 +18,36 @@ class Route
     ];
 
     /**
-     * @var array
+     * @var [array]
      */
     private $middleware = [];
 
     /**
-     * @var string
+     * @var [string]
      */
-    private $currentUrl = '';
+    private $currentUrl;
 
     /**
-     * @var bool
+     * @var [bool]
      */
     private $isRegexRouteAdded = false;
 
     /**
-     * @var array
+     * @var [array]
      */
     private $matchedRegex = [];
 
     /**
-     * @var array
+     * @var [array]
      */
     private $middlewareStack = [];
 
 
     /**
      * Add a new route to the router.
-     * @param string $url
-     * @param string $method - server method
-     * @param string $dst - controller action
+     * @param [string] $url
+     * @param [string] $method - server method
+     * @param [string] $dst - controller action
      */
     public function add($url, $method, $dst)
     {
@@ -71,8 +71,8 @@ class Route
 
     /**
      * Check if the current stored route has a regex.
-     * @param  string $url - stored route url
-     * @return array or null if this route doesn't have any regex.
+     * @param  [string] $url - stored route url
+     * @return [array] or null if this route doesn't have any regex.
      */
     private function getRegexUrlPos($url)
     {
@@ -88,10 +88,10 @@ class Route
 
     /**
      * Add routes and give priority to none regex's routes.
-     * @param string $url - route url
-     * @param string $method - method controller
-     * @param string $class - controller
-     * @param string $call - function, if no controller is provided
+     * @param [string] $url - route url
+     * @param [string] $method - method controller
+     * @param [string] $class - controller
+     * @param [string] $call - function, if no controller is provided
      */
     private function addRequest($url, $method, $class, $call)
     {
@@ -114,15 +114,15 @@ class Route
 
     /**
      * Match the corresponding regex route with the current server url.
-     * @param  string $url - stored route url
-     * @param  string $currentUrl - server request uri
-     * @param  int $regexPos - regex position in the stored route url
-     * @return bool
+     * @param  [string] $url - stored route url
+     * @param  [string] $currentUrl - server request uri
+     * @param  [int] $regexPos - regex position in the stored route url
+     * @return [bool]
      */
     public function getRegex($url, $currentUrl, $regexPos)
     {
         if ($regexPos === null) {
-            return (true);
+            return (false);
         }
         $split = explode('/', $url);
         $currUrlSplit = explode('/', $currentUrl);
@@ -145,10 +145,10 @@ class Route
 
     /**
      * Load the corresponding controller's class and method and add the matched regex values.
-     * @param  string $name
-     * @param  string $method
-     * @param  mixed  $param
-     * @return bool
+     * @param  [string] $name
+     * @param  [string] $method
+     * @param  [mixed]  $param
+     * @return [bool]
      */
     private function getClass($name, $method, $param = null)
     {
@@ -174,7 +174,7 @@ class Route
 
     /**
      * Match an existing route and load the corresponding controller's action.
-     * @return bool or 404 page not found if this route doesn't exist.
+     * @return [bool] or 404 page not found if this route doesn't exist.
      */
     public function loadRoutes()
     {
@@ -214,15 +214,15 @@ class Route
                 }
             }
         }
-        $pageNotFoundView = __DIR__."/views/page_404.php";
+        $pageNotFoundView = __DIR__.'/views/page_404.php';
         if (file_exists($pageNotFoundView)) {
-            require_once($pageNotFoundView);
+            require_once(__DIR__.'/views/page_404.php');
         }
     }
 
     /**
      * Add a new middelware function for the current route.
-     * @param function $target
+     * @param [function] $target
      */
     public function addMiddleware($target)
     {
@@ -238,7 +238,7 @@ class Route
 
     /**
      * Add a new collection of routes attached to a middelware function.
-     * @param array $target
+     * @param [array] $target
      */
     public function addMiddlewareStack($target)
     {
@@ -250,7 +250,7 @@ class Route
 
     /**
      * Load a middelware function from a collection of routes or from one route.
-     * @return void
+     * @return [void]
      */
     public function runMiddleware()
     {
