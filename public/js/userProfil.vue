@@ -18,8 +18,14 @@
                 </div>
                 <div class="col s12 m6 l6">
                   <!-- si on consulte le profil -->
-                  <div class="row" v-if="type === 'consultUserProfil'">
+                  <div class="row" v-if="type === 'consultUserProfil' && last_visited !== false && elaspedTimeLastVisited <= 45">
                     <span style="float:right"><i class="material-icons" style="color:#4caf50;">lens</i>En ligne</span>
+                  </div>
+                  <div class="row" v-if="type === 'consultUserProfil' && (last_visited === false || elaspedTimeLastVisited > 45)">
+                    <span style=""><i class="material-icons" style="color:#dc4c46;">lens</i>Hors ligne</span>
+                    <div class="col s12 m12 l12">
+                    <span style="" v-if="elaspedTimeLastVisited !== false"></i>Derniére connexion {{last_visited}}</span>
+                    </div>
                   </div>
                   <p class="black-text mr-t-4" v-if="profilData.hasOwnProperty('firstname') && profilData.hasOwnProperty('lastname')">
                     {{profilData.firstname}} {{profilData.lastname}} <br>
@@ -97,6 +103,9 @@ export default{
       this.user = response ? response : false;
     })
     if (this.type == 'consultUserProfil'){
+      this.isLikedByUser();
+      this.getLikeProfilByUser();
+      this.isOnline();
       this.$http.post('/profil/visit/getConsultedProfilPic', {userId:this.profilData.visitedUserId}).then((response) => {
         if (response.data && response.data.name !== null && response.data.path !== null){
           this.profilPicName = response.data.name;
@@ -112,13 +121,13 @@ export default{
         }
       });
     }
-    this.isLikedByUser();
-    this.getLikeProfilByUser();
   },
 
   data(){
     return {
+      elaspedTimeLastVisited:'',
       isLiked:'',
+      last_visited:'',
       likesBy:'',
       profilPicName:'',
       profilPicSrc:'',
@@ -154,7 +163,15 @@ export default{
     },
 
     isOnline(){
-
+      this.$http.post('/profil/isOnline', {profilId:this.profilData.user_id}).then((response) => {
+        if (response.data && response.data.last_visited !== null){
+          this.last_visited = response.data.last_visited
+          this.elaspedTimeLastVisited = response.data.minDiff
+        }else {
+          this.last_visited = false
+          this.elaspedTimeLastVisited = false
+        }
+      })
     }
   }
 }

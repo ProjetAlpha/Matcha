@@ -65,6 +65,8 @@ $route->addMiddlewareStack(
       '/settings',
       '/profil',
       '/profil/:digits',
+      '/profil/isOnline',
+      '/profil/getProfilViews',
       '/profil/edit',
       '/profil/edit/modif',
       '/profil/edit/getProfilData',
@@ -103,8 +105,11 @@ $route->add('/profil/edit/addImg', 'get', 'ImageController@addImg');
 $route->add('/profil/edit/deleteImg', 'get', 'ImageController@deleteImg');
 $route->add('/profil/edit/addProfilImg', 'get', 'ImageController@addProfilImg');
 $route->add('/profil/edit/getProfilPic', 'get', 'ImageController@getProfilPic');
+
 $route->add('/profil', 'get', 'ProfilController@getUserProfil');
 $route->add('/profil/:digits', 'get', 'ProfilController@getVisitedProfil');
+$route->add('/profil/isOnline', 'post', 'ProfilController@isOnline');
+$route->add('/profil/getProfilViews', 'get', 'ProfilController@getProfilViews');
 $route->add('/profil/visit/getConsultedProfilPic', 'get', 'ImageController@getConsultedProfilPic');
 
 $route->add('/like/isLikedByUser', 'post', 'LikeController@isLikedByUser');

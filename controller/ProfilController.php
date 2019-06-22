@@ -57,8 +57,12 @@ class ProfilController extends Models
                 // si il a pas complete le profil => afficher juste lastname + firstname + photo par defaut.
                 view('page_404.php');
             } else {
+                // function sur validate (pour redirect ou on veut...)
+                // $validate = new Validate($result, ['user_id' => 'digit|min:1|max:11'], 'editProfil.php', Message::$userMessages);
                 if ($result['user_id'] !== $_SESSION['user_id']) {
-                    $this->insert('Visite', ['user_id' => $userId, 'visiter_id' => $_SESSION['user_id']]);
+                    if (!$this->fetch('Visite', ['user_id' => $userId, 'visiter_id' => $_SESSION['user_id']])) {
+                        $this->insert('Visite', ['user_id' => $userId, 'visiter_id' => $_SESSION['user_id']]);
+                    }
                     $result['visitedUserId'] = $userId;
                     view('profil.php', ['userProfilData' => encodeToJs($result), 'profilType' => 'consultUserProfil']);
                 } else {
@@ -66,5 +70,37 @@ class ProfilController extends Models
                 }
             }
         }
+    }
+
+    public function isOnline()
+    {
+        $request = new Request();
+        $data = $request->toJson();
+
+        if (!keysExist(['profilId'], $data) || empty($data)) {
+            redirect('/');
+        }
+        // validate...
+        $result = $this->user->getOnlineUser($data['profilId']);
+        if (!$result) {
+            redirect('/');
+        }
+        $minuteDiff = round(abs(strtotime($result['last_visited']) - strtotime(date("Y-m-d H:i:s"))) / 60, 2);
+        if (isset($result['last_visited'])) {
+            echo encodeToJs(['last_visited' => $result['last_visited'], 'minDiff' => $minuteDiff]);
+        }
+    }
+
+    public function getProfilViews()
+    {
+        $result = $this->profil->getProfilViews($_SESSION['user_id']);
+        if ($result) {
+            echo encodeToJs(['visiterViews' => $result]);
+        }
+    }
+
+    public function getProfilLikes()
+    {
+        $result = $this->profil->getProfilLikes();
     }
 }

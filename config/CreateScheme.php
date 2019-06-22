@@ -18,6 +18,7 @@ $scheme->add(
       is_reset boolean not null default 0,
       confirmation_link VARCHAR(256),
       reset_link VARCHAR(256),
+      last_visited DATETIME default NULL,
       email VARCHAR(50) NOT NULL,
       username VARCHAR(30) NOT NULL,
       password VARCHAR(256) NOT NULL,

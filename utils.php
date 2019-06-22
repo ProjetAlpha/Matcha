@@ -125,13 +125,29 @@ if (!function_exists('isAuth')) {
         $prepare = $db->prepare($sql);
         $prepare->execute([$_SESSION['user_id']]);
         $result = $prepare->fetch(PDO::FETCH_ASSOC);
-
+        if (!$result) {
+            return (0);
+        }
         if (hash_equals($result['password'], $_SESSION['token'])) {
             if ($result['is_confirmed'] === '1' && ($result['is_reset'] === '0' || $result['is_reset'] === '1')) {
                 return (1);
             }
         }
         return (0);
+    }
+}
+
+if (!function_exists('setLastVisited')) {
+    function setLastVisited()
+    {
+        date_default_timezone_set('Europe/Paris');
+        $db = new PDO(DB_DSN, DB_USER, DB_PASSWORD);
+        $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $sql = "UPDATE User SET last_visited = ? WHERE id = ?";
+        $prepare = $db->prepare($sql);
+        $currentTime = date("Y-m-d H:i:s");
+        $prepare->execute([$currentTime, $_SESSION['user_id']]);
     }
 }
 
