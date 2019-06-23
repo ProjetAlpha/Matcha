@@ -18,7 +18,7 @@
                 </div>
                 <div class="col s12 m6 l6">
                   <!-- si on consulte le profil -->
-                  <div class="row" v-if="type === 'consultUserProfil' && last_visited !== false && elaspedTimeLastVisited <= 45">
+                  <div class="row" v-if="type === 'consultUserProfil' && last_visited === true && elaspedTimeLastVisited <= 45">
                     <span style="float:right"><i class="material-icons" style="color:#4caf50;">lens</i>En ligne</span>
                   </div>
                   <div class="row" v-if="type === 'consultUserProfil' && (last_visited === false || elaspedTimeLastVisited > 45)">
@@ -75,12 +75,14 @@
           </div>
           <div class="row" v-if="type === 'consultUserProfil'">
             <p class="center-align">
-              <a :href="'/report/add/'+profilData.user_id" class="btn-small blue waves-effect waves-light center-align" style="width:50%">
+              <a v-if="isReported === false" @click="reportUser" class="btn-small blue waves-effect waves-light center-align" style="width:50%">
                 Reporter l'utilisateur</a>
               </p>
               <p class="center-align mr-t-2">
-                <a :href="'/block/add/'+profilData.user_id" class="btn-small red lighten-1 waves-effect waves-light" style="width:50%">
+                <a v-if="isBlocked === false" @click="blockUser" class="btn-small red lighten-1 waves-effect waves-light" style="width:50%">
                   Bloquer l'utilisateur</a>
+                <a v-if="isBlocked === true" @click="unblockUser" class="btn-small red lighten-1 waves-effect waves-light" style="width:50%">
+                    Débloquer l'utilisateur </a>
                 </p>
               </div>
             </div>
@@ -105,6 +107,8 @@ export default{
       this.isLikedByUser();
       this.getLikeProfilByUser();
       this.isOnline();
+      this.fetchBlockedUser();
+      this.fetchReportedUser();
       this.$http.post('/profil/visit/getConsultedProfilPic', {userId:this.profilData.visitedUserId}).then((response) => {
         if (response.data && response.data.name !== null && response.data.path !== null){
           this.profilPicName = response.data.name;
@@ -124,6 +128,8 @@ export default{
 
   data(){
     return {
+      isBlocked:'',
+      isReported:'',
       elaspedTimeLastVisited:'',
       isLiked:'',
       last_visited:'',
@@ -170,6 +176,41 @@ export default{
           this.last_visited = false
           this.elaspedTimeLastVisited = false
         }
+      })
+    },
+
+    blockUser(){
+      this.$http.post('/block/add', {profilId:this.profilData.user_id}).then((response) => {
+        console.log(response.data)
+      })
+      this.isBlocked = true;
+    },
+
+    reportUser(){
+      this.$http.post('/report/add', {profilId:this.profilData.user_id}).then((response) => {
+        console.log(response.data)
+      })
+      this.isReported = true;
+    },
+
+    unblockUser(){
+      this.$http.post('/block/unblock', {profilId:this.profilData.user_id}).then((response) => {
+        console.log(response.data)
+      })
+      this.isBlocked = false;
+    },
+
+    fetchBlockedUser(){
+      this.$http.post('/block/isBlocked', {profilId:this.profilData.user_id}).then((response) => {
+        this.isBlocked = response.data && response.data.isBlocked == 1 ? true : false;
+        console.log(response.data)
+      })
+    },
+
+    fetchReportedUser(){
+      this.$http.post('/report/isReported', {profilId:this.profilData.user_id}).then((response) => {
+        this.isReported = response.data && response.data.isReported == 1 ? true : false;
+        console.log(response.data)
       })
     }
   }

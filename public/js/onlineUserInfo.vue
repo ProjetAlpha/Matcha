@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  props:['id'],
+  props:['userId'],
 
   created(){
     this.isOnline()
@@ -30,7 +30,7 @@ export default {
 
   methods:{
     isOnline(){
-      this.$http.post('/profil/isOnline', {profilId:this.id}).then((response) => {
+      this.$http.post('/profil/isOnline', {user_id:this.userId}).then((response) => {
         if (response.data && response.data.last_visited !== null){
           this.last_visited = response.data.last_visited
           this.elaspedTimeLastVisited = response.data.minDiff

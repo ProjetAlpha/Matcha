@@ -81,8 +81,11 @@ $route->addMiddlewareStack(
       '/profil/edit/addProfilImg',
       '/profil/edit/getProfilPic',
       '/profil/visit/getConsultedProfilPic',
-      '/report/add/:digits',
-      '/block/add/:digits'
+      '/report/add',
+      '/block/add',
+      '/report/isReported',
+      '/block/isBlocked',
+      '/block/unblock',
     'function' => function () {
         if (!isAuth()) {
             redirect('/');
@@ -126,9 +129,12 @@ $route->add('/like/setLike', 'post', 'LikeController@setLike');
 $route->add('/like/setDisLike', 'post', 'LikeController@setDisLike');
 $route->add('/like/getLikeByUser', 'post', 'LikeController@getLikeByUser');
 
-$route->add('/report/add/:digits', 'post', 'SignalUserController@reportUser');
-$route->add('/block/add/:digits', 'post', 'SignalUserController@blockUser');
-
+$route->add('/report/add', 'post', 'SignalUserController@reportUser');
+$route->add('/block/add', 'post', 'SignalUserController@blockUser');
+$route->add('/report/isReported', 'post', 'SignalUserController@isReported');
+$route->add('/block/isBlocked', 'post', 'SignalUserController@isBlocked');
+$route->add('/block/unblock', 'get', 'SignalUserController@unblock');
+$route->add('/block/getBlockedUsers', 'get', 'SignalUserController@getBlockedUsers');
 /**
  * Seeder Route --- DEV ONLY.
  */

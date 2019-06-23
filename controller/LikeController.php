@@ -15,8 +15,10 @@ class LikeController extends Models
         if (!keysExist(['profilId'], $data) || empty($data)) {
             redirect('/');
         }
+
         // validate...
         // en ligne : middelware qui update la date a chaque fois que le user consulte une page.
+        // col last_visited = time().
         // si + de 30 min. inactif => derniere heure / date de visite.
         $this->insert('Likes', ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id']]);
     }

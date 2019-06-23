@@ -9,7 +9,7 @@
           <ul class="collection">
             <li class="row ml-v-align collection-item avatar" v-for="(value, name, index) in visiterLikes">
               <div class="col s12 m4 l4">
-                <load-async-image :id="value.id" img-style="center-img responsive-img rounded-img"></load-async-image>
+                <load-async-image :user-id="value.user_id" :profil-id="value.profil_id" img-style="center-img responsive-img rounded-img"></load-async-image>
               </div>
               <div class="col s8 m7 l7">
                 <p class="black-text">
@@ -23,11 +23,11 @@
                   </span>
                 </p>
                 <div class="row mr-t-4" v-if="visiterLikesTags !== ''">
-                  <div class="chip blue white-text" v-for="(value, name, index) in visiterLikesTags[value.id]">
+                  <div class="chip blue white-text" v-for="(value, name, index) in visiterLikesTags[value.user_id]">
                     #{{value.name}}
                   </div>
                 </div>
-                <online-user-info :id="value.id"></online-user-info>
+                <online-user-info :user-id="value.user_id"></online-user-info>
               </div>
             </li>
           </ul>
@@ -41,7 +41,7 @@
           <ul class="collection">
             <li class="row ml-v-align collection-item avatar" v-for="(value, name, index) in visiterViews">
               <div class="col s12 m4 l4">
-                <load-async-image :id="value.id" img-style="center-img responsive-img rounded-img"></load-async-image>
+                <load-async-image :user-id="value.user_id" :profil-id="value.profil_id" img-style="center-img responsive-img rounded-img"></load-async-image>
               </div>
               <div class="col s8 m7 l7">
                 <p class="black-text">
@@ -55,11 +55,43 @@
                   </span>
                 </p>
                 <div class="row mr-t-4" v-if="visiterViewsTags !== ''">
-                  <div class="chip blue white-text" v-for="(value, name, index) in visiterViewsTags[value.id]">
+                  <div class="chip blue white-text" v-for="(value, name, index) in visiterViewsTags[value.user_id]">
                     #{{value.name}}
                   </div>
                 </div>
-                <online-user-info :id="value.id"></online-user-info>
+                <online-user-info :user-id="value.user_id"></online-user-info>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <div class="collapsible-header"><i class="material-icons">block</i>Utilisateurs qui ont été bloqués
+          <span class="new badge" v-if="visiterLikesCount > 0" :data-badge-caption="blockFormat">{{blockedCount}}</span>
+        </div>
+        <div class="collapsible-body">
+          <ul class="collection">
+            <li class="row ml-v-align collection-item avatar" v-for="(value, name, index) in visiterLikes">
+              <div class="col s12 m4 l4">
+                <load-async-image :user-id="value.user_id" :profil-id="value.profil_id" img-style="center-img responsive-img rounded-img"></load-async-image>
+              </div>
+              <div class="col s8 m7 l7">
+                <p class="black-text">
+                  {{value.firstname}} {{value.lastname}} <br>
+                  <span class="black-text" v-if="value.age">
+                    {{value.age}} ans
+                  </span>
+                  <br>
+                  <span class="black-text">
+                    {{value.localisation}}
+                  </span>
+                </p>
+                <div class="row mr-t-4" v-if="visiterLikesTags !== ''">
+                  <div class="chip blue white-text" v-for="(value, name, index) in visiterLikesTags[value.user_id]">
+                    #{{value.name}}
+                  </div>
+                </div>
+                <online-user-info :user-id="value.user_id"></online-user-info>
               </div>
             </li>
           </ul>
@@ -76,6 +108,7 @@ export default {
       created(){
         this.getProfilViews();
         this.getProfilLike();
+        this.getBlockedUsers();
       },
 
       data(){
@@ -87,7 +120,10 @@ export default {
           visiterViewsCount:0,
           visiterLikes:'',
           visiterLikesTags:'',
-          visiterLikesCount:0
+          visiterLikesCount:0,
+          blockedUsers:'',
+          blockedCount:0,
+          blockFormat:''
         }
       },
 
@@ -112,6 +148,17 @@ export default {
               delete this.visiterViews['visiterTags'];
               this.visiterViewsCount = Object.keys(this.visiterViews).length
               this.viewFormat = this.visiterViewsCount > 1 ? 'vues' : 'vue'
+            }
+          });
+        },
+
+        getBlockedUsers(){
+          this.$http.get('/block/getBlockedUsers').then((response) => {
+            if (response.data && response.data.hasOwnProperty('blockedUsers')){
+              this.blockedUsers = response.data.blockedUsers;
+              this.blockedCount = Object.keys(this.blockedUsers).length
+              this.blockFormat = this.blockedCount > 1 ? 'blockés' : 'blocké'
+              console.log(this.blockedUsers)
             }
           });
         }

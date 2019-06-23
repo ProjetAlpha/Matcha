@@ -1,6 +1,6 @@
 <template>
   <div>
-      <a :href="/profil/+id" target="_blank"><img :src="link" alt="" :class="imgStyle"/></a>
+      <a :href="/profil/+profilId" target="_blank"><img :src="link" alt="" :class="imgStyle"/></a>
   </div>
 </template>
 
@@ -8,10 +8,10 @@
 <script>
 export default {
 
-  props:['id', 'imgStyle'],
+  props:['userId', 'profilId', 'imgStyle'],
 
   created(){
-    this.loadPic(this.id)
+    this.loadPic(this.userId)
   },
 
   data(){

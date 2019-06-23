@@ -93,7 +93,7 @@ class ProfilController extends Models
 
     public function getProfilViews()
     {
-        $result = $this->profil->getProfilViews($_SESSION['user_id']);
+        $result = $this->profil->fetchProfilViews($_SESSION['user_id']);
         $result['visiterTags'] = group_by('visiter_id', $result['visiterTags']);
         if ($result) {
             echo encodeToJs(['visiterViews' => $result]);
@@ -102,7 +102,7 @@ class ProfilController extends Models
 
     public function getProfilLikes()
     {
-        $result = $this->profil->getProfilLikes($_SESSION['user_id']);
+        $result = $this->profil->fetchProfilLikes($_SESSION['user_id']);
         $result['likesTags'] = group_by('liked_by', $result['likesTags']);
         if ($result) {
             echo encodeToJs(['visiterLikes' => $result]);
