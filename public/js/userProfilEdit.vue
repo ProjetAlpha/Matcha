@@ -165,7 +165,6 @@
     },
 
     mounted(){
-      console.log(this.fetchedImg)
       this.initChips()
     },
 

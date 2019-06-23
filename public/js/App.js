@@ -10,6 +10,8 @@ import userProfil from './userProfil.vue'
 import userProfilInfo from './userProfilInfo.vue'
 import userProfilEdit from './userProfilEdit.vue'
 import notifications from './notifications.vue'
+import loadAsyncImage from './loadAsyncImage.vue'
+import onlineUserInfo from './onlineUserInfo.vue'
 import seeder from './seeder.vue'
 import axios from 'axios'
 
@@ -49,6 +51,8 @@ Vue.component('user-profil-info', userProfilInfo);
 Vue.component('user-profil-edit', userProfilEdit);
 Vue.component('notifications', notifications);
 Vue.component('seeder', seeder);
+Vue.component('load-async-image', loadAsyncImage);
+Vue.component('online-user-info', onlineUserInfo);
 
 new Vue({
   el: '#app'

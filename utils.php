@@ -285,3 +285,20 @@ if (!function_exists('encodeToJs')) {
         return (json_encode($data, JSON_HEX_QUOT|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS));
     }
 }
+
+if (!function_exists('group_by')) {
+    function group_by($key, $array)
+    {
+        $result = array();
+
+        foreach ($array as $val) {
+            if (array_key_exists($key, $val)) {
+                $result[$val[$key]][] = $val;
+            } else {
+                $result[""][] = $val;
+            }
+        }
+
+        return $result;
+    }
+}

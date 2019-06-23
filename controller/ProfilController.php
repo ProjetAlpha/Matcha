@@ -94,6 +94,7 @@ class ProfilController extends Models
     public function getProfilViews()
     {
         $result = $this->profil->getProfilViews($_SESSION['user_id']);
+        $result['visiterTags'] = group_by('visiter_id', $result['visiterTags']);
         if ($result) {
             echo encodeToJs(['visiterViews' => $result]);
         }
@@ -101,6 +102,30 @@ class ProfilController extends Models
 
     public function getProfilLikes()
     {
-        $result = $this->profil->getProfilLikes();
+        $result = $this->profil->getProfilLikes($_SESSION['user_id']);
+        $result['likesTags'] = group_by('liked_by', $result['likesTags']);
+        if ($result) {
+            echo encodeToJs(['visiterLikes' => $result]);
+        }
+    }
+
+    public function getProfilPicById()
+    {
+        $request = new Request();
+        $data = $request->toJson();
+
+        if (!keysExist(['user_id'], $data) || empty($data)) {
+            redirect('/');
+        }
+        $result = $this->fetch('Profil', ['user_id' => $data['user_id']], PDO::FETCH_ASSOC);
+        if (!$result || empty($result['profile_pic_path'])) {
+            $defaultImg = dirname(__DIR__).'/ressources/images/default-profile.png';
+            $path = base64_encode(file_get_contents($defaultImg));
+            echo encodeToJs(['path' => $path, 'name' => 'defaultProfil']);
+        } else {
+            $path = base64_encode(file_get_contents($result['profile_pic_path']));
+            $name = $result['profile_pic_name'];
+            echo encodeToJs(['path' => $path ?? null, 'name' => $name ?? null]);
+        }
     }
 }

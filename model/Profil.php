@@ -15,23 +15,23 @@ class Profil
 
     public function getProfilViews($userId)
     {
-        // 10 tags  / 2 users. [ name, visiter_id]
-        // regrouper les tags / users.
-        // name [10], 2 user
         $sql ="SELECT lastname,firstname,age,localisation,last_visited,profile_pic_path,profile_pic_name,User.id
       FROM Profil INNER JOIN User ON Profil.id = User.id INNER JOIN Visite ON Visite.visiter_id = User.id WHERE Visite.user_id = ?";
         $visitedUserInfo = execQuery($this->db, $sql, [$userId], PDO::FETCH_ASSOC, FETCH_ALL);
-        // 1er v-for (user info) - 2eme v-for (user tags[key]) tags[0] = 1er user, tags[1] = 2eme user.
-        // group les noms par user_id...
         $sql = "SELECT name,visiter_id FROM Tag INNER JOIN Visite ON Visite.visiter_id = Tag.user_id WHERE Visite.user_id = ?";
-        // solution degeux : fetch les tags au fur et a mesure pour chaque user...
         $visitedUserTags = execQuery($this->db, $sql, [$userId], PDO::FETCH_ASSOC, FETCH_ALL);
         $visitedUserInfo['visiterTags'] = $visitedUserTags;
         return ($visitedUserInfo);
     }
 
-    public function getProfilLikes()
+    public function getProfilLikes($userId)
     {
-        // inner join profil + user + likes
+        $sql ="SELECT lastname,firstname,age,localisation,last_visited,profile_pic_path,profile_pic_name,User.id
+    FROM Profil INNER JOIN User ON Profil.id = User.id INNER JOIN Likes ON Likes.liked_by = User.id WHERE Likes.user_id = ?";
+        $likeUserInfo = execQuery($this->db, $sql, [$userId], PDO::FETCH_ASSOC, FETCH_ALL);
+        $sql = "SELECT name,liked_by FROM Tag INNER JOIN Likes ON Likes.liked_by = Tag.user_id WHERE Likes.user_id = ?";
+        $likeUserTags = execQuery($this->db, $sql, [$userId], PDO::FETCH_ASSOC, FETCH_ALL);
+        $likeUserInfo['likesTags'] = $likeUserTags;
+        return ($likeUserInfo);
     }
 }

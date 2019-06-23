@@ -75,17 +75,16 @@
           </div>
           <div class="row" v-if="type === 'consultUserProfil'">
             <p class="center-align">
-              <a :href="'/report/add/'" class="btn-small blue waves-effect waves-light center-align" style="width:50%">
+              <a :href="'/report/add/'+profilData.user_id" class="btn-small blue waves-effect waves-light center-align" style="width:50%">
                 Reporter l'utilisateur</a>
               </p>
               <p class="center-align mr-t-2">
-                <a :href="'/block/add/'" class="btn-small red lighten-1 waves-effect waves-light" style="width:50%">
+                <a :href="'/block/add/'+profilData.user_id" class="btn-small red lighten-1 waves-effect waves-light" style="width:50%">
                   Bloquer l'utilisateur</a>
                 </p>
               </div>
             </div>
           </div>
-          <!-- si on est log + que le current user === user id du profil -->
           <user-profil-info v-if="type === 'userProfilOwner'"></user-profil-info>
         </div>
       </div>

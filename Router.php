@@ -51,8 +51,8 @@ $route->add('/search/result', 'get', function () {
 $route->add('/', 'get', function () {
     view('sugestions.php');
 })->addMiddleware(function () {
-    if (!isAuth()) {
-        //redirect('/');
+    if (isAuth()) {
+        setLastVisited();
     }
 });
 
@@ -67,6 +67,8 @@ $route->addMiddlewareStack(
       '/profil/:digits',
       '/profil/isOnline',
       '/profil/getProfilViews',
+      '/profil/getProfilPicById',
+      '/profil/getProfilLikes',
       '/profil/edit',
       '/profil/edit/modif',
       '/profil/edit/getProfilData',
@@ -79,10 +81,13 @@ $route->addMiddlewareStack(
       '/profil/edit/addProfilImg',
       '/profil/edit/getProfilPic',
       '/profil/visit/getConsultedProfilPic',
+      '/report/add/:digits',
+      '/block/add/:digits'
     'function' => function () {
         if (!isAuth()) {
             redirect('/');
         }
+        setLastVisited();
     }]
 );
 
@@ -109,13 +114,21 @@ $route->add('/profil/edit/getProfilPic', 'get', 'ImageController@getProfilPic');
 $route->add('/profil', 'get', 'ProfilController@getUserProfil');
 $route->add('/profil/:digits', 'get', 'ProfilController@getVisitedProfil');
 $route->add('/profil/isOnline', 'post', 'ProfilController@isOnline');
+
 $route->add('/profil/getProfilViews', 'get', 'ProfilController@getProfilViews');
+$route->add('/profil/getProfilLikes', 'get', 'ProfilController@getProfilLikes');
+
+$route->add('/profil/getProfilPicById', 'post', 'ProfilController@getProfilPicById');
 $route->add('/profil/visit/getConsultedProfilPic', 'get', 'ImageController@getConsultedProfilPic');
 
 $route->add('/like/isLikedByUser', 'post', 'LikeController@isLikedByUser');
 $route->add('/like/setLike', 'post', 'LikeController@setLike');
 $route->add('/like/setDisLike', 'post', 'LikeController@setDisLike');
 $route->add('/like/getLikeByUser', 'post', 'LikeController@getLikeByUser');
+
+$route->add('/report/add/:digits', 'post', 'SignalUserController@reportUser');
+$route->add('/block/add/:digits', 'post', 'SignalUserController@blockUser');
+
 /**
  * Seeder Route --- DEV ONLY.
  */
