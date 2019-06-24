@@ -64,16 +64,30 @@
             <span>Bisexuel</span>
           </label>
         </p>
-        <span class="card-title mr-t-2" style="margin-bottom:0!important">Biographie</span>
+
+        <span class="card-title mr-t-2">Localisation</span>
+        <div class="col s12 m12 l12" v-if="isModifLocalisation === true" style="padding:0!important">
+          <input type="text" v-model="profilData.localisation" class="validate" name="localisation" id="localisation"/>
+          <button class="btn green waves-effect waves-light" @click="modifLocalisation">Confirmer</button>
+          <button class="btn green waves-effect waves-light" @click="isModifLocalisation = false">Annuler</button>
+        </div>
+
+        <div class="col s12" v-if="isModifLocalisation === false" style="padding:0!important">
+          <p style="font-size:1em"> {{profilData.localisation}}
+            <button class="right btn green waves-effect waves-light" @click="isModifLocalisation = true"><i class="material-icons right">edit</i>Editer</button>
+          </p>
+        </div>
+        <span class="card-title mr-t-2">Biographie</span>
         <div class="row" style="margin-bottom:0!important">
-          <div class="col s12 m12 l12" v-if="isModifBio">
+          <div class="col s12 m12 l12 mr-t-1" v-if="isModifBio">
             <textarea @change="resizeTextarea" class="cyan lighten-4 materialize-textarea" :style="{height:textAreaHeight, background:'white'}" v-model="bio"></textarea>
             <button type="submit" class="btn green waves-effect waves-light" @click="modifBio">Confirmer</button>
             <button type="submit" class="btn green waves-effect waves-light" @click="resetBio">Annuler</button>
           </div>
           <div class="input-field col s12" v-if="isModifBio === false">
-            <p class="mr-b-2 p-wbreak black-text"> {{bio}} </p>
-            <button type="submit" class="btn green waves-effect waves-light" @click="showModifBio">Modifier</button>
+            <p class="mr-b-2 p-wbreak black-text"> {{bio}}
+              <button type="submit" class="btn green right waves-effect waves-light" @click="showModifBio"><i class="material-icons right">edit</i>Editer</button>
+            </p>
           </div>
         </div>
         <span class="card-title">Tags</span>
@@ -90,8 +104,9 @@
             </div>
           </div>
         </div>
+
         <span class="card-title">Images</span>
-        <div class="columns is-multiline">
+        <div class="row">
           <div class="col s12 m4 l4 mr-t-1" v-for="(value, name, index) in fetchedImg">
             <div class="image is-3by2">
               <img :src="'data:image/png;base64,'+value.path" alt="" class="responsive-img" :name="value.name">
@@ -102,13 +117,15 @@
             </div>
           </div>
         </div>
-        <div class="file-field input-field">
-          <div class="btn">
-            <span>Ajouter</span>
-            <input type="file" ref="fileInput" accept=".png, .jpg, .jpeg" @change="previewImage"/>
-          </div>
-          <div class="file-path-wrapper">
-            <input class="file-path validate" type="text">
+        <div class="row">
+          <div class="file-field input-field mr-t-1 mr-l-2">
+            <div class="btn">
+              <span>Ajouter</span>
+              <input type="file" ref="fileInput" accept=".png, .jpg, .jpeg" @change="previewImage"/>
+            </div>
+            <div class="file-path-wrapper">
+              <input class="file-path validate" type="text">
+            </div>
           </div>
         </div>
         <div class="row" v-show="isPreview">
@@ -131,29 +148,28 @@
   export default{
 
     created(){
-      var vm = this
-      this.$http.get('/profil/edit/getProfilData').then(function(response){
-        vm.profilData = response.data
-        if (vm.profilData.hasOwnProperty('genre')){
-          vm.isGenreSelected = true
-          vm.genreName = vm.profilData.genre
+      this.$http.get('/profil/edit/getProfilData').then((response) => {
+        this.profilData = response.data
+        if (this.profilData.hasOwnProperty('genre')){
+          this.isGenreSelected = true
+          this.genreName = this.profilData.genre
         }
-        if (vm.profilData.hasOwnProperty('orientation')){
-          vm.isOrientationSelected = true
-          vm.orientationName = vm.profilData.orientation
+        if (this.profilData.hasOwnProperty('orientation')){
+          this.isOrientationSelected = true
+          this.orientationName = this.profilData.orientation
         }
-        if (vm.profilData.hasOwnProperty('bio')){
-          vm.bio = vm.profilData.bio
+        if (this.profilData.hasOwnProperty('bio')){
+          this.bio = this.profilData.bio
         }
       });
-      this.$http.get('/profil/edit/getTag').then(function(response){
+      this.$http.get('/profil/edit/getTag').then((response) => {
         if (response.data){
-          vm.initChips(vm.createInitalTags(response.data))
+          this.initChips(this.createInitalTags(response.data))
         }
       });
-      this.$http.get('/profil/edit/getImg').then(function(response){
+      this.$http.get('/profil/edit/getImg').then((response) => {
         if (response.data && Array.isArray(response.data)){
-          vm.fetchedImg = response.data;
+          this.fetchedImg = response.data;
         }
       });
       this.$http.get('/profil/edit/getProfilPic').then((response) => {
@@ -162,6 +178,7 @@
           this.profilPicSrc = response.data.path;
         }
       });
+
     },
 
     mounted(){
@@ -181,7 +198,7 @@
         imageData: '',
         imageName:'',
         tags:[],
-        bio:'Ma bio de fou woooowwowoowowowowowoowowowowoow',
+        bio:'',
         tmpBio:'',
         textAreaHeight:'',
         isModifBio:false,
@@ -189,6 +206,7 @@
         orientationName:'',
         isGenreSelected:false,
         isOrientationSelected:false,
+        isModifLocalisation:false,
         haveBio:false
       }
     },
@@ -286,6 +304,13 @@
       modifBio(e){
         this.$http.post('/profil/edit/modif', {bio:this.bio});
         this.isModifBio = false;
+      },
+
+      modifLocalisation(){
+        this.$http.post('/profil/edit/modif', {localisation:this.profilData.localisation}).then((response) => {
+          console.log(response.data)
+        });
+        this.isModifLocalisation = false;
       },
 
       resizeTextarea(e){

@@ -8,12 +8,23 @@
       <search-match type="result"></search-match>
     </div>
   <?php else: ?>
-    <div class="hero-body" style="display:block!important">
-      <article class="message">
-                <div class="message-body">
-                    <a href="/register"> Creér un compte </a>
-                </div>
-      </article>
+    <div class="hero-body">
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <article class="message is-success mr-b-4">
+              <div class="message-body">
+                <p class="flow-text">
+                  Matcha est un site de rencontre destiné à trouver la personne qui correspond à vos besoins, vous n'arrivez pas à trouver une relation durable ou
+                  vous chercher une aventure ?
+                  <br>
+                  <a href="/register"> Creér un compte </a> dès maintenant et trouver la relation qui vous correspond.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
     </div>
   <?php endif; ?>
 </section>

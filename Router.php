@@ -63,6 +63,11 @@ $route->addMiddlewareStack(
       '/like/setDisLike',
       '/like/isLikedByUser',
       '/settings',
+      '/settings/newFirstName',
+      '/settings/newLastname',
+      '/settings/newAge',
+      '/settings/newEmail',
+      '/settings/newPassword',
       '/profil',
       '/profil/:digits',
       '/profil/isOnline',
@@ -93,7 +98,6 @@ $route->addMiddlewareStack(
         setLastVisited();
     }]
 );
-
 
 $route->add('/settings', 'get', function () {
     view('settings.php');
@@ -135,10 +139,24 @@ $route->add('/report/isReported', 'post', 'SignalUserController@isReported');
 $route->add('/block/isBlocked', 'post', 'SignalUserController@isBlocked');
 $route->add('/block/unblock', 'get', 'SignalUserController@unblock');
 $route->add('/block/getBlockedUsers', 'get', 'SignalUserController@getBlockedUsers');
+$route->add('/block/getBlockedUsers', 'get', 'SignalUserController@getBlockedUsers');
+
+$route->add('/settings/getUserInfo', 'get', 'SettingsController@getUserInfo')->addMiddleware(function () {
+    if (!isAuth()) {
+        redirect('/');
+    }
+});
+
+$route->add('/settings/newFirstname', 'post', 'SettingsController@newFirstname');
+$route->add('/settings/newLastname', 'post', 'SettingsController@newLastname');
+$route->add('/settings/newAge', 'post', 'SettingsController@newAge');
+$route->add('/settings/newEmail', 'post', 'SettingsController@newEmail');
+$route->add('/settings/newPassword', 'post', 'SettingsController@newPassword');
+
 /**
  * Seeder Route --- DEV ONLY.
  */
- $route->add('/seeder', 'get', 'seederController@storeSeed')->addMiddleware(function () {
+ $route->add('/seeder', 'get', 'SeederController@storeSeed')->addMiddleware(function () {
      if (SEEDER === null) {
          redirect('/');
      }

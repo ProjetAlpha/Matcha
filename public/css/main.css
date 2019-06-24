@@ -57,3 +57,11 @@ hr {
   top:0;
   bottom:0;
 }
+
+.box-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ededed;
+  padding:3%;
+}

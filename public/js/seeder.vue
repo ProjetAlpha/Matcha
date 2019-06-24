@@ -19,7 +19,7 @@
   // http://extreme-ip-lookup.com/json/?callback=getIP => city + lat + long.
   /*
    ----- Distance a vole d'oiseau entre 2 points.
-
+  http://www.geoplugin.net/javascript.gp = arrondisment pres.
   function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2-lat1);  // deg2rad below
@@ -136,6 +136,11 @@ console.log(getDistanceFromLatLonInKm(lat1, long1, lat2, long2));
         return Math.min(minValue + (Math.random() * (maxValue - minValue)),maxValue).toFixed(precision) * 1;
       },
 
+      randomOrientation(){
+        const orientation = ['Homosexuel', 'Bisexuel', 'Hétérosexuel'];
+        return (orientation[Math.floor(Math.random()*orientation.length)]);
+      },
+
       fillData(result){
         for (let i = 0; i < result.length; i++){
           result[i].score = this.randomScore()
@@ -143,6 +148,7 @@ console.log(getDistanceFromLatLonInKm(lat1, long1, lat2, long2));
           result[i].tags = this.randomTags()
           result[i].location = this.randomLocation()
           result[i].picture.name = result[i].picture.large.split('/').splice(-2).join('-')
+          result[i].orientation = this.randomOrientation()
         }
         // todo : modifier le genre et l'orientation.
         this.sendData(result)
@@ -152,7 +158,7 @@ console.log(getDistanceFromLatLonInKm(lat1, long1, lat2, long2));
       sendData(result){
         const url = window.location.protocol+'//'+window.location.host+'/seeder';
         axios.post(url, result).then(function (response) {
-          // --- console.log(response.data);
+          // ---- console.log(response.data);
         })
         .catch(function (error) {
           // --- console.log(error);

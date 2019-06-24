@@ -102,12 +102,6 @@ if (!function_exists('view')) {
     }
 }
 
-if (!function_exists('getDbConnection')) {
-    function getDbConnection()
-    {
-    }
-}
-
 if (!function_exists('isAuth')) {
     function isAuth()
     {
@@ -300,5 +294,20 @@ if (!function_exists('group_by')) {
         }
 
         return $result;
+    }
+}
+
+if (!function_exists('getIp')) {
+    function getIp()
+    {
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+        $ip = filter_var($ip, FILTER_VALIDATE_IP);
+        return ($ip);
     }
 }

@@ -6,7 +6,8 @@
           <div class="mr-t-3 mr-b-2" v-for="(value, name, index) in data">
             <span class="card-title">{{ title[name] }} </span>
             <div :class="classManager[name] ? offClass : logoClass" v-on:click="activateData(name)">
-              <p class="" style="width:10%;font-size:1em"> {{ data[name] }} </p>
+              <p v-if="name === 'password'" style="width:10%;font-size:1em"> ***** </p>   
+              <p v-else style="width:10%;font-size:1em"> {{ data[name] }} </p>
               <p class="right-align" style="width:100%;font-size:1vw!important">
                 <a class="btn-small green waves-effect waves-light basic-txt" href="#">
                   <i class="material-icons right">edit</i>Modifier</a>
@@ -14,9 +15,9 @@
               </div>
               <div :class="classManager[name] ? onClass : offClass">
                 <label :for="name" style="color:black!important"></label>
-                <input type="text" v-model="data[name]" class="validate" :name="name" :id="name" />
+                <input :type="getInputType(name)" v-model="data[name]" class="validate" :name="name" :id="name" />
                 <div class="card-action right-align valign-wrapper" style="border-top:none!important; width:100%;">
-                  <button type="submit" v-on:click="resetData(name)" class="right-align mr-r-3 basic-txt btn-small green waves-effect waves-light" value="">Confirmer</button>
+                  <button type="submit" v-on:click="sendData(name)" class="right-align mr-r-3 basic-txt btn-small green waves-effect waves-light" value="">Confirmer</button>
                   <button type="submit" v-on:click="cancelData(name)" class="center-align basic-txt btn-small green waves-effect waves-light" value="">Annuler</button>
                 </div>
               </div>
@@ -31,21 +32,18 @@
       props:['title'],
 
       created() {
-        // server request fetch data.
-        // function fetch data...
-        this.classManager = this.initObject(this.data, false)
-        this.tmpData = this.initObject(this.data, '')
+        this.$http.get('/settings/getUserInfo').then((response) => {
+          this.data = response.data
+          this.data.password = '******';
+          this.classManager = this.initObject(this.data, false)
+          this.tmpData = this.initObject(this.data, '')
+        });
       },
 
       data(){
         return {
           tmpData: '',
-          data: {
-            name:'joe',
-            lastname:'doh',
-            email:'test123@hotmail.fr',
-            password:'******'
-          },
+          data: '',
           onClass: 'input-field col s12',
           logoClass:'valign-wrapper',
           offClass:'none',
@@ -60,10 +58,10 @@
             this.classManager[key] =  this.classManager[key] ? false : true;
           }
         },
+
         resetData(key){
           if (this.classManager.hasOwnProperty(key))
             this.classManager[key] = false;
-          // ---------- server request... avec new data value.
         },
         cancelData(key){
           this.resetData(key);
@@ -83,6 +81,22 @@
             ([key, value]) => dst[key] = type
           );
           return (dst);
+        },
+
+        sendData(name){
+          const routeType = name.charAt(0).toUpperCase() + name.substring(1)
+          if (!this.data[name])
+            return ;
+          this.$http.post('/settings/new'+routeType, {[`${name}`]:this.data[name]});
+          this.resetData(name);
+        },
+
+        getInputType(name){
+          if (name == 'email')
+            return ('email');
+          if (name == 'password')
+            return ('password');
+          return ('text');
         }
       }
   }

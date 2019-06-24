@@ -1,9 +1,11 @@
 <?php
 
-require_once(dirname(__DIR__).'/Request.php');
+require_once('UserGeoLocTrait.php');
 
 class UserController extends Models
 {
+    use UserGeoLocTrait;
+
     public function __construct()
     {
         parent::__construct(createClassArray('model'));
@@ -13,7 +15,7 @@ class UserController extends Models
     {
         $request = new Request();
         $data = $request->get();
-        if (!keysExist(['username', 'password', 'email', 'lastname', 'firstname'], $data)) {
+        if (!keysExist(['username', 'password', 'email', 'lastname', 'firstname', 'age'], $data)) {
             redirect('/');
         }
         if ($this->fetch('User', ['username' => $data['username']], PDO::FETCH_ASSOC)) {
@@ -31,7 +33,8 @@ class UserController extends Models
               'password' => 'password|max:256|min:8',
               'mail' => 'mail|max:50|min:3',
               'lastname' => 'alpha|min:3|max:30',
-              'firstname' => 'alpha|min:3|max:30'
+              'firstname' => 'alpha|min:3|max:30',
+              'age' => 'digit|min:2|max:3'
             ],
             'user_register_forms.php',
             Message::$userMessages,
@@ -49,6 +52,7 @@ class UserController extends Models
               'username' => $data['username'],
               'lastname' => $data['lastname'],
               'firstname' => $data['firstname'],
+              'age' => $data['age'],
               'confirmation_link' => $link
             ]
         );
@@ -107,6 +111,7 @@ class UserController extends Models
         if (password_verify($data['password'], $query->password)) {
             $_SESSION['token'] = $query->password;
             $_SESSION['user_id'] = $query->id;
+            $this->getGeoLoc();
             redirect('/');
         } else {
             view(

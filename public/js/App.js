@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import navBar from './navBar.vue'
-import sayHi from './sayHi.vue'
 import searchMatch from './searchMatch.vue'
 import userRegister from './userRegister.vue'
 import userSettings from './userSettings.vue'
@@ -40,7 +39,6 @@ Vue.prototype.$isAuth = function() {
 };
 
 Vue.component('nav-bar', navBar);
-Vue.component('say-hi', sayHi);
 Vue.component('search-match', searchMatch);
 Vue.component('user-register', userRegister);
 Vue.component('user-settings', userSettings);

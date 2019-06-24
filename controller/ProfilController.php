@@ -1,10 +1,10 @@
 <?php
 
-require_once("ProfilEditTrait.php");
+require_once("ProfilTrait.php");
 
 class ProfilController extends Models
 {
-    use ProfilEditTrait;
+    use ProfilTrait;
 
     public function __construct()
     {

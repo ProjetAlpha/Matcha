@@ -71,26 +71,15 @@
         </div>
         <div class="collapsible-body">
           <ul class="collection">
-            <li class="row ml-v-align collection-item avatar" v-for="(value, name, index) in visiterLikes">
-              <div class="col s12 m4 l4">
+            <li class="row ml-v-align collection-item avatar" v-for="(value, name, index) in blockedUsers">
+              <div class="col s8 m4 l4">
                 <load-async-image :user-id="value.user_id" :profil-id="value.profil_id" img-style="center-img responsive-img rounded-img"></load-async-image>
               </div>
               <div class="col s8 m7 l7">
+                <a class="btn-floating btn-small red lighten-1 waves-effect waves-light right" @click="unblock(index, value.user_id)"><i class="large material-icons">close</i></a>
                 <p class="black-text">
                   {{value.firstname}} {{value.lastname}} <br>
-                  <span class="black-text" v-if="value.age">
-                    {{value.age}} ans
-                  </span>
-                  <br>
-                  <span class="black-text">
-                    {{value.localisation}}
-                  </span>
                 </p>
-                <div class="row mr-t-4" v-if="visiterLikesTags !== ''">
-                  <div class="chip blue white-text" v-for="(value, name, index) in visiterLikesTags[value.user_id]">
-                    #{{value.name}}
-                  </div>
-                </div>
                 <online-user-info :user-id="value.user_id"></online-user-info>
               </div>
             </li>
@@ -158,9 +147,13 @@ export default {
               this.blockedUsers = response.data.blockedUsers;
               this.blockedCount = Object.keys(this.blockedUsers).length
               this.blockFormat = this.blockedCount > 1 ? 'blockés' : 'blocké'
-              console.log(this.blockedUsers)
             }
           });
+        },
+
+        unblock(index, userId){
+          this.blockedUsers.splice(index, 1);
+          this.$http.post('/block/unblock', {profilId:userId});
         }
       }
   }

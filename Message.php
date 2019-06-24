@@ -16,6 +16,7 @@ class Message
         'bad_credential' => 'Mot de passe ou login incorrecte.',
         'image' => 'Ce format d\'image n est pas supporté.',
         'duplicate_img' => 'Le nom est déjá utilisé par une autre image.',
-        'name' => 'Ce tag n\'est pas valid.'
+        'name' => 'Ce tag n\'est pas valid.',
+        'age' => 'L\'age n\'est pas valid : il doit être compris entre 18 ans et 100 ans'
     ];
 }

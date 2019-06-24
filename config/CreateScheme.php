@@ -24,6 +24,7 @@ $scheme->add(
       password VARCHAR(256) NOT NULL,
       firstname VARCHAR(30) NOT NULL,
       lastname VARCHAR(30) NOT NULL,
+      age INT(3) NOT NULL,
       reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
 );
 
@@ -32,7 +33,6 @@ $scheme->add(
     'create',
     "id INT AUTO_INCREMENT PRIMARY KEY,
       user_id INT(11) NOT NULL,
-      age INT(3),
       bio TEXT,
       score INT(3),
       genre VARCHAR(5),

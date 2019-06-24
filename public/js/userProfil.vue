@@ -62,7 +62,7 @@
               <li class="cyan lighten-4 collection-item avatar" v-if="profilData.hasOwnProperty('bio') && profilData.bio !== null">
                 <span class="title">Bio</span>
                 <p class="black-text">
-                  {{profilData.bio}}
+                  {{profilData.bio.trim()}}
                 </p>
               </li>
               <li class="purple lighten-4 collection-item avatar" v-if="profilData.hasOwnProperty('score') && profilData.score !== null">
@@ -181,21 +181,18 @@ export default{
 
     blockUser(){
       this.$http.post('/block/add', {profilId:this.profilData.user_id}).then((response) => {
-        console.log(response.data)
       })
       this.isBlocked = true;
     },
 
     reportUser(){
       this.$http.post('/report/add', {profilId:this.profilData.user_id}).then((response) => {
-        console.log(response.data)
       })
       this.isReported = true;
     },
 
     unblockUser(){
       this.$http.post('/block/unblock', {profilId:this.profilData.user_id}).then((response) => {
-        console.log(response.data)
       })
       this.isBlocked = false;
     },
@@ -203,14 +200,12 @@ export default{
     fetchBlockedUser(){
       this.$http.post('/block/isBlocked', {profilId:this.profilData.user_id}).then((response) => {
         this.isBlocked = response.data && response.data.isBlocked == 1 ? true : false;
-        console.log(response.data)
       })
     },
 
     fetchReportedUser(){
       this.$http.post('/report/isReported', {profilId:this.profilData.user_id}).then((response) => {
         this.isReported = response.data && response.data.isReported == 1 ? true : false;
-        console.log(response.data)
       })
     }
   }

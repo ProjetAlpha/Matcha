@@ -31,8 +31,8 @@
 
     <?php if (isset($registerType) && $registerType == 'register'): ?>
       <user-register action="/create" title="Inscription"
-      :inputs="{username:'Nom d\'utilisateur', lastname:'Nom', firstname:'Prenom', email:'Email', password:'Mot de passe'}"
-      :submit="{name:'S\'inscrire', value:'register'}" :type="['text', 'text', 'text', 'email', 'password']"
+      :inputs="{username:'Nom d\'utilisateur', lastname:'Nom', firstname:'Prenom',age:'Age', email:'Email', password:'Mot de passe'}"
+      :submit="{name:'S\'inscrire', value:'register'}" :type="['text', 'text', 'text','text','email', 'password']"
       message="<?php if (isset($warning)) {
     echo $warning;
 }?>"></user-register>

@@ -1,6 +1,6 @@
 <?php
 
-class seederController extends Models
+class SeederController extends Models
 {
     public function __construct()
     {
@@ -24,13 +24,15 @@ class seederController extends Models
         foreach ($data as $value) {
             $id = 0;
             // modifier par sha1 + hash_equals au lieu de password_verify si besoin.
-            if (isset($value['login'], $value['name'], $value['email'])) {
+            if (isset($value['login'], $value['age'], $value['name'], $value['email'])) {
                 $sqlUser .= "('".$value['login']['username']."','".password_hash($value['login']['password'], PASSWORD_BCRYPT, ['cost' => 4])."','".$value['name']['first']."','"
-                .$value['name']['last']."',1,'".$value['email']."'),";
+                .$value['name']['last']."','".$value['age']."',1,'".$value['email']."'),";
             }
-            if (isset($value['location'], $value['age'], $value['gender'], $value['score'], $value['picture']) && isset($id)) {
-                $sqlProfil .= "('".$currentId."','".$value['age']."','".'lorem'."','"
-              .$value['score']."','".$value['gender']."','".$value['location']['city'].", France','".$value['picture']['large']."','".$value['picture']['name']."','".$value['location']['longitude']."','".$value['location']['latitude']."'),";
+            if (isset($value['location'], $value['gender'], $value['score'], $value['picture'], $value['orientation']) && isset($id)) {
+                $sqlProfil .= "('".$currentId."','".'lorem'."','"
+              .$value['score']."','".$value['gender']."','".$value['orientation']."','".$value['location']['city'].", France','"
+              .$value['picture']['large']."','".$value['picture']['name']."','".$value['location']['longitude'].
+              "','".$value['location']['latitude']."'),";
             }
 
             if (isset($value['tags']) && isset($id)) {
@@ -43,8 +45,10 @@ class seederController extends Models
         $sqlUserRes = substr($sqlUser, 0, -1);
         $sqlProfilRes = substr($sqlProfil, 0, -1);
         $sqlTagRes = substr($sqlTag, 0, -1);
-        mysqli_query($connection, "INSERT INTO User (username,password,firstname,lastname,is_confirmed,email) VALUES {$sqlUserRes}");
-        mysqli_query($connection, "INSERT INTO Profil (user_id,age,bio,score,genre,localisation,profile_pic_path,profile_pic_name,longitude,latitude) VALUES {$sqlProfilRes}");
+        mysqli_query($connection, "INSERT INTO User (username,password,firstname,lastname,age,is_confirmed,email) VALUES {$sqlUserRes}");
+        echo mysqli_errno($connection) . ": " . mysqli_error($connection) . "\n";
+        mysqli_query($connection, "INSERT INTO Profil (user_id,bio,score,genre,orientation,localisation,profile_pic_path,profile_pic_name,longitude,latitude)
+        VALUES {$sqlProfilRes}");
         mysqli_query($connection, "INSERT INTO Tag (user_id, name) VALUES {$sqlTagRes}");
         mysqli_close($connection);
     }
