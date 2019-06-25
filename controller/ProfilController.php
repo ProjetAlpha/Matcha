@@ -37,9 +37,17 @@ class ProfilController extends Models
             redirect('/');
         }
         if (!$isNewProfil) {
-            $this->insert('Profil', ['user_id' => $_SESSION['user_id'], $type => $data[$type]]);
+            $this->insert(
+                'Profil',
+                ['user_id' => $_SESSION['user_id']],
+                [$type => ($type == 'localisation') ? $data['city'].', '.$data['country'] : $data[$type]]
+            );
         } else {
-            $this->update('Profil', [$type => $data[$type]], ['user_id' => $_SESSION['user_id']]);
+            $this->update(
+                'Profil',
+                [$type => ($type == 'localisation') ? $data['city'].', '.$data['country'] : $data[$type]],
+                ['user_id' => $_SESSION['user_id']]
+            );
         }
     }
 
@@ -80,7 +88,17 @@ class ProfilController extends Models
         if (!keysExist(['profilId'], $data) || empty($data)) {
             redirect('/');
         }
-        // validate...
+        $validate = new Validate(
+            $data,
+            [
+            'profilId' => 'digit|max:11'
+          ],
+            'sendToJs',
+            Message::$userMessages
+        );
+        if (!empty($validate->loadedMessage)) {
+            redirect('/');
+        }
         $result = $this->user->getOnlineUser($data['profilId']);
         if (!$result) {
             redirect('/');
@@ -115,6 +133,17 @@ class ProfilController extends Models
         $data = $request->toJson();
 
         if (!keysExist(['user_id'], $data) || empty($data)) {
+            redirect('/');
+        }
+        $validate = new Validate(
+            $data,
+            [
+            'user_id' => 'digit|max:11'
+          ],
+            'sendToJs',
+            Message::$userMessages
+        );
+        if (!empty($validate->loadedMessage)) {
             redirect('/');
         }
         $result = $this->fetch('Profil', ['user_id' => $data['user_id']], PDO::FETCH_ASSOC);

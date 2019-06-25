@@ -17,6 +17,17 @@ class SignalUserController extends Models
         if (!keysExist(['profilId'], $data) || empty($data)) {
             redirect('/');
         }
+        $validate = new Validate(
+            $data,
+            [
+              'profilId' => 'digit|max:11'
+            ],
+            'sendToJs',
+            Message::$userMessages
+        );
+        if (!empty($validate->loadedMessage)) {
+            redirect('/');
+        }
         $this->insert('Reported', ['user_id' => $_SESSION['user_id'], 'reported_user' => $data['profilId']]);
     }
 
@@ -26,6 +37,17 @@ class SignalUserController extends Models
         $data = $request->toJson();
 
         if (!keysExist(['profilId'], $data) || empty($data)) {
+            redirect('/');
+        }
+        $validate = new Validate(
+            $data,
+            [
+              'profilId' => 'digit|max:11'
+            ],
+            'sendToJs',
+            Message::$userMessages
+        );
+        if (!empty($validate->loadedMessage)) {
             redirect('/');
         }
         $this->insert('Blocked', ['user_id' => $_SESSION['user_id'], 'blocked_user' => $data['profilId']]);
@@ -39,6 +61,17 @@ class SignalUserController extends Models
         if (!keysExist(['profilId'], $data) || empty($data)) {
             redirect('/');
         }
+        $validate = new Validate(
+            $data,
+            [
+              'profilId' => 'digit|max:11'
+            ],
+            'sendToJs',
+            Message::$userMessages
+        );
+        if (!empty($validate->loadedMessage)) {
+            redirect('/');
+        }
         $this->delete('Blocked', ['user_id' => $_SESSION['user_id'], 'blocked_user' => $data['profilId']]);
     }
 
@@ -48,6 +81,17 @@ class SignalUserController extends Models
         $data = $request->toJson();
 
         if (!keysExist(['profilId'], $data) || empty($data)) {
+            redirect('/');
+        }
+        $validate = new Validate(
+            $data,
+            [
+              'profilId' => 'digit|max:11'
+            ],
+            'sendToJs',
+            Message::$userMessages
+        );
+        if (!empty($validate->loadedMessage)) {
             redirect('/');
         }
         $isReported = 0;
@@ -64,6 +108,17 @@ class SignalUserController extends Models
         $data = $request->toJson();
 
         if (!keysExist(['profilId'], $data) || empty($data)) {
+            redirect('/');
+        }
+        $validate = new Validate(
+            $data,
+            [
+              'profilId' => 'digit|max:11'
+            ],
+            'sendToJs',
+            Message::$userMessages
+        );
+        if (!empty($validate->loadedMessage)) {
             redirect('/');
         }
         $isblocked = 0;

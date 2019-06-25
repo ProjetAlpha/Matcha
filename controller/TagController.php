@@ -18,15 +18,19 @@ class TagController extends Models
         $validate = new Validate(
             $data,
             [
-              'name' => 'alpha|max:50|min:3|max:256'
+              'tag' => 'alpha|min:3|max:256'
             ],
-            'editProfil.php',
+            'sendToJs',
             Message::$userMessages
         );
         if ($this->fetch('Tag', ['user_id' => $_SESSION['user_id'], 'name' => $data['name']])) {
             die();
         }
-        $this->insert('Tag', ['user_id' => $_SESSION['user_id'], 'name' => $data['name']]);
+        if (!empty($validate->loadedMessage)) {
+            echo encodeToJs(['Message' => $validate->loadedMessage]);
+        } else {
+            $this->insert('Tag', ['user_id' => $_SESSION['user_id'], 'name' => $data['name']]);
+        }
     }
 
     public function deleteTag()
@@ -39,12 +43,16 @@ class TagController extends Models
         $validate = new Validate(
             $data,
             [
-              'name' => 'alpha|max:50|min:3|max:256'
+              'tag' => 'alpha|min:3|max:256'
             ],
-            'editProfil.php',
+            'sendToJs',
             Message::$userMessages
         );
-        $this->delete('Tag', ['name' => $data['name']], ['user_id' => $_SESSION['user_id']]);
+        if (!empty($validate->loadedMessage)) {
+            echo encodeToJs(['Message' => $validate->loadedMessage]);
+        } else {
+            $this->delete('Tag', ['name' => $data['name']], ['user_id' => $_SESSION['user_id']]);
+        }
     }
 
     public function getTag()

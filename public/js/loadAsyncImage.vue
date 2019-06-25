@@ -1,7 +1,5 @@
 <template>
-  <div>
       <a :href="/profil/+profilId" target="_blank"><img :src="link" alt="" :class="imgStyle"/></a>
-  </div>
 </template>
 
 

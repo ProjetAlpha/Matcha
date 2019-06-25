@@ -32,7 +32,7 @@ trait UserGeoLocTrait
     public function getGeoLoc()
     {
         $geo = unserialize(file_get_contents('http://www.geoplugin.net/php.gp'));
-        $localisation = $geo['geoplugin_countryName'].', '.$geo['geoplugin_city'];
+        $localisation = $geo['geoplugin_city'].', '.$geo['geoplugin_countryName'];
         if (!$this->fetch('Profil', ['user_id' => $_SESSION['user_id']])) {
             $this->createLocation($geo, $localisation);
         } else {

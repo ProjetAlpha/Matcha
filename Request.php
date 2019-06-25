@@ -3,6 +3,7 @@
 class Request
 {
     private $request;
+    public $headers;
 
     public function __construct()
     {
@@ -22,6 +23,12 @@ class Request
                 $this->request = $input;
             }
         }
+        $this->setHeaders();
+    }
+
+    public function setHeaders()
+    {
+        $this->headers = getRequestHeaders();
     }
 
     public function get()

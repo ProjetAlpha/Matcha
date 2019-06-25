@@ -21,8 +21,14 @@ trait ProfilTrait
             $validate = new Validate($data, ['bio' => 'text|min:5|max:1024'], 'editProfil.php', Message::$userMessages);
             $type = 'bio';
         }
-        if (array_key_exists('localisation', $data) && !empty($data['localisation'])) {
-            $validate = new Validate($data, ['localisation' => 'alpha|min:3|max:256'], 'editProfil.php', Message::$userMessages);
+        if (keysExist(['city', 'country'], $data) && !empty($data)) {
+            $validate = new Validate(
+                $data,
+                ['city' => 'alpha|min:3|max:100', 'country' => 'alpha|min:3|max:100'],
+                'editProfil.php',
+                Message::$userMessages
+            );
+            echo encodeToJs(['city' => $data['city'], 'country' => $data['country']]);
             $type = 'localisation';
         }
         return ($type);

@@ -13,12 +13,15 @@ import loadAsyncImage from './loadAsyncImage.vue'
 import onlineUserInfo from './onlineUserInfo.vue'
 import seeder from './seeder.vue'
 import axios from 'axios'
+import {
+  setupAxios
+} from './setupAxios'
 
 Vue.prototype.$noUiSlider = noUiSlider;
-Vue.prototype.$http = axios;
 
+setupAxios(axios);
+Vue.prototype.$http = axios;
 Vue.prototype.$checkIfLogged = function() {
-  var vm = this;
   return new Promise((resolve, reject) => {
     axios.get('/isAuth')
       .then(response => {
@@ -31,11 +34,9 @@ Vue.prototype.$checkIfLogged = function() {
 };
 
 Vue.prototype.$isAuth = function() {
-  var vm = this
   this.$checkIfLogged().then(response => {
-      vm.isAuth = response ? response : false;
-    })
-    .catch(error => console.log(error));
+    this.isAuth = response ? response : false;
+  })
 };
 
 Vue.component('nav-bar', navBar);

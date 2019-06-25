@@ -26,6 +26,7 @@
                                         {{message}}
                                     </div>
                           </article>
+                          <input type="hidden" name="csrf_token" :value="$http.defaults.headers.post['csrf-token']">
                       </form>
                   </div>
               </div>

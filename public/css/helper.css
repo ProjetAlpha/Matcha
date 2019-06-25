@@ -164,6 +164,17 @@
   }
 }
 
+@media only screen and (min-width:200px) and (max-width:640px){
+  .center-img{
+    margin:2%;
+  }
+
+  .btn-small{
+    height: 30px!important;
+    font-size: 10px!important;
+  }
+}
+
 .card-action{
   padding:2%!important;
 }

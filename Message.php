@@ -10,13 +10,15 @@ class Message
         'username' => "Le nom d'utilisateur doit uniquement contenir des caractéres alphanumériques",
         'lastname' => "Le nom doit uniquement contenir des caractéres alphabétiques",
         'firstname' => "Le prénom doit uniquement contenir des caractéres alphabétiques",
-        'mail' => "Ce mail n'est pas valid.",
+        'email' => "Ce mail n'est pas valid.",
         'reset_email' => "Votre mail a été modifié.",
         'password' => "Le mot de passe doit contenir au moins 8 caractéres, une lettre en minuscule, une lettre en majuscule et un chiffre.",
         'bad_credential' => 'Mot de passe ou login incorrecte.',
         'image' => 'Ce format d\'image n est pas supporté.',
         'duplicate_img' => 'Le nom est déjá utilisé par une autre image.',
         'name' => 'Ce tag n\'est pas valid.',
-        'age' => 'L\'age n\'est pas valid : il doit être compris entre 18 ans et 100 ans'
+        'age' => 'L\'age n\'est pas valid : il doit être compris entre 18 et 100 ans',
+        'localisation' => 'Le format de la localisation est incorrect : [Alpha],[espace][Alpha]',
+        'tag' => 'Le tag doit contenir uniquement contenir des caractéres alphabétiques'
     ];
 }

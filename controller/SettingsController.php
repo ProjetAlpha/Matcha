@@ -35,12 +35,16 @@ class SettingsController extends Models
         $validate = new Validate(
             $data,
             [
-            'mail' => 'mail|max:50|min:3'
+            'email' => 'email|max:50|min:3'
           ],
-            'settings.php',
+            'sendToJs',
             Message::$userMessages
         );
-        $this->update('User', ['email' => $data['email']], ['id' => $_SESSION['user_id']]);
+        if (!empty($validate->loadedMessage)) {
+            echo encodeToJs(['Message' => $validate->loadedMessage]);
+        } else {
+            $this->update('User', ['email' => $data['email']], ['id' => $_SESSION['user_id']]);
+        }
     }
 
     public function newAge()
@@ -56,10 +60,14 @@ class SettingsController extends Models
             [
             'age' => 'digit|min:2|max:2'
           ],
-            'settings.php',
+            'sendToJs',
             Message::$userMessages
         );
-        $this->update('User', ['age' => $data['age']], ['id' => $_SESSION['user_id']]);
+        if (!empty($validate->loadedMessage)) {
+            echo encodeToJs(['Message' => $validate->loadedMessage]);
+        } else {
+            $this->update('User', ['age' => $data['age']], ['id' => $_SESSION['user_id']]);
+        }
     }
 
     public function newLastname()
@@ -75,10 +83,14 @@ class SettingsController extends Models
             [
             'lastname' => 'alpha|min:3|max:30'
           ],
-            'settings.php',
+            'sendToJs',
             Message::$userMessages
         );
-        $this->update('User', ['lastname' => $data['lastname']], ['id' => $_SESSION['user_id']]);
+        if (!empty($validate->loadedMessage)) {
+            echo encodeToJs(['Message' => $validate->loadedMessage]);
+        } else {
+            $this->update('User', ['lastname' => $data['lastname']], ['id' => $_SESSION['user_id']]);
+        }
     }
 
     public function newFirstname()
@@ -94,10 +106,14 @@ class SettingsController extends Models
             [
             'firstname' => 'alpha|min:3|max:30'
           ],
-            'settings.php',
+            'sendToJs',
             Message::$userMessages
         );
-        $this->update('User', ['firstname' => $data['firstname']], ['id' => $_SESSION['user_id']]);
+        if (!empty($validate->loadedMessage)) {
+            echo encodeToJs(['Message' => $validate->loadedMessage]);
+        } else {
+            $this->update('User', ['firstname' => $data['firstname']], ['id' => $_SESSION['user_id']]);
+        }
     }
 
     public function newPassword()
@@ -113,11 +129,15 @@ class SettingsController extends Models
             [
             'password' => 'password|max:256|min:8'
           ],
-            'settings.php',
+            'sendToJs',
             Message::$userMessages
         );
-        $hash = password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 12]);
-        $this->update('User', ['password' => $hash], ['id' => $_SESSION['user_id']]);
-        $_SESSION['token'] = $hash;
+        if (!empty($validate->loadedMessage)) {
+            echo encodeToJs(['Message' => $validate->loadedMessage]);
+        } else {
+            $hash = password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 12]);
+            $this->update('User', ['password' => $hash], ['id' => $_SESSION['user_id']]);
+            $_SESSION['token'] = $hash;
+        }
     }
 }

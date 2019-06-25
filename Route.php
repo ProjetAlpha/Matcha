@@ -203,12 +203,12 @@ class Route
                     array_values(array_slice(explode('/', $currentUrl), -1))[0]
                 ));
             }
-            if (isset($_GET) && $method == 'get') {
+            if (isset($_GET) && $method == strtolower($serverMethod)) {
                 if ($currentUrl == $url) {
                     return ($this->getClass($class, $classMethod));
                 }
             }
-            if (isset($_POST) && $method == 'post') {
+            if (isset($_POST) && $method == strtolower($serverMethod)) {
                 if ($currentUrl == $url) {
                     return ($this->getClass($class, $classMethod));
                 }

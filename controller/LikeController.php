@@ -15,11 +15,17 @@ class LikeController extends Models
         if (!keysExist(['profilId'], $data) || empty($data)) {
             redirect('/');
         }
-
-        // validate...
-        // en ligne : middelware qui update la date a chaque fois que le user consulte une page.
-        // col last_visited = time().
-        // si + de 30 min. inactif => derniere heure / date de visite.
+        $validate = new Validate(
+            $data,
+            [
+            'profilId' => 'digit|max:11'
+          ],
+            'sendToJs',
+            Message::$userMessages
+        );
+        if (!empty($validate->loadedMessage)) {
+            redirect('/');
+        }
         $this->insert('Likes', ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id']]);
     }
 
@@ -31,7 +37,17 @@ class LikeController extends Models
         if (!keysExist(['profilId'], $data) || empty($data)) {
             redirect('/');
         }
-        // validate...
+        $validate = new Validate(
+            $data,
+            [
+            'profilId' => 'digit|max:11'
+          ],
+            'sendToJs',
+            Message::$userMessages
+        );
+        if (!empty($validate->loadedMessage)) {
+            redirect('/');
+        }
         $this->delete('Likes', ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id']]);
     }
 
@@ -42,6 +58,17 @@ class LikeController extends Models
         $data = $request->toJson();
 
         if (!keysExist(['profilId'], $data) || empty($data)) {
+            redirect('/');
+        }
+        $validate = new Validate(
+            $data,
+            [
+            'profilId' => 'digit|max:11'
+          ],
+            'sendToJs',
+            Message::$userMessages
+        );
+        if (!empty($validate->loadedMessage)) {
             redirect('/');
         }
         $result = $this->fetch('Likes', ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id']], PDO::FETCH_ASSOC);
@@ -57,6 +84,17 @@ class LikeController extends Models
         $data = $request->toJson();
 
         if (!keysExist(['profilId'], $data) || empty($data)) {
+            redirect('/');
+        }
+        $validate = new Validate(
+            $data,
+            [
+            'profilId' => 'digit|max:11'
+          ],
+            'sendToJs',
+            Message::$userMessages
+        );
+        if (!empty($validate->loadedMessage)) {
             redirect('/');
         }
         $result = $this->fetch('Likes', ['user_id' => $_SESSION['user_id'], 'liked_by' => $data['profilId']], PDO::FETCH_ASSOC);

@@ -11,10 +11,21 @@ class ImageController extends Models
     {
         $request = new Request();
         $data = $request->toJson();
-        // validate
         if (!keysExist(['name'], $data) || empty($data)) {
             redirect('/');
         }
+        // regex pour les names des images.
+        /*$validate = new Validate(
+            $data,
+            [
+            'name' => 'alphanum'
+          ],
+            'sendToJs',
+            Message::$userMessages
+        );
+        if (!empty($validate->loadedMessage)) {
+            redirect('/');
+        }*/
         $path = dirname(__DIR__).'/ressources/images/'.$_SESSION['user_id'].'/'.sha1($data['name']).'.png';
         if (file_exists($path)) {
             $this->update('Profil', ['profile_pic_path' => $path, 'profile_pic_name' => $data['name']], ['user_id' => $_SESSION['user_id']]);
@@ -27,14 +38,25 @@ class ImageController extends Models
         // nombres images inferieur a 5.
         $request = new Request();
         $data = $request->toJson();
-        // validate
+        // regex pour les names des images ---
         if (!keysExist(['image', 'name'], $data) || empty($data)) {
+            redirect('/');
+        }
+
+        $validate = new Validate(
+            $data,
+            [
+              'image' => 'image'
+          ],
+            'sendToJs',
+            Message::$userMessages
+        );
+        if (!empty($validate->loadedMessage)) {
             redirect('/');
         }
         if ($this->fetch('Image', ['user_id' => $_SESSION['user_id'], 'name' => $data['name']])) {
             view('editProfil.php', ['warning' => Message::$userMessages['duplicate_img']]);
         }
-        $validate = new Validate($data, ['image' => $data['image']], 'editProfil.php', Message::$userMessages);
         if (!file_exists(dirname(__DIR__).'/ressources/images/'.$_SESSION['user_id'])) {
             mkdir(dirname(__DIR__).'/ressources/images/'.$_SESSION['user_id']);
         }
@@ -51,6 +73,17 @@ class ImageController extends Models
         $data = $request->toJson();
         // validate
         if (!keysExist(['name'], $data) || empty($data)) {
+            redirect('/');
+        }
+        $validate = new Validate(
+            $data,
+            [
+              'name' => 'alphanum'
+          ],
+            'sendToJs',
+            Message::$userMessages
+        );
+        if (!empty($validate->loadedMessage)) {
             redirect('/');
         }
         $path = dirname(__DIR__).'/ressources/images/'.$_SESSION['user_id'].'/'.sha1($data['name']).'.png';
@@ -102,6 +135,17 @@ class ImageController extends Models
         $data = $request->toJson();
         // validate
         if (!keysExist(['userId'], $data) || empty($data)) {
+            redirect('/');
+        }
+        $validate = new Validate(
+            $data,
+            [
+              'userId' => 'digit|max:11'
+          ],
+            'sendToJs',
+            Message::$userMessages
+        );
+        if (!empty($validate->loadedMessage)) {
             redirect('/');
         }
         $result = $this->fetch('Profil', ['user_id' => $data['userId']], PDO::FETCH_ASSOC);

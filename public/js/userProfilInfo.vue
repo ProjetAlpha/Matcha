@@ -8,10 +8,10 @@
         <div class="collapsible-body">
           <ul class="collection">
             <li class="row ml-v-align collection-item avatar" v-for="(value, name, index) in visiterLikes">
-              <div class="col s12 m4 l4">
+              <div class="col s6 m4 l4">
                 <load-async-image :user-id="value.user_id" :profil-id="value.profil_id" img-style="center-img responsive-img rounded-img"></load-async-image>
               </div>
-              <div class="col s8 m7 l7">
+              <div class="col s12 m7 l7">
                 <p class="black-text">
                   {{value.firstname}} {{value.lastname}} <br>
                   <span class="black-text" v-if="value.age">
@@ -40,7 +40,7 @@
         <div class="collapsible-body">
           <ul class="collection">
             <li class="row ml-v-align collection-item avatar" v-for="(value, name, index) in visiterViews">
-              <div class="col s12 m4 l4">
+              <div class="col s6 m4 l4">
                 <load-async-image :user-id="value.user_id" :profil-id="value.profil_id" img-style="center-img responsive-img rounded-img"></load-async-image>
               </div>
               <div class="col s8 m7 l7">
@@ -72,7 +72,7 @@
         <div class="collapsible-body">
           <ul class="collection">
             <li class="row ml-v-align collection-item avatar" v-for="(value, name, index) in blockedUsers">
-              <div class="col s8 m4 l4">
+              <div class="col s6 m4 l4">
                 <load-async-image :user-id="value.user_id" :profil-id="value.profil_id" img-style="center-img responsive-img rounded-img"></load-async-image>
               </div>
               <div class="col s8 m7 l7">

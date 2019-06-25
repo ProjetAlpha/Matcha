@@ -104,7 +104,6 @@ export default{
     created(){
       this.$checkIfLogged().then(response => {
         this.user = response ? response : false;
-        console.log(this.isAuth())
       });
     },
 

@@ -56,6 +56,12 @@ $route->add('/', 'get', function () {
     }
 });
 
+/*
+   - MiddlewareStack pour les requêtes js.
+   -
+ */
+
+
 $route->addMiddlewareStack(
     [
       '/like/setLike',
@@ -91,7 +97,13 @@ $route->addMiddlewareStack(
       '/report/isReported',
       '/block/isBlocked',
       '/block/unblock',
-    'function' => function () {
+      '/settings/newFirstname',
+      '/settings/newLastname',
+      '/settings/newAge',
+      '/settings/newEmail',
+      '/settings/newPassword',
+    'function' => function () use ($csrf) {
+        var_dump($csrf->check());
         if (!isAuth()) {
             redirect('/');
         }

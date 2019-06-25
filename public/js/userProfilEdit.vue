@@ -2,7 +2,7 @@
   <div class="row valign-wrapper" style="width:100%;height:100%">
     <div id="modal1" class="teal lighten-5 modal modal-fixed-footer">
       <div class="modal-content" style="margin:0!important">
-        <div class="columns is-multiline" v-if="fetchedImg.length > 0">
+        <div class="row" v-if="fetchedImg.length > 0">
           <div class="col s12 m4 l4 mr-t-1" v-for="(value, name, index) in fetchedImg">
             <div class="image is-3by2">
               <img :src="'data:image/png;base64,'+value.path" alt="" class="responsive-img" :name="value.name">
@@ -67,26 +67,29 @@
 
         <span class="card-title mr-t-2">Localisation</span>
         <div class="col s12 m12 l12" v-if="isModifLocalisation === true" style="padding:0!important">
-          <input type="text" v-model="profilData.localisation" class="validate" name="localisation" id="localisation"/>
-          <button class="btn green waves-effect waves-light" @click="modifLocalisation">Confirmer</button>
-          <button class="btn green waves-effect waves-light" @click="isModifLocalisation = false">Annuler</button>
+          <span>Ville</span>
+          <input type="text" v-model="city" class="validate" name="localisation" id="localisation"/>
+          <span>Pays</span>
+          <input type="text" v-model="country" class="validate" name="localisation" id="localisation"/>
+          <button class="btn btn-small green waves-effect waves-light" @click="modifLocalisation">Confirmer</button>
+          <button class="btn btn-small green waves-effect waves-light" @click="isModifLocalisation = false">Annuler</button>
         </div>
 
         <div class="col s12" v-if="isModifLocalisation === false" style="padding:0!important">
-          <p style="font-size:1em"> {{profilData.localisation}}
-            <button class="right btn green waves-effect waves-light" @click="isModifLocalisation = true"><i class="material-icons right">edit</i>Editer</button>
+          <p style="font-size:1em"> {{city+', '+country}}
+            <button class="right btn btn-small green waves-effect waves-light" @click="isModifLocalisation = true"><i class="material-icons right">edit</i>Editer</button>
           </p>
         </div>
         <span class="card-title mr-t-2">Biographie</span>
         <div class="row" style="margin-bottom:0!important">
           <div class="col s12 m12 l12 mr-t-1" v-if="isModifBio">
             <textarea @change="resizeTextarea" class="cyan lighten-4 materialize-textarea" :style="{height:textAreaHeight, background:'white'}" v-model="bio"></textarea>
-            <button type="submit" class="btn green waves-effect waves-light" @click="modifBio">Confirmer</button>
-            <button type="submit" class="btn green waves-effect waves-light" @click="resetBio">Annuler</button>
+            <button type="submit" class="btn btn-small green waves-effect waves-light" @click="modifBio">Confirmer</button>
+            <button type="submit" class="btn btn-small green waves-effect waves-light" @click="resetBio">Annuler</button>
           </div>
           <div class="input-field col s12" v-if="isModifBio === false">
             <p class="mr-b-2 p-wbreak black-text"> {{bio}}
-              <button type="submit" class="btn green right waves-effect waves-light" @click="showModifBio"><i class="material-icons right">edit</i>Editer</button>
+              <button type="submit" class="btn btn-small green right waves-effect waves-light" @click="showModifBio"><i class="material-icons right">edit</i>Editer</button>
             </p>
           </div>
         </div>
@@ -142,8 +145,6 @@
   </div>
 </template>
 
-
-
 <script>
   export default{
 
@@ -160,6 +161,10 @@
         }
         if (this.profilData.hasOwnProperty('bio')){
           this.bio = this.profilData.bio
+        }
+        if (this.profilData.hasOwnProperty('localisation')){
+          this.city = this.profilData.localisation.split(',')[0]
+          this.country = this.profilData.localisation.split(',')[1].trim()
         }
       });
       this.$http.get('/profil/edit/getTag').then((response) => {
@@ -187,6 +192,8 @@
 
     data(){
       return {
+        city:'',
+        country:'',
         fetchedImg:[],
         isProfilPicSelected:false,
         profilPicSrc:'',
@@ -307,10 +314,13 @@
       },
 
       modifLocalisation(){
-        this.$http.post('/profil/edit/modif', {localisation:this.profilData.localisation}).then((response) => {
-          console.log(response.data)
+        this.$http.post('/profil/edit/modif', {city:this.city, country:this.country}).then((response) => {
+          if (response.data && response.data.hasOwnProperty('city')){
+            this.city = response.data.city
+            this.country = response.data.country
+            this.isModifLocalisation = false;
+          }
         });
-        this.isModifLocalisation = false;
       },
 
       resizeTextarea(e){

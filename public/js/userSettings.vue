@@ -6,7 +6,7 @@
           <div class="mr-t-3 mr-b-2" v-for="(value, name, index) in data">
             <span class="card-title">{{ title[name] }} </span>
             <div :class="classManager[name] ? offClass : logoClass" v-on:click="activateData(name)">
-              <p v-if="name === 'password'" style="width:10%;font-size:1em"> ***** </p>   
+              <p v-if="name === 'password'" style="width:10%;font-size:1em"> ***** </p>
               <p v-else style="width:10%;font-size:1em"> {{ data[name] }} </p>
               <p class="right-align" style="width:100%;font-size:1vw!important">
                 <a class="btn-small green waves-effect waves-light basic-txt" href="#">
@@ -22,6 +22,15 @@
                 </div>
               </div>
             </div>
+            <div class="row">
+              <article class="message col s12 m12 l12" style="padding:0!important" v-if="message.length > 0 && Array.isArray(message)">
+                <div class="message-body">
+                  <p v-for="(value, name, index) in message">
+                    {{value}}
+                  </p>
+                </div>
+              </article>
+           </div>
           </div>
         </div>
       </div>
@@ -42,6 +51,7 @@
 
       data(){
         return {
+          message:'',
           tmpData: '',
           data: '',
           onClass: 'input-field col s12',
@@ -87,8 +97,16 @@
           const routeType = name.charAt(0).toUpperCase() + name.substring(1)
           if (!this.data[name])
             return ;
-          this.$http.post('/settings/new'+routeType, {[`${name}`]:this.data[name]});
-          this.resetData(name);
+          this.$http.post('/settings/new'+routeType, {[`${name}`]:this.data[name]}).then((response) => {
+            if (response.data && response.data.hasOwnProperty('Message') && response.data.Message.length > 0
+            && Array.isArray(response.data.Message)){
+              this.message = response.data.Message
+              this.cancelData(name);
+            }else {
+              this.message = '';
+              this.resetData(name);
+            }
+          });
         },
 
         getInputType(name){

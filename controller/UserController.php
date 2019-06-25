@@ -31,7 +31,7 @@ class UserController extends Models
             [
               'username' => 'alphanum|min:3|max:30',
               'password' => 'password|max:256|min:8',
-              'mail' => 'mail|max:50|min:3',
+              'email' => 'email|max:50|min:3',
               'lastname' => 'alpha|min:3|max:30',
               'firstname' => 'alpha|min:3|max:30',
               'age' => 'digit|min:2|max:3'
@@ -145,7 +145,7 @@ class UserController extends Models
         $validate = new Validate(
             $data,
             [
-            'mail' => 'mail|max:50|min:3'
+            'email' => 'email|max:50|min:3'
           ],
             'user_register_forms.php',
             Message::$userMessages,
