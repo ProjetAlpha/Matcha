@@ -65,3 +65,17 @@ hr {
   border-bottom: 1px solid #ededed;
   padding:3%;
 }
+
+.search-border{
+  border-radius: 56px 56px 56px 56px;
+  -moz-border-radius: 56px 56px 56px 56px;
+  -webkit-border-radius: 56px 56px 56px 56px;
+  border: 0px solid #000000;
+}
+
+.prefix-search{
+    position: absolute;
+    width: 3rem;
+    font-size: 2rem;
+    top: .5rem;
+}

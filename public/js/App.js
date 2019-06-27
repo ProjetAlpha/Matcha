@@ -11,6 +11,9 @@ import userProfilEdit from './userProfilEdit.vue'
 import notifications from './notifications.vue'
 import loadAsyncImage from './loadAsyncImage.vue'
 import onlineUserInfo from './onlineUserInfo.vue'
+import chatMessage from './chatMessage.vue'
+import inputChatMessage from './inputChatMessage.vue'
+import chat from './chat.vue'
 import seeder from './seeder.vue'
 import axios from 'axios'
 import {
@@ -52,6 +55,9 @@ Vue.component('notifications', notifications);
 Vue.component('seeder', seeder);
 Vue.component('load-async-image', loadAsyncImage);
 Vue.component('online-user-info', onlineUserInfo);
+Vue.component('chat', chat);
+Vue.component('chat-message', chatMessage);
+Vue.component('input-chat-message', inputChatMessage);
 
 new Vue({
   el: '#app'

@@ -106,8 +106,9 @@ $scheme->add(
     'create',
     "id INT AUTO_INCREMENT PRIMARY KEY,
     room_id INT(11) NOT NULL,
-    msg_src TEXT NOT NULL,
-    msg_dst TEXT NOT NULL"
+    user_id INT(11) NOT NULL,
+    content TEXT NOT NULL,
+    date DATETIME default NULL"
 );
 
 $scheme->add(
@@ -116,6 +117,14 @@ $scheme->add(
     "id INT AUTO_INCREMENT PRIMARY KEY,
     is_dev boolean not null default 0,
     token VARCHAR(256)"
+);
+
+$scheme->add(
+    'Matched',
+    'create',
+    "id INT AUTO_INCREMENT PRIMARY KEY,
+    user_1 INT(11),
+    user_2 INT(11)"
 );
 
 if (isset($argv[1]) && !empty($argv[1])) {

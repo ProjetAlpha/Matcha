@@ -26,6 +26,10 @@ class LikeController extends Models
         if (!empty($validate->loadedMessage)) {
             redirect('/');
         }
+        $result = $this->fetch('Likes', ['user_id' => $_SESSION['user_id'], 'liked_by' => $data['profilId']], PDO::FETCH_ASSOC);
+        if (isset($result['liked_by']) && $result['liked_by'] == $data['profilId']) {
+            $this->insert('Matched', ['user_1' => $_SESSION['user_id'], 'user_2' => $data['profilId']]);
+        }
         $this->insert('Likes', ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id']]);
     }
 

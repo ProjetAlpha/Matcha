@@ -362,8 +362,9 @@
           this.isPreview = false;
           this.$http.post('/profil/edit/addImg', {image:this.imageData, name:this.imageName}).then((response) => {
             // si on a une image en double => msg ...
-            if (response.data.path)
+            if (response.data.path){
               this.fetchedImg.push({name:this.imageName, path:response.data.path});
+            }
           });
           this.imageData = '';
           this.$refs.fileInput.value = '';

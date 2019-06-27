@@ -146,7 +146,7 @@ if (!function_exists('setLastVisited')) {
 }
 
 if (!function_exists('checkBase64Format')) {
-    function checkBase64Format($value)
+    function checkBase64Format($image)
     {
         $explode = explode(',', $image);
         $allow = ['png', 'jpg', 'jpeg'];

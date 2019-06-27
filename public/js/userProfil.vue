@@ -66,7 +66,7 @@
                 </p>
               </li>
               <li class="purple lighten-4 collection-item avatar" v-if="profilData.hasOwnProperty('score') && profilData.score !== null">
-                <span class="title">Score de popularité</span>
+                <span class="title">Popularité</span>
                 <a class="black-text right-align mr-l-1">
                   {{profilData.score}}
                 </a>

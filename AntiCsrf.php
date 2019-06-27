@@ -29,11 +29,16 @@ class AntiCsrf
     public function check()
     {
         $req = new Request();
-        $data = $req->headers;
+        $headers = $req->getHeaders();
+        $data = $req->get();
 
-        if (!isset($data['Csrf-Token'])) {
-            return (false);
+        if (isset($headers['Csrf-Token'])) {
+            return (hash_equals($_SESSION['csrf_token'], $headers['Csrf-Token']));
         }
-        return (hash_equals($_SESSION['csrf_token'], $data['Csrf-Token']));
+
+        if (isset($data['csrf_token'])) {
+            return (hash_equals($_SESSION['csrf_token'], $data['csrf_token']));
+        }
+        return (false);
     }
 }

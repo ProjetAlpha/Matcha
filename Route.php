@@ -152,10 +152,10 @@ class Route
      */
     private function getClass($name, $method, $param = null)
     {
-        $this->runMiddleware();
         if (!isset($name, $method)) {
             return ;
         }
+        $this->runMiddleware();
         if (file_exists(__DIR__."/controller/".$name.".php")) {
             require_once(__DIR__."/controller/".$name.".php");
         }
@@ -259,11 +259,9 @@ class Route
             $this->middleware[$this->currentUrl]();
         }
         if (isset($this->middlewareStack) && is_array($this->middlewareStack)) {
-            foreach ($this->middlewareStack as $targetRoutes) {
-                foreach ($targetRoutes as $url) {
-                    if ($this->currentUrl == $url) {
-                        return ($targetRoutes['function']());
-                    }
+            foreach ($this->middlewareStack as $middlewareGroup) {
+                if (in_array($this->currentUrl, $middlewareGroup) && is_callable($middlewareGroup['callback'])) {
+                    return ($middlewareGroup['function']());
                 }
             }
         }

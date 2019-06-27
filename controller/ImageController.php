@@ -42,7 +42,6 @@ class ImageController extends Models
         if (!keysExist(['image', 'name'], $data) || empty($data)) {
             redirect('/');
         }
-
         $validate = new Validate(
             $data,
             [
