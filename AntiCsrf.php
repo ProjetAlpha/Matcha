@@ -32,10 +32,9 @@ class AntiCsrf
         $headers = $req->getHeaders();
         $data = $req->get();
 
-        if (isset($headers['Csrf-Token'])) {
-            return (hash_equals($_SESSION['csrf_token'], $headers['Csrf-Token']));
+        if (isset($headers['X-Csrf-Token'])) {
+            return (hash_equals($_SESSION['csrf_token'], $headers['X-Csrf-Token']));
         }
-
         if (isset($data['csrf_token'])) {
             return (hash_equals($_SESSION['csrf_token'], $data['csrf_token']));
         }

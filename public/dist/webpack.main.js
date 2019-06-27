@@ -1225,7 +1225,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _nod
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"setupAxios\", function() { return setupAxios; });\nfunction loadCsrfHeader(axios) {\n  var csrf_token = document.querySelector(\"meta[name='csrf-token']\").getAttribute(\"content\");\n  axios.defaults.headers.post['csrf-token'] = csrf_token;\n  axios.defaults.headers.put['csrf-token'] = csrf_token;\n  axios.defaults.headers[\"delete\"]['csrf-token'] = csrf_token;\n  axios.defaults.headers.patch['csrf-token'] = csrf_token;\n  axios.defaults.headers.trace = {};\n  axios.defaults.headers.trace['csrf-token'] = csrf_token;\n}\n\nfunction setupAxios(axios) {\n  loadCsrfHeader(axios);\n}\n\n//# sourceURL=webpack:///./public/js/setupAxios.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"setupAxios\", function() { return setupAxios; });\nfunction loadCsrfHeader(axios) {\n  var csrf_token = document.querySelector(\"meta[name='csrf-token']\").getAttribute(\"content\");\n  axios.defaults.headers.post['X-csrf-token'] = csrf_token;\n  axios.defaults.headers.put['X-csrf-token'] = csrf_token;\n  axios.defaults.headers[\"delete\"]['X-csrf-token'] = csrf_token;\n  axios.defaults.headers.patch['X-csrf-token'] = csrf_token;\n  axios.defaults.headers.trace = {};\n  axios.defaults.headers.trace['X-csrf-token'] = csrf_token;\n}\n\nfunction setupAxios(axios) {\n  loadCsrfHeader(axios);\n}\n\n//# sourceURL=webpack:///./public/js/setupAxios.js?");
 
 /***/ }),
 

@@ -242,8 +242,8 @@ class Route
      */
     public function addMiddlewareStack($target)
     {
-        if (is_array($target) && isset($target['function'])
-          && is_callable($target['function']) && count($target) > 1) {
+        if (is_array($target) && isset($target['callback'])
+          && is_callable($target['callback']) && count($target) > 1) {
             $this->middlewareStack[] = $target;
         }
     }
@@ -261,7 +261,7 @@ class Route
         if (isset($this->middlewareStack) && is_array($this->middlewareStack)) {
             foreach ($this->middlewareStack as $middlewareGroup) {
                 if (in_array($this->currentUrl, $middlewareGroup) && is_callable($middlewareGroup['callback'])) {
-                    return ($middlewareGroup['function']());
+                    return ($middlewareGroup['callback']());
                 }
             }
         }

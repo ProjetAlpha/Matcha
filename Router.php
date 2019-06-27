@@ -75,19 +75,13 @@ $route->addMiddlewareStack(
       '/settings/newEmail',
       '/settings/newPassword',
       '/profil/isOnline',
-      '/profil/getProfilViews',
       '/profil/getProfilPicById',
-      '/profil/getProfilLikes',
       '/profil/edit/modif',
-      '/profil/edit/getProfilData',
       '/profil/edit/addTag',
-      '/profil/edit/getImg',
       '/profil/edit/deleteTag',
-      '/profil/edit/getTag',
       '/profil/edit/addImg',
       '/profil/edit/deleteImg',
       '/profil/edit/addProfilImg',
-      '/profil/edit/getProfilPic',
       '/profil/visit/getConsultedProfilPic',
       '/report/add',
       '/block/add',
@@ -100,12 +94,11 @@ $route->addMiddlewareStack(
       '/settings/newEmail',
       '/settings/newPassword',
       '/settings/getUserInfo',
-      '/chat/fetchMatchedUser',
       '/doLogin',
-      '/reset/sendResetLink',
+      '/create',
       '/reset/doReset',
       'callback' => function () use ($csrf) {
-          if (!$crsf->check()) {
+          if (!$csrf->check()) {
               redirect('/');
           }
       }
@@ -144,6 +137,7 @@ $route->addMiddlewareStack(
       '/profil/visit/getConsultedProfilPic',
       '/report/add',
       '/block/add',
+      '/block/getBlockedUsers',
       '/report/isReported',
       '/block/isBlocked',
       '/block/unblock',
@@ -200,7 +194,6 @@ $route->add('/block/add', 'post', 'SignalUserController@blockUser');
 $route->add('/report/isReported', 'post', 'SignalUserController@isReported');
 $route->add('/block/isBlocked', 'post', 'SignalUserController@isBlocked');
 $route->add('/block/unblock', 'post', 'SignalUserController@unblock');
-$route->add('/block/getBlockedUsers', 'get', 'SignalUserController@getBlockedUsers');
 $route->add('/block/getBlockedUsers', 'get', 'SignalUserController@getBlockedUsers');
 
 $route->add('/chat/fetchMatchedUser', 'get', 'ChatController@fetchMatchedUser');

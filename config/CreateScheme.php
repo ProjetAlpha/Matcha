@@ -123,8 +123,8 @@ $scheme->add(
     'Matched',
     'create',
     "id INT AUTO_INCREMENT PRIMARY KEY,
-    user_1 INT(11),
-    user_2 INT(11)"
+    user_id INT(11),
+    user_profil_id INT(11)"
 );
 
 if (isset($argv[1]) && !empty($argv[1])) {
