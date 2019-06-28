@@ -98,7 +98,8 @@ $scheme->add(
     'create',
     "id INT AUTO_INCREMENT PRIMARY KEY,
     user1_id INT(11) NOT NULL,
-    user2_id INT(11) NOT NULL"
+    user2_id INT(11) NOT NULL,
+    last_msg_date DATETIME default NULL"
 );
 
 $scheme->add(

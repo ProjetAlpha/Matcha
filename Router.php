@@ -213,7 +213,7 @@ $route->add('/settings/newPassword', 'post', 'SettingsController@newPassword');
 /**
  * Seeder Route --- DEV ONLY.
  */
- $route->add('/seeder', 'get', 'SeederController@storeSeed')->addMiddleware(function () {
+ $route->add('/seeder', 'post', 'SeederController@storeSeed')->addMiddleware(function () {
      if (SEEDER === null) {
          redirect('/');
      }
