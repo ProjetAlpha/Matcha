@@ -9,7 +9,7 @@ class ChatController extends Models
 
     public function fetchMatchedUser()
     {
-        $matchedUser = $this->getMatchedUser($_SESSION['user_id']);
-        echo encodeToJs('matched' => $matchedUser);
+        $matchedUser = $this->chat->getMatchedUser($_SESSION['user_id']);
+        echo encodeToJs(['matched' => group_by('room_id', $matchedUser)]);
     }
 }

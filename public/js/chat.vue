@@ -10,7 +10,7 @@
     </div>
     <div :class="isMessageLoaded ? 'row hide' : 'row'">
       <div class="col s12 m10 push-m1 l9 push-l1">
-        <ul class="collection">
+        <ul class="collection" v-for="(value, name, index) in matchedUserChat">
           <li class="row collection-item avatar">
             <div class="col s8 m6 l6">
               <img src="/Photo_profil.jpg" alt="" class="s-responsive-img rounded-img materialboxed">
@@ -19,7 +19,7 @@
               <div class="col s8 m5 l4">
                 <div class="vertical-center">
                   <a @click="loadMessage"><p class="flow-text">
-                    Message
+                    {{value[0].content}}
                   </p></a>
                 </div>
               </div>
@@ -38,6 +38,10 @@
 <script>
 
 export default {
+  created(){
+    this.fetchConversation()
+  },
+
   data(){
       return {
         isMessageLoaded:'',
@@ -68,8 +72,9 @@ export default {
 
     fetchConversation(){
       this.$http.get('/chat/fetchMatchedUser').then((response) => {
+        console.log(response.data)
         if (response.data){
-          this.matchedUserChat = reponse.data
+          this.matchedUserChat = response.data.matched
         }
       });
     },
