@@ -4,7 +4,7 @@
     <div :class="isMessageLoaded ? 'row hide' : 'row'">
       <div class="input-field col s12 m10 push-m1 l9 push-l1 grey lighten-2 search-border">
         <i class="material-icons prefix">search</i>
-        <input placeholder="Rechercher" id="icon_prefix" type="text" class="validate" style="border-bottom:0!important;box-shadow:0 0px!important">
+        <input placeholder="Rechercher" id="icon_prefix" @keyup="getMatchedUser" v-model="searchInput" type="text" class="validate" style="border-bottom:0!important;box-shadow:0 0px!important" required>
         <label for="icon_prefix"></label>
       </div>
     </div>
@@ -69,7 +69,8 @@ export default {
         user:'',
         isMessageLoaded:'',
         matchedUserSearch:'',
-        matchedUserChat:''
+        matchedUserChat:'',
+        searchInput:''
       }
   },
 
@@ -116,7 +117,6 @@ export default {
       this.$http.get('/chat/fetchMatchedUser').then((response) => {
         if (response.data){
           this.matchedUserChat = response.data.matched
-          this.selectedRoom = this.matchedUserChat[this.currentRoomId]
           for (const property in this.matchedUserChat){
             if (this.matchedUserChat.hasOwnProperty(property)){
                 this.sortMsgTime(this.matchedUserChat[property])
@@ -126,7 +126,6 @@ export default {
       });
 
       setInterval(() => {this.$http.get('/chat/fetchMatchedUser').then((response) => {
-        //console.log(response.data)
         if (response.data){
           this.matchedUserChat = response.data.matched
           this.selectedRoom = this.matchedUserChat[this.currentRoomId]
@@ -138,6 +137,15 @@ export default {
           }
         });
       }, 1000)
+    },
+
+    getMatchedUser(){
+      if (this.searchInput !== ''){
+          console.log(this.searchInput)
+          this.$http.post('/chat/searchMatchedUser', {search:this.searchInput}).then((response) => {
+            console.log(response.data)
+          });
+      }
     },
 
     setProfilName(e, room){

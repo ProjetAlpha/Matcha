@@ -61,7 +61,7 @@ $route->add('/', 'get', function () {
 });
 
 /*
-   - MiddlewareStack pour les requêtes js et les requetes post des formulaires.
+   - MiddlewareStack pour les requêtes post en js et les requetes post des formulaires.
  */
 
 $route->addMiddlewareStack(
@@ -149,6 +149,7 @@ $route->addMiddlewareStack(
       '/settings/newPassword',
       '/chat/fetchMatchedUser',
       '/chat/addMessage',
+      '/chat/searchMatchedUser',
       'callback' => function () {
           if (!isAuth()) {
               redirect('/');
@@ -212,6 +213,7 @@ $route->add('/settings/newPassword', 'post', 'SettingsController@newPassword');
 
 $route->add('/chat/addMessage', 'post', 'ChatController@addMessage');
 $route->add('/chat/fetchMatchedUser', 'get', 'ChatController@fetchMatchedUser');
+$route->add('/chat/searchMatchedUser', 'post', 'ChatController@searchMatchedUser');
 
 /**
  * Seeder Route --- DEV ONLY.

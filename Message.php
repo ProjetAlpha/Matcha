@@ -19,6 +19,7 @@ class Message
         'name' => 'Ce tag n\'est pas valid.',
         'age' => 'L\'age n\'est pas valid : il doit être compris entre 18 et 100 ans',
         'localisation' => 'Le format de la localisation est incorrect : [Alpha],[espace][Alpha]',
-        'tag' => 'Le tag doit contenir uniquement contenir des caractéres alphabétiques'
+        'tag' => 'Le tag doit contenir uniquement contenir des caractéres alphabétiques',
+        'search' => 'Aucun résultat'
     ];
 }

@@ -21,7 +21,7 @@ class ChatController extends Models
         if (!keysExist(['roomId', 'message', 'time'], $data) || empty($data)) {
             redirect('/');
         }
-        var_dump($data);
+        //var_dump($data);
         /*$validate = new Validate(
             $data,
             [
@@ -34,5 +34,28 @@ class ChatController extends Models
         );*/
         $this->insert('Message', ['user_id' => $_SESSION['user_id'], 'room_id' => $data['roomId'],'content' => $data['message'], 'date' => $data['time']]);
         $this->insert('Rooms', ['last_msg_date'], ['id' => $data['roomId']]);
+    }
+
+    public function searchMatchedUser()
+    {
+        $request = new Request();
+        $data = $request->toJson();
+
+        if (!keysExist(['search'], $data) || empty($data)) {
+            redirect('/');
+        }
+        $validate = new Validate(
+            $data,
+            [
+            'search' => 'alpha|min:1|max:30'
+          ],
+            'sendToJs',
+            Message::$userMessages
+        );
+        if (!empty($validate->loadedMessage)) {
+            return ;
+        }
+        $result = $this->chat->findMatchedUser($_SESSION['user_id'], $data['search']);
+        echo json_encode(['searchMatchedUser' => $result]);
     }
 }
