@@ -97,6 +97,7 @@ $route->addMiddlewareStack(
       '/doLogin',
       '/create',
       '/reset/doReset',
+      '/chat/addMessage',
       'callback' => function () use ($csrf) {
           if (!$csrf->check()) {
               redirect('/');
@@ -147,6 +148,7 @@ $route->addMiddlewareStack(
       '/settings/newEmail',
       '/settings/newPassword',
       '/chat/fetchMatchedUser',
+      '/chat/addMessage',
       'callback' => function () {
           if (!isAuth()) {
               redirect('/');
@@ -196,8 +198,6 @@ $route->add('/block/isBlocked', 'post', 'SignalUserController@isBlocked');
 $route->add('/block/unblock', 'post', 'SignalUserController@unblock');
 $route->add('/block/getBlockedUsers', 'get', 'SignalUserController@getBlockedUsers');
 
-$route->add('/chat/fetchMatchedUser', 'get', 'ChatController@fetchMatchedUser');
-
 $route->add('/settings/getUserInfo', 'get', 'SettingsController@getUserInfo')->addMiddleware(function () {
     if (!isAuth()) {
         redirect('/');
@@ -209,6 +209,9 @@ $route->add('/settings/newLastname', 'post', 'SettingsController@newLastname');
 $route->add('/settings/newAge', 'post', 'SettingsController@newAge');
 $route->add('/settings/newEmail', 'post', 'SettingsController@newEmail');
 $route->add('/settings/newPassword', 'post', 'SettingsController@newPassword');
+
+$route->add('/chat/addMessage', 'post', 'ChatController@addMessage');
+$route->add('/chat/fetchMatchedUser', 'get', 'ChatController@fetchMatchedUser');
 
 /**
  * Seeder Route --- DEV ONLY.

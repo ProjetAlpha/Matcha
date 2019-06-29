@@ -1,12 +1,12 @@
 <template>
   <div class="row">
-    <span v-if="last_visited !== false && elaspedTimeLastVisited <= 45"><i class="material-icons" style="color:#4caf50;">lens</i>
+    <span v-if="last_visited !== false && elaspedTimeLastVisited <= 45 && last_visited !== ''"><i class="material-icons" style="color:#4caf50;">lens</i>
       En ligne
     </span>
-    <span v-if="last_visited === false || elaspedTimeLastVisited > 45">
+    <span v-if="last_visited === false || elaspedTimeLastVisited > 45 && last_visited !== ''">
       <i class="material-icons" style="color:#dc4c46;">lens</i>Hors ligne
       <div class="col s12 m12 l12" v-if="elaspedTimeLastVisited !== false">
-        <span style=""></i>Derniére connexion {{last_visited}}</span>
+        <span style=""></i>Derniére connexion {{new Date(last_visited).toLocaleDateString("fr-FR", { month: 'long', day: 'numeric', hour: "numeric", minute:"numeric"})}}</span>
       </div>
     </span>
   </div>

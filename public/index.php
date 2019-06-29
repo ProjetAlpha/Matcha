@@ -9,7 +9,20 @@
     require_once(dirname(__DIR__).'/AntiCsrf.php');
     loadSession();
     $csrf = new AntiCsrf();
-    require_once(dirname(__DIR__).'/RegisterModel.php');
 
+    require_once(dirname(__DIR__).'/RegisterModel.php');
+    $redis = new Redis();
+    $redis->connect('redis', '6379');
+    // ---> Mettre en cache le resultat de la recherche pour chaque user.
+    // ---> Mettre en cache le resultat des suggestions pour chaque user.
+    // store dans un hash avec user_id
+    // Trier :
+    // sort by 'age' / 'popularite' / 'localisation'[+ proche - proche => distance] / 'tags'
+    //
+    // limit pour la pagination
+    // Filtrer :
+    // by 'tags=[]'
+    // by 'localisation=[]'
+    // by 'age > 5 ..'
     // -------------------- LOAD ROUTES --------------------
     require_once(dirname(__DIR__).'/Router.php');

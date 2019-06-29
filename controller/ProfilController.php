@@ -147,14 +147,15 @@ class ProfilController extends Models
             redirect('/');
         }
         $result = $this->fetch('Profil', ['user_id' => $data['user_id']], PDO::FETCH_ASSOC);
+        $info = $this->fetch('User', ['id' => $data['user_id']], PDO::FETCH_ASSOC);
         if (!$result || empty($result['profile_pic_path'])) {
             $defaultImg = dirname(__DIR__).'/ressources/images/default-profile.png';
             $path = base64_encode(file_get_contents($defaultImg));
-            echo encodeToJs(['path' => $path, 'name' => 'defaultProfil']);
+            echo encodeToJs(['path' => $path, 'name' => 'defaultProfil', 'firstname' => $info['firstname'], 'lastname' => $info['lastname']]);
         } else {
             $path = base64_encode(file_get_contents($result['profile_pic_path']));
             $name = $result['profile_pic_name'];
-            echo encodeToJs(['path' => $path ?? null, 'name' => $name ?? null]);
+            echo encodeToJs(['path' => $path ?? null, 'name' => $name ?? null, 'firstname' => $info['firstname'], 'lastname' => $info['lastname']]);
         }
     }
 }

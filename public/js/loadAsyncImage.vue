@@ -1,12 +1,16 @@
 <template>
-      <a :href="/profil/+profilId" target="_blank"><img :src="link" alt="" :class="imgStyle"/></a>
+      <a :href="/profil/+profilId" target="_blank"><img :src="link" alt="" :class="imgStyle"/>
+        <div v-if="needInfo">
+          {{lastname}} {{firstname}}
+        </div>
+      </a>
 </template>
 
 
 <script>
 export default {
 
-  props:['userId', 'profilId', 'imgStyle'],
+  props:['userId', 'profilId', 'imgStyle', 'needInfo'],
 
   created(){
     this.loadPic(this.userId)
@@ -14,7 +18,9 @@ export default {
 
   data(){
     return {
-      link:''
+      link:'',
+      lastname:'',
+      firstname:''
     }
   },
 
@@ -22,7 +28,7 @@ export default {
     getProfilPicById(id){
       return new Promise((resolve, reject) => {
         this.$http.post('/profil/getProfilPicById', {user_id:id}).then((response) => {
-          resolve(response.data.path)
+          resolve(response.data)
         });
       })
     },
@@ -33,8 +39,10 @@ export default {
 
     loadPic(id){
       this.fetchImgPic(id).then((response) => {
-        if (response !== null && response !== undefined){
-          this.link = 'data:image/png;base64,'+response;
+        if (response!== null && response!== undefined){
+          this.link = 'data:image/png;base64,'+response.path;
+          this.lastname = response.lastname
+          this.firstname = response.firstname
         }
       });
     }

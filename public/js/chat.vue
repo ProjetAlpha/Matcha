@@ -13,23 +13,31 @@
         <ul class="collection" v-for="(value, name, index) in matchedUserChat">
           <li class="row collection-item avatar">
             <div class="col s8 m6 l6">
-              <img src="/Photo_profil.jpg" alt="" class="s-responsive-img rounded-img materialboxed">
+              <load-async-image needInfo="1" :user-id="value[0].user_profil_id" :profil-id="value[0].user_profil_id" img-style="center-img responsive-img rounded-img"></load-async-image>
+              <online-user-info :user-id="value[0].user_profil_id"></online-user-info>
             </div>
-            <div class="row">
-              <div class="col s8 m5 l4">
-                <div class="vertical-center">
-                  <a @click="loadMessage"><p class="flow-text">
-                    {{value[0].content}}
-                  </p></a>
-                </div>
+            <div class="row mr-t-4">
+                <div class="col s8 m6 l6">
+
+                      <a style="" @click="loadMessage(value, name)">
+                          <h6 class="truncate">
+                            <span v-if="value[value.length - 1].user_msg_id == user.id">
+                              Vous :
+                            </span>
+                            <span v-else-if="user !== ''">
+                              {{value[value.length - 1].firstname}} :
+                            </span>
+                            {{value[value.length - 1].content}}
+                          </h6>
+                      </a>
+                  </div>
               </div>
-            </div>
           </li>
         </ul>
       </div>
     </div>
     <div v-if="isMessageLoaded === true">
-      <chat-message @showMainChat="resetloadedMessage($event)"></chat-message>
+      <chat-message @showMainChat="resetloadedMessage($event)" :messages="selectedRoom" :user="user"></chat-message>
     </div>
   </div>
 
@@ -40,10 +48,25 @@
 export default {
   created(){
     this.fetchConversation()
+    this.$checkIfLogged().then(response => {
+      this.user = response ? response : false;
+    });
+  },
+
+  updated(){
+    //this.selectedRoom = this.matchedUserChat[this.currentRoomId]
   },
 
   data(){
       return {
+        currentLastname:'',
+        currentFirstname:'',
+        currentRoomId:'',
+        lastname:[],
+        firstname:[],
+        dstUser:'',
+        selectedRoom:'',
+        user:'',
         isMessageLoaded:'',
         matchedUserSearch:'',
         matchedUserChat:''
@@ -70,13 +93,59 @@ export default {
       // qd on clique sur le resultat => fire message
     },
 
+    compareMsgTime(a, b){
+
+      const msgATime = new Date(a.post_msg_time)
+      const msgBTime = new Date(b.post_msg_time)
+
+      let compare = 0;
+      if (msgATime > msgBTime){
+        compare = 1
+      }else if (msgATime < msgBTime){
+        compare = -1
+      }
+      return compare
+    },
+
+    sortMsgTime(room){
+      room.sort(this.compareMsgTime)
+      return ;
+    },
+
     fetchConversation(){
       this.$http.get('/chat/fetchMatchedUser').then((response) => {
-        console.log(response.data)
         if (response.data){
           this.matchedUserChat = response.data.matched
-        }
+          this.selectedRoom = this.matchedUserChat[this.currentRoomId]
+          for (const property in this.matchedUserChat){
+            if (this.matchedUserChat.hasOwnProperty(property)){
+                this.sortMsgTime(this.matchedUserChat[property])
+              }
+            }
+          }
       });
+
+      setInterval(() => {this.$http.get('/chat/fetchMatchedUser').then((response) => {
+        //console.log(response.data)
+        if (response.data){
+          this.matchedUserChat = response.data.matched
+          this.selectedRoom = this.matchedUserChat[this.currentRoomId]
+          for (const property in this.matchedUserChat){
+            if (this.matchedUserChat.hasOwnProperty(property)){
+                this.sortMsgTime(this.matchedUserChat[property])
+              }
+            }
+          }
+        });
+      }, 1000)
+    },
+
+    setProfilName(e, room){
+      if (e.firstname && e.lastname && !this.matchedUserChat[room].hasOwnProperty('firstname')){
+        this.matchedUserChat[room].firstname = e.firstname
+        this.matchedUserChat[room].lastname = e.lastname
+      }
+      this.isUpdated = 1
     },
 
     getRooms(){
@@ -96,9 +165,12 @@ export default {
       // ajouter un message avec cette room.
     },
 
-    loadMessage(){
+    loadMessage(roomMsg, name){
       // load les messages de la room_id.
       this.isMessageLoaded = true
+      //this.sortMsgTime(roomMsg)
+      this.currentRoomId = name
+      this.selectedRoom = roomMsg
     },
 
     resetloadedMessage(event){
