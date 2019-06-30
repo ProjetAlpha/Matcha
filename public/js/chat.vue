@@ -1,6 +1,6 @@
 <template>
 
-  <div class="container" style="max-width:100%!important">
+  <div class="container" style="max-width:100%!important;width:100%!important">
     <div :class="isMessageLoaded ? 'row hide' : 'row'">
       <div class="input-field col s12 m10 push-m1 l9 push-l1 grey lighten-2 search-border">
         <i class="material-icons prefix">search</i>
@@ -66,6 +66,10 @@ export default {
     });
   },
 
+  updated(){
+
+  },
+
   data(){
       return {
         currentLastname:'',
@@ -126,6 +130,8 @@ export default {
       });
 
       setInterval(() => {this.$http.get('/chat/fetchMatchedUser').then((response) => {
+        //console.log('fetching data')
+        //console.log(response.data)
         if (response.data){
           this.matchedUserChat = response.data.matched
           if (this.matchedUserChat[this.currentRoomId])

@@ -10,10 +10,16 @@
 <script>
 export default {
 
-  props:['userId', 'profilId', 'imgStyle', 'needInfo'],
+  props:['profilId', 'userId', 'imgStyle', 'needInfo'],
 
   created(){
-    this.loadPic(this.userId)
+    this.loadPic(this.profilId)
+  },
+
+  mounted(){
+    this.$watch('profilId', () => {
+      this.loadPic(this.profilId)
+    }, {immediate:true});
   },
 
   data(){
@@ -39,12 +45,17 @@ export default {
 
     loadPic(id){
       this.fetchImgPic(id).then((response) => {
+        console.log(response.data)
         if (response!== null && response!== undefined){
           this.link = 'data:image/png;base64,'+response.path;
           this.lastname = response.lastname
           this.firstname = response.firstname
         }
       });
+    },
+
+    destroyed(){
+
     }
   }
 }

@@ -1,22 +1,21 @@
 <template>
-  <div :class="hideMessage ? 'hide row' : 'row'">
+  <div :class="hideMessage ? 'hide row' : 'row'" style="width:100%;height:100%">
     <div class="row">
       <div class="col">
         <a @click="showHistoric"><i class="material-icons medium left">keyboard_arrow_left</i>Revenir en arriére</a>
       </div>
     </div>
-    <div class="col s12 m10 push-m1 l8 offset-l2" style="overflow:auto;height:70%;">
-      <ul class="collection">
+    <div class="col s12 m10 push-m1 l8 offset-l2" style="height:100%">
+      <ul class="collection" style="overflow-y:auto!important;height:calc(100vh - 25rem);" ref="chat" @mousewheel="stopScroll = true">
         <li class="row collection-item avatar" v-if="Array.isArray(messages) && messages[0].hasOwnProperty('content')">
           <div class="row" style="padding:0!important;margin:0!important" v-for="(value, name, index) in messages">
-            <div class="col s12 m6 offset-m2 l8 offset-l2">
-              <div :class="value.hasOwnProperty('user_msg_id')
-              && value.user_msg_id == user.id ? 'right' : ''">
+            <div class="row center" v-if="value.hasOwnProperty('user_msg_id')" style="font-size:12px;margin-top:18px;margin-bottom:18px">
+              <span style="color:#bdbdbd">
                 {{new Date(value.msg_time).toLocaleDateString("fr-FR", { month: 'long', day: 'numeric', hour: "numeric", minute:"numeric"})}}
-              </div>
+              </span>
             </div>
             {{index}}
-            <div class="col s12 m6 offset-m2 l8 offset-l2">
+            <div class="col s12 m8 offset-m2 l8 offset-l2">
                 <div :class="value.hasOwnProperty('user_msg_id')
                 && value.user_msg_id == user.id ? 'chip blue white-text right' : 'chip grey lighten-2 black-text'">
                   {{value.content}}
@@ -36,10 +35,32 @@
 export default{
   props:['roomId', 'messages','user'],
 
+  created(){
+    this.initalMsgLength = this.messages.length
+  },
+
+  mounted(){
+    const elem = this.$refs.chat
+    this.initialHeight = elem.scrollHeight
+    elem.scrollTop = elem.scrollHeight
+  },
+
+  updated(){
+    if (this.messages.length > this.initalMsgLength && this.stopScroll === false){
+        this.scrollBottom()
+        this.initalMsgLength = this.messages.length
+    }
+  },
+
   data(){
     return {
+      initalMsgLength:0,
+      stopScroll:false,
+      updatedHeight:'',
+      initialHeight:'',
       hideMessage:'',
-      showMainChat:''
+      showMainChat:'',
+      userScroll:false,
     }
   },
 
@@ -52,8 +73,15 @@ export default{
     },
 
     addMessageToRoom(e){
-      if (this.messages !== '' && this.messages !== undefined)
+      if (this.messages !== '' && this.messages !== undefined){
         this.messages.push(e)
+        this.scrollBottom()
+      }
+    },
+
+    scrollBottom(){
+      const elem = this.$refs.chat
+      elem.scrollTop = elem.scrollHeight
     }
   }
 }
