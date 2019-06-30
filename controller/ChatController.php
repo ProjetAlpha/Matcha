@@ -32,8 +32,12 @@ class ChatController extends Models
             'sendToJs',
             Message::$userMessages
         );*/
-        $this->insert('Message', ['user_id' => $_SESSION['user_id'], 'room_id' => $data['roomId'],'content' => $data['message'], 'date' => $data['time']]);
-        $this->insert('Rooms', ['last_msg_date'], ['id' => $data['roomId']]);
+        $this->insert('Message', [
+          'user_id' => $_SESSION['user_id'],
+          'room_id' => $data['roomId'],
+          'content' => $data['message'],
+          'date' => $data['time']]);
+        $this->insert('Rooms', ['last_msg_date' => $data['time']], ['id' => $data['roomId']]);
     }
 
     public function searchMatchedUser()
@@ -57,5 +61,39 @@ class ChatController extends Models
         }
         $result = $this->chat->findMatchedUser($_SESSION['user_id'], $data['search']);
         echo json_encode(['searchMatchedUser' => $result]);
+    }
+
+    public function findUserRoom()
+    {
+        $request = new Request();
+        $data = $request->toJson();
+
+        if (!keysExist(['userId'], $data) || empty($data)) {
+            redirect('/');
+        }
+        $validate = new Validate(
+            $data,
+            [
+          'userId' => 'digit|min:1|max:11'
+        ],
+            'sendToJs',
+            Message::$userMessages
+      );
+        if (!empty($validate->loadedMessage)) {
+            return ;
+        }
+        $roomId = 0;
+        $haveMessages = false;
+        if (($result = $this->chat->getRoom($_SESSION['user_id'], $data['userId'])) !== false) {
+            if ($this->fetch('Message', ['room_id' => $result['id']])) {
+                $haveMessages = true;
+            }
+            $roomId = $result['id'];
+        } else {
+            $this->insert('Rooms', ['user1_id' => $_SESSION['user_id'], 'user2_id' => $data['userId']]);
+            $room = $this->fetch('Rooms', ['user1_id' => $_SESSION['user_id'], 'user2_id' => $data['userId']]);
+            $roomId = $room['id'];
+        }
+        echo encodeToJs(['room_id' => $roomId, 'messageExist' => $haveMessages]);
     }
 }

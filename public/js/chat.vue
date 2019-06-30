@@ -4,11 +4,25 @@
     <div :class="isMessageLoaded ? 'row hide' : 'row'">
       <div class="input-field col s12 m10 push-m1 l9 push-l1 grey lighten-2 search-border">
         <i class="material-icons prefix">search</i>
-        <input placeholder="Rechercher" id="icon_prefix" @keyup="getMatchedUser" v-model="searchInput" type="text" class="validate" style="border-bottom:0!important;box-shadow:0 0px!important" required>
+        <input placeholder="Rechercher" id="icon_prefix" @keyup="getMatchedUser" v-model="searchInput" type="text" class="validate"
+        style="border-bottom:0!important;box-shadow:0 0px!important;width:calc(78% - 1rem)" required>
         <label for="icon_prefix"></label>
+        <a @click="cancelSearch"><i class="material-icons mr-t-1" style="float:right">clear</i></a>
       </div>
     </div>
-    <div :class="isMessageLoaded ? 'row hide' : 'row'">
+    <div :class="isSearchActivated && searchResult ? 'row' : 'row hide'">
+        <div class="col s12 m10 push-m1 l9 push-l1" style="height:100%">
+          <div class="card">
+            <div class="card-content">
+                <span v-if="searchResult.length === 0"> Aucun résultat </span>
+                <a @click="findUserRoom(value.user_profil_id)" class="card-title mr-l-3" style="font-size:18px;" v-for="(value, name, index) in searchResult">
+                  {{value.firstname}} {{value.lastname}}
+                </a>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div :class="isMessageLoaded || isSearchActivated ? 'row hide' : 'row'">
       <div class="col s12 m10 push-m1 l9 push-l1">
         <ul class="collection" v-for="(value, name, index) in matchedUserChat">
           <li class="row collection-item avatar">
@@ -17,21 +31,20 @@
               <online-user-info :user-id="value[0].user_profil_id"></online-user-info>
             </div>
             <div class="row mr-t-4">
-                <div class="col s8 m6 l6">
-
-                      <a style="" @click="loadMessage(value, name)">
-                          <h6 class="truncate">
-                            <span v-if="value[value.length - 1].user_msg_id == user.id">
-                              Vous :
-                            </span>
-                            <span v-else-if="user !== ''">
-                              {{value[value.length - 1].firstname}} :
-                            </span>
-                            {{value[value.length - 1].content}}
-                          </h6>
-                      </a>
-                  </div>
+              <div class="col s8 m6 l6">
+                <a style="" @click="loadMessage(value, name)">
+                  <h6 class="truncate">
+                    <span v-if="value[value.length - 1].hasOwnProperty('user_msg_id') && value[value.length - 1].user_msg_id == user.id">
+                      Vous :
+                    </span>
+                    <span v-else-if="user !== '' && value[value.length - 1].hasOwnProperty('user_msg_id')">
+                      {{value[value.length - 1].firstname}} :
+                    </span>
+                    <span v-if="value[value.length - 1].hasOwnProperty('content')"> {{value[value.length - 1].content}} </span>
+                  </h6>
+                </a>
               </div>
+            </div>
           </li>
         </ul>
       </div>
@@ -53,10 +66,6 @@ export default {
     });
   },
 
-  updated(){
-    //this.selectedRoom = this.matchedUserChat[this.currentRoomId]
-  },
-
   data(){
       return {
         currentLastname:'',
@@ -65,33 +74,24 @@ export default {
         lastname:[],
         firstname:[],
         dstUser:'',
-        selectedRoom:'',
+        selectedRoom:false,
         user:'',
-        isMessageLoaded:'',
+        isMessageLoaded:false,
+        isSearchActivated:false,
         matchedUserSearch:'',
         matchedUserChat:'',
-        searchInput:''
+        searchInput:'',
+        searchResult:false
       }
   },
 
   methods:{
-    // Rechercher la personne matche => nouvelle conversation ou reprendre la conversation.
-    // vue pour les messages des users (user_id | room_id [user_id1, user_id2])
-    // bouton ajouter une conversation : liste des personnes matches (like mutuelle).
-    // user_id 1 et user_id2 => room_id => tout les messages = room_id | user_id (user_id doit etre assoces a room_id, sinon nop).
-    // like mutuelle => match => peut chat.
-    // liste des personnes match dans l'apercu du chat.
-    //
     search(){
-      // chercher les users matches + les conversations associees si elles existe.
       this.$http.get('/chat/searchMatchedUser').then((response) => {
         if (response.data){
           this.matchedUserSearch = reponse.data
         }
       });
-      // filtrer en tps reel le nom de la personne si conversation ou matchée. (v-model + watcher!)
-      // en dessous de search affiche le resultat.
-      // qd on clique sur le resultat => fire message
     },
 
     compareMsgTime(a, b){
@@ -128,7 +128,8 @@ export default {
       setInterval(() => {this.$http.get('/chat/fetchMatchedUser').then((response) => {
         if (response.data){
           this.matchedUserChat = response.data.matched
-          this.selectedRoom = this.matchedUserChat[this.currentRoomId]
+          if (this.matchedUserChat[this.currentRoomId])
+            this.selectedRoom = this.matchedUserChat[this.currentRoomId]
           for (const property in this.matchedUserChat){
             if (this.matchedUserChat.hasOwnProperty(property)){
                 this.sortMsgTime(this.matchedUserChat[property])
@@ -141,10 +142,14 @@ export default {
 
     getMatchedUser(){
       if (this.searchInput !== ''){
-          console.log(this.searchInput)
+          this.isSearchActivated = true
           this.$http.post('/chat/searchMatchedUser', {search:this.searchInput}).then((response) => {
-            console.log(response.data)
+            if (response.data && response.data.hasOwnProperty('searchMatchedUser')){
+              this.searchResult = response.data.searchMatchedUser
+            }
           });
+      }else {
+        this.isSearchActivated = false
       }
     },
 
@@ -156,27 +161,24 @@ export default {
       this.isUpdated = 1
     },
 
-    getRooms(){
-      // si la room existe, charge la room et les message associes.
+    cancelSearch(){
+      this.isSearchActivated = false
+      this.searchInput = ''
     },
 
-    createRoom(){
-      // si la room n'existe pas => creer une room pour les 2 users.
-    },
-
-    getMessage(){
-      // prendre tout les messages associes avec cette room.
-    },
-
-    addMessage(){
-      // date + text.
-      // ajouter un message avec cette room.
+    findUserRoom(userId){
+        let roomId = 0;
+        this.$http.post('/chat/findUserRoom', {userId:userId}).then((response) => {
+          roomId = response.data.room_id
+          this.currentRoomId = roomId
+          this.selectedRoom = response.data.messageExist ? this.matchedUserChat[roomId] : [{room_id:roomId}]
+          this.isMessageLoaded = true
+          this.isSearchActivated = false
+        })
     },
 
     loadMessage(roomMsg, name){
-      // load les messages de la room_id.
       this.isMessageLoaded = true
-      //this.sortMsgTime(roomMsg)
       this.currentRoomId = name
       this.selectedRoom = roomMsg
     },
@@ -184,10 +186,7 @@ export default {
     resetloadedMessage(event){
       if (event === true){
         this.isMessageLoaded = false
-        //event = false
       }
-      //event === true ? isMessageLoaded = false : 0;
-      //this.$emit('resetMsg')
     }
   }
 }

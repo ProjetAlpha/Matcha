@@ -98,6 +98,7 @@ $route->addMiddlewareStack(
       '/create',
       '/reset/doReset',
       '/chat/addMessage',
+      '/chat/findUserRoom',
       'callback' => function () use ($csrf) {
           if (!$csrf->check()) {
               redirect('/');
@@ -150,6 +151,7 @@ $route->addMiddlewareStack(
       '/chat/fetchMatchedUser',
       '/chat/addMessage',
       '/chat/searchMatchedUser',
+      '/chat/findUserRoom',
       'callback' => function () {
           if (!isAuth()) {
               redirect('/');
@@ -214,6 +216,7 @@ $route->add('/settings/newPassword', 'post', 'SettingsController@newPassword');
 $route->add('/chat/addMessage', 'post', 'ChatController@addMessage');
 $route->add('/chat/fetchMatchedUser', 'get', 'ChatController@fetchMatchedUser');
 $route->add('/chat/searchMatchedUser', 'post', 'ChatController@searchMatchedUser');
+$route->add('/chat/findUserRoom', 'post', 'ChatController@findUserRoom');
 
 /**
  * Seeder Route --- DEV ONLY.
