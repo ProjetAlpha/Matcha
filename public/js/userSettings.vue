@@ -42,10 +42,14 @@
 
       created() {
         this.$http.get('/settings/getUserInfo').then((response) => {
-          this.data = response.data
-          this.data.password = '******';
-          this.classManager = this.initObject(this.data, false)
-          this.tmpData = this.initObject(this.data, '')
+          console.log(response.data)
+          if (response.data && typeof response.data === 'object')
+          {
+            this.data = response.data
+            this.data.password = '******'
+            this.classManager = this.initObject(this.data, false)
+            this.tmpData = this.initObject(this.data, '')
+          }
         });
       },
 

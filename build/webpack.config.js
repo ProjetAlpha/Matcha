@@ -10,12 +10,11 @@ module.exports = {
     './public/js/App.js'
   ],
   output: {
-       path: path.resolve(path.dirname(__dirname), "./public/dist"),
-       filename: "webpack.[name].js"
-   },
+    path: path.resolve(path.dirname(__dirname), "./public/dist"),
+    filename: "webpack.[name].js"
+  },
   module: {
-    rules: [
-      {
+    rules: [{
         test: /\.vue$/,
         use: 'vue-loader'
       },
@@ -33,22 +32,22 @@ module.exports = {
       }
     ]
   },
-    resolve: {
-        extensions: ['*', '.wasm', '.mjs', '.js', '.jsx', '.json', '.vue'],
-        alias: {
-            'vue$': 'vue/dist/vue.common.js'
-        }
-    },
-    plugins: [
-        new VueLoaderPlugin()
-    ],
+  resolve: {
+    extensions: ['*', '.wasm', '.mjs', '.js', '.jsx', '.json', '.vue'],
+    alias: {
+      'vue$': 'vue/dist/vue.common.js'
+    }
+  },
+  plugins: [
+    new VueLoaderPlugin()
+  ],
   stats: {
-      colors: true,
-      warnings: true,
-      errors: true,
-      modules: true,
-      moduleTrace: true,
-      errorDetails: true,
-      publicPath: true
+    colors: true,
+    warnings: true,
+    errors: true,
+    modules: true,
+    moduleTrace: true,
+    errorDetails: true,
+    publicPath: true
   }
 }

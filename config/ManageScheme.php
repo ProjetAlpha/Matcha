@@ -148,6 +148,7 @@ class ManageScheme
 
     public function create($table, $sql)
     {
+        $query = '';
         $pad = self::MAX_COLUMN_WIDTH - strlen($table);
         $query.= "CREATE TABLE IF NOT EXISTS ";
         $query.= $table." (";
@@ -157,6 +158,7 @@ class ManageScheme
 
     public function reset($table)
     {
+        $query = '';
         $query.= "TRUNCATE TABLE ";
         $query.= $table;
         $this->execute("Reset", $table, $query);
@@ -164,6 +166,7 @@ class ManageScheme
 
     public function delete($table)
     {
+        $query = '';
         $query.= "DROP TABLE ";
         $query.= $table;
         $this->execute("Delete", $table, $query);

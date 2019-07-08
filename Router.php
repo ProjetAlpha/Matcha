@@ -93,7 +93,6 @@ $route->addMiddlewareStack(
       '/settings/newAge',
       '/settings/newEmail',
       '/settings/newPassword',
-      '/settings/getUserInfo',
       '/doLogin',
       '/create',
       '/reset/doReset',
@@ -152,6 +151,8 @@ $route->addMiddlewareStack(
       '/chat/addMessage',
       '/chat/searchMatchedUser',
       '/chat/findUserRoom',
+      '/settings/getUserInfo',
+      '/searchSugestions',
       'callback' => function () {
           if (!isAuth()) {
               redirect('/');
@@ -167,6 +168,8 @@ $route->add('/settings', 'get', function () {
 $route->add('/profil/edit', 'get', function () {
     view('editProfil.php');
 });
+
+$route->add('/searchSugestions', 'get', 'SearchController@searchSugestions');
 
 $route->add('/profil/edit/modif', 'post', 'ProfilController@editProfil');
 $route->add('/profil/edit/getProfilData', 'get', 'ProfilController@getData');
@@ -201,11 +204,7 @@ $route->add('/block/isBlocked', 'post', 'SignalUserController@isBlocked');
 $route->add('/block/unblock', 'post', 'SignalUserController@unblock');
 $route->add('/block/getBlockedUsers', 'get', 'SignalUserController@getBlockedUsers');
 
-$route->add('/settings/getUserInfo', 'get', 'SettingsController@getUserInfo')->addMiddleware(function () {
-    if (!isAuth()) {
-        redirect('/');
-    }
-});
+$route->add('/settings/getUserInfo', 'get', 'SettingsController@getUserInfo');
 
 $route->add('/settings/newFirstname', 'post', 'SettingsController@newFirstname');
 $route->add('/settings/newLastname', 'post', 'SettingsController@newLastname');

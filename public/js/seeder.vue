@@ -137,7 +137,7 @@ console.log(getDistanceFromLatLonInKm(lat1, long1, lat2, long2));
       },
 
       randomOrientation(){
-        const orientation = ['Homosexuel', 'Bisexuel', 'Hétérosexuel'];
+        const orientation = ['homosexuel', 'bisexuel', 'heterosexuel'];
         return (orientation[Math.floor(Math.random()*orientation.length)]);
       },
 

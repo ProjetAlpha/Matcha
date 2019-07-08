@@ -1,7 +1,7 @@
 <template>
 
 
-  <div class="container" style="width:100%!important;height:100%!important;max-width:80%!important">
+  <div class="container" style="width:100%!important;height:100%!important;max-width:100%!important">
     <div v-if="type === 'result'" class="row" style="width:100%!important">
       <div class="row">
         <ul class="col push-l2 l7 m12 s12 collapsible expandable" style="padding:0!important;margin-right:0!important">
@@ -29,65 +29,36 @@
       </div>
       <!-- Ici le sort des resultats... OMG -->
       <div class="row">
-        <ul class="col s12 m10 push-m1 l9 push-l1">
+        <ul class="col s12 m8 l8 push-l2">
           <ul class="collection">
-            <li class="row collection-item avatar">
-              <div class="col s12 m6 l6">
-                <img src="/Photo_profil.jpg" alt="" class="s-responsive-img rounded-img materialboxed">
-              </div>
-              <div class="col s8 m9 l6">
-                <p class="black-text">
-                  Thomas Broussoux <br>
-                  <span class="black-text">
-                    23 ans
-                  </span> <br>
-                  <span class="black-text">
-                    Toulouse
-                  </span>
-                </p>
-                <div class="row mr-t-4">
-                  <div class="chip blue white-text">
-                    #php
-                  </div>
-                  <div class="chip blue white-text">
-                    #java
-                  </div>
-                  <div class="chip blue white-text">
-                    #css
-                  </div>
+            <li class="row ml-v-align collection-item avatar" v-for="(value, name, index) in matchedResult">
+                <div class="col s6 m6 l6" style="text-align:center">
+                  <load-async-image :user-id="value.id"
+                  :profil-id="value.id" img-style="center-img responsive-img rounded-img"
+                  :need-watch="false"></load-async-image>
                 </div>
-                <a href="#!" class="secondary-content"><i class="material-icons right" style="color:#4caf50">lens</i>En ligne</a>
-              </div>
-              <!-- <a href="#!" class="secondary-content"><i class="material-icons right" style="color:#ef5350">lens</i>Deconnecter</a> -->
-            </li>
-            <li class="row collection-item avatar">
-              <div class="col s12 m6 l6">
-                <img src="/Photo_profil.jpg" alt="" class="s-responsive-img rounded-img materialboxed">
-              </div> <!-- notice the "circle" class -->
-              <div class="col s8 m9 l6">
-                <p class="black-text">
-                  Thomas Broussoux <br>
-                  <span class="black-text">
-                    23 ans
-                  </span> <br>
-                  <span class="black-text">
-                    Toulouse
-                  </span>
-                </p>
-                <div class="row mr-t-4" style="width:100%!important">
-                  <div class="chip blue white-text">
-                    #php
+                <div class="col s12 m6 l4">
+                  <div class="row black-text">
+                    {{value.firstname}}
+                    <span class="black-text">
+                      {{value.lastname}}
+                    </span>
+                    <span class="black-text">, {{value.age}} ans
+                    </span> <br> <br>
+                    <span class="black-text">
+                      <strong>Distance :</strong> {{value.km}}.{{value.meters}} km
+                    </span> <br>
+                    <span class="black-text">
+                      <strong>Score :</strong> {{value.score}}
+                    </span>
                   </div>
-                  <div class="chip blue white-text">
-                    #java
-                  </div>
-                  <div class="chip blue white-text">
-                    #css
-                  </div>
+                  <online-user-info :user-id="value.id"></online-user-info>
                 </div>
-              </div> <br>
-              <a href="#!" class="secondary-content"><i class="material-icons right" style="color:#4caf50">lens</i>En ligne</a>
-              <!-- <a href="#!" class="secondary-content"><i class="material-icons right" style="color:#ef5350">lens</i>Deconnecter</a> -->
+                <div class="col s12 m7 l7">
+                  <div class="chip blue white-text center-align" v-for="(value, name, index) in value.commonTags">
+                    {{value}}
+                  </div>
+              </div>
             </li>
           </ul>
         </ul>
@@ -120,6 +91,10 @@ export default {
 
   props:['type'],
 
+  created(){
+    this.fetchSugestions();
+  },
+
   data() {
     return {
       selectedSortVal:[],
@@ -131,7 +106,8 @@ export default {
       sliderData:[],
       filterTags:[],
       sortTags:[],
-      sortLocalisation:[]
+      sortLocalisation:[],
+      matchedResult:[]
     }
   },
 
@@ -162,6 +138,15 @@ export default {
       if (sortData.type == 'sendData'){
         // envoie les datas au serveur avec filtre data + sort data...
       }
+    },
+
+    fetchSugestions(){
+      this.$http.get('/searchSugestions').then((response) => {
+        console.log(response.data)
+        if (response.data && Array.isArray(response.data.sugestions)){
+          this.matchedResult = response.data.sugestions
+        }
+      });
     }
   }
 }

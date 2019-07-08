@@ -4,13 +4,33 @@ class Models
     const FETCH_ONE = 1;
     const FETCH_ALL = 2;
     public $db;
+    public $redis;
 
     public function __construct($classArray)
     {
+        $this->setupRedis();
         $this->db = new PDO(DB_DSN, DB_USER, DB_PASSWORD);
         $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->createObjects($classArray);
+    }
+
+    private function setupRedis()
+    {
+        if (!extension_loaded('redis')) {
+            die('redis : extension not supported');
+        }
+        $this->redis = new Redis();
+        $connect = $this->redis->connect(REDIS_HOST, REDIS_PORT);
+        $pwd = REDIS_PASSWORD;
+        if (isset($pwd) && !empty($pwd)) {
+            if (!$this->redis->auth($pwd)) {
+                die('redis : password error');
+            }
+        }
+        if (!$connect) {
+            die('redis : connection error to redis-server');
+        }
     }
 
     private function createObjects($classArray)
@@ -23,6 +43,7 @@ class Models
                     //$this->{strtolower($linkTable)} = $this->fetchAll($linkTable, ['user_id' => $_SESSION['user_id']], PDO::FETCH_OBJ);
                 }
                 $value->db = $this->db;
+                $value->redis = $this->redis;
                 $this->{$propertyName} = $value;
             }
         }

@@ -21,11 +21,18 @@
 !defined('PASSWORD') && define('PASSWORD', '/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/');
 
 /**
- * DB GLOBAL VARIABLES
+ * DB GLOBALS
  */
 !defined('DB_DSN') && define('DB_DSN', $DB_DSN);
 !defined('DB_USER') && define('DB_USER', $DB_USER);
 !defined('DB_PASSWORD') && define('DB_PASSWORD', $DB_PASSWORD);
+
+/**
+ * REDIS GLOBALS
+ */
+!defined('REDIS_HOST') && define('REDIS_HOST', $REDIS_HOST);
+!defined('REDIS_PASSWORD') && define('REDIS_PASSWORD', $REDIS_PASSWORD);
+!defined('REDIS_PORT') && define('REDIS_PORT', $REDIS_PORT);
 
 /**
  * Seeder config

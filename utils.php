@@ -194,14 +194,14 @@ if (!function_exists('base64ToImage')) {
 }
 
 if (!function_exists('calc_pagination')) {
-    function calc_pagination($count)
+    function calc_pagination($count, $itemsNumber)
     {
-        $pagination = 0;
+        $result = 1;
         if ($count > 0) {
-            $pagination = (int)($count / 5);
-            $count % 5 !== 0 ? $pagination++ : 0;
+            $pagination = $count / $itemsNumber;
+            $result = (is_float($pagination) ? 1 : 0) + (int)$pagination;
         }
-        return ($pagination);
+        return ($result);
     }
 }
 
@@ -261,7 +261,7 @@ if (!function_exists('execQuery')) {
     {
         $prepare = $db->prepare($sql);
         try {
-            $prepare->execute($data);
+            !empty($data) && is_array($data) ? $prepare->execute($data) : $prepare->execute();
         } catch (PDOException $e) {
             echo $e->getMessage() . PHP_EOL;
             die();
@@ -332,5 +332,33 @@ if (!function_exists('validateDate')) {
     {
         $d = DateTime::createFromFormat($format, $date);
         return $d && $d->format($format) == $date;
+    }
+}
+
+if (!function_exists('geoCoordsDistance')) {
+    function geoCoordsDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo)
+    {
+        $rad = M_PI / 180;
+        $theta = $longitudeFrom - $longitudeTo;
+        $dist = sin($latitudeFrom * $rad)
+            * sin($latitudeTo * $rad) + cos($latitudeFrom * $rad)
+            * cos($latitudeTo * $rad) * cos($theta * $rad);
+        return acos($dist) / $rad * 60 *  1.853;
+    }
+}
+
+if (!function_exists('oneDimArray')) {
+    function oneDimArray($array)
+    {
+        return iterator_to_array(new RecursiveIteratorIterator(new RecursiveArrayIterator(
+        $array
+      )), 0);
+    }
+}
+
+if (!function_exists('normalize')) {
+    function normalize($val, $min, $max)
+    {
+        return ($val - $min) / ($max - $min);
     }
 }

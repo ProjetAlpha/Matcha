@@ -52,15 +52,15 @@
         <span class="card-title mr-t-2">Orientation sexuelle</span>
         <p>
           <label class="mr-r-1">
-            <input type="checkbox" :checked="isOrientationSelected === true && orientationName == 'homo'" @click="handleBox" value="homo"/>
+            <input type="checkbox" :checked="isOrientationSelected === true && orientationName == 'homosexuel'" @click="handleBox" value="homosexuel"/>
             <span>Homosexuel</span>
           </label>
           <label class="mr-r-1">
-            <input type="checkbox" :checked="isOrientationSelected === true && orientationName == 'hetero'" @click="handleBox" value="hetero"/>
+            <input type="checkbox" :checked="isOrientationSelected === true && orientationName == 'heterosexuel'" @click="handleBox" value="heterosexuel"/>
             <span>Hétérosexuel</span>
           </label>
           <label class="mr-r-1">
-            <input type="checkbox" :checked="isOrientationSelected === true && orientationName == 'bi'" @click="handleBox" value="bi"/>
+            <input type="checkbox" :checked="isOrientationSelected === true && orientationName == 'bisexuel'" @click="handleBox" value="bisexuel"/>
             <span>Bisexuel</span>
           </label>
         </p>
@@ -237,7 +237,7 @@
               'Microsoft': null,
               'Ola': null
             },
-            limit: Infinity
+            limit: 10
           },
           onChipAdd(e, data){ vm.chipAdded(e, data); },
           onChipDelete(e, data) { vm.chipDelete(e, data); }
@@ -283,7 +283,7 @@
             this.genreName = event.target.value;
             this.$http.post('/profil/edit/modif', {genre:event.target.value});
           }
-          if (event.target.value == "homo" || event.target.value == "bi" || event.target.value == "hetero")
+          if (event.target.value == "homosexuel" || event.target.value == "bisexuel" || event.target.value == "heterosexuel")
           {
             this.isOrientationSelected = true;
             this.orientationName = event.target.value;
@@ -293,7 +293,7 @@
         if (event.target.checked === false){
           if (event.target.value == "homme" || event.target.value == "femme")
             this.isGenreSelected = false;
-          if (event.target.value == "homo" || event.target.value == "bi" || event.target.value == "hetero")
+          if (event.target.value == "homosexuel" || event.target.value == "bisexuel" || event.target.value == "heterosexuel")
             this.isOrientationSelected = false;
         }
       },

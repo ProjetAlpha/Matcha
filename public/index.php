@@ -11,8 +11,10 @@
     $csrf = new AntiCsrf();
 
     require_once(dirname(__DIR__).'/RegisterModel.php');
-    $redis = new Redis();
-    $redis->connect('redis', '6379');
+    // mac / docker connection
+    // $redis->connect('redis', '6379');
+    // windows / xammp connection
+
     // ---> Mettre en cache le resultat de la recherche pour chaque user.
     // ---> Mettre en cache le resultat des suggestions pour chaque user.
     // store dans un hash avec user_id

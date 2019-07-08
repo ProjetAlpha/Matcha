@@ -10,16 +10,18 @@
 <script>
 export default {
 
-  props:['profilId', 'userId', 'imgStyle', 'needInfo'],
+  props:['profilId', 'userId', 'imgStyle', 'needInfo', 'needWatch'],
 
   created(){
     this.loadPic(this.profilId)
   },
 
   mounted(){
-    this.$watch('profilId', () => {
-      this.loadPic(this.profilId)
-    }, {immediate:true});
+    if (this.needWatch === true){
+      this.$watch('profilId', () => {
+        this.loadPic(this.profilId)
+      }, {immediate:true});
+    }
   },
 
   data(){
