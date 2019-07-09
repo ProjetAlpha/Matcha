@@ -59,8 +59,8 @@ class SearchController extends Models
         });
         // - hit le cache pour : pagination / filtre / sort.
         $key = 'sugestion:'.$_SESSION['user_id'];
-        echo encodeToJs(['sugestions' => array_slice($result, 0, 15), 'pagination' => calc_pagination(count($result), 15)]);
         $this->redis->set($key, encodeToJs($result));
+        echo encodeToJs(['sugestions' => array_slice($result, 0, 10)]);
     }
 
     public function paginateSugestion()
@@ -84,8 +84,8 @@ class SearchController extends Models
         }
         $key = 'sugestion:'.$_SESSION['user_id'];
         $result = json_decode($this->redis->get($key));
-        $startData = $data['pageNumber'] * 15;
-        echo encodeToJs(['result' => array_slice($result, $startData, $startData + 15)]);
+        $startData = (($data['pageNumber'] - 1) * 10);
+        echo encodeToJs(['result' => array_slice($result, $startData, 10)]);
     }
 
     public function sortSugestionsResults()

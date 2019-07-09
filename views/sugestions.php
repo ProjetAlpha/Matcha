@@ -4,7 +4,7 @@
 <section class="hero blue-grey lighten-5 is-fullheight-with-navbar" id="app">
   <nav-bar></nav-bar>
   <?php if (isAuth()): ?>
-    <div class="hero-body" style="display:block!important">
+    <div class="hero-body" style="display:block!important;padding:3%!important">
       <search-match type="result"></search-match>
     </div>
   <?php else: ?>

@@ -1,37 +1,29 @@
 <template>
 
-  <div class="row" style="margin:0;padding:0">
-    <div class="col card teal lighten-5 hoverable s8 m6 l3 s-responsive-row" style="margin:0!important;width:100%!important;">
-      <div class="card-content">
-        <h6 class="center-align">Trier age / popularite </h6>
-        <hr>
-        <div class="input-field col s12">
-          <select class="icons" @change="getSortTypeValue">
-            <option value="" disabled selected>Trier par ordre</option>
-            <option value="croissant">Croissant</option>
-            <option value="decroisant">Décroissant</option>
-          </select>
-          <label class="mr-b-1">Séléctionner un ordre</label>
-        </div>
-        <div class="input-field col s12">
-          <select class="icons" @change="getSortValue">
-            <option value="" disabled selected>Trier par type</option>
-            <option value="user-Age">Age</option>
-            <option value="popularite">Popularité</option>
-          </select>
-          <label class="mr-b-1">Séléctionner un type</label>
-        </div>
-        <h6 class="center-align">Trier par localisation / tags</h6>
-        <hr>
-        <div class="row" style="margin-top:0!important">
-          <div class="input-field col s12" style="margin:0!important;">
-            <input  @change="sendInput($event.target.value)" id="sortLocalisation" type="text" class="validate">
-            <label for="sortLocalisation">Localisation</label>
+  <div class="row fixed-search fixed-bottom" style="margin:auto;">
+    <div class="col card teal lighten-5 hoverable s12 m8 l6 s-responsive-row" style="margin:0!important;width:100%!important">
+      <div class="card-content" style="padding:1em!important">
+        <p class="black-text center-align mr-b-1">Trier</p>
+        <hr style="margin-bottom:2%!important;margin-top:1%!important">
+        <div class="row" style="margin-bottom:0!important;margin-top:0!important">
+          <div class="input-field col s12">
+            <select class="icons" @change="getSortValue">
+              <option value="" disabled selected>Trier par</option>
+              <option value="user-Age">Age</option>
+              <option value="score">Score</option>
+            </select>
+            <label class="mr-b-1">Séléctionner un type</label>
           </div>
         </div>
-        <div class="chips chips-autocomplete" id="sort-chips" style="margin-top:0!important"></div>
+        <div class="row" style="margin-bottom:0!important;margin-top:0!important">
+          <div class="input-field col s12" style="margin:0!important">
+            <input  @change="sendInput($event.target.value)" id="sortLocalisation" type="text" class="validate">
+            <label for="sortLocalisation">Ville</label>
+          </div>
+        </div>
+        <div class="chips chips-autocomplete mr-b-1" id="sort-chips" style="margin-top:0!important"></div>
         <div class="card-action mr-t-2" style="border-top:none;">
-          <button type="" @click="sendData()" class="btn green waves-effect waves-light" value="">Confirmer</button>
+          <button type="" @click="sendData()" class="btn-small green waves-effect waves-light basic-txt right mr-b-3" value="">Confirmer</button>
         </div>
       </div>
     </div>

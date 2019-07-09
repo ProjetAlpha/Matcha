@@ -47,8 +47,8 @@ export default {
 
     loadPic(id){
       this.fetchImgPic(id).then((response) => {
-        console.log(response.data)
         if (response!== null && response!== undefined){
+          this.$emit('imageLoaded')
           this.link = 'data:image/png;base64,'+response.path;
           this.lastname = response.lastname
           this.firstname = response.firstname

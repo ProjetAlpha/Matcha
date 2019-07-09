@@ -28,9 +28,8 @@ trait SearchAlgoTrait
 
     public function getDistance($distance)
     {
-        // max dist = 1000km.
-        //return (($distance * 0.001) * 3);
-        return ($distance < 100 ? ($distance * 0.01) * 6 : ($distance * 0.001) * 6);
+        // max dist = 1000km
+        return ($distance < 100 ? ($distance * 0.01) * 4 : ($distance * 0.001) * 8);
     }
 
     public function getTags($src, $dst)
@@ -44,7 +43,7 @@ trait SearchAlgoTrait
     {
         // on veut le score le moins eleve.
         return (
-          (abs($src - $dst) * 0.01)
+          (abs($src - $dst) * 0.01) / 1.08
       );
     }
 }

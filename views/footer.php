@@ -5,7 +5,7 @@
     <div class="footer-copyright">
         <div class="container">
             <div class="row">
-                <a href="https://github.com/ProjetAlpha/Matcha" class="white-text mr-l-4" target="_blank">
+                <a href="https://github.com/ProjetAlpha/Matcha" class="white-text mr-l-4 right" target="_blank">
                   © 2019 Matcha by Thomas Broussoux
                 </a>
             </div>
