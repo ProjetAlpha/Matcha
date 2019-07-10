@@ -7,7 +7,7 @@ class LikeController extends Models
         $request = new Request();
         $data = $request->toJson();
 
-        if (!keysExist(['profilId'], $data) || empty($data)) {
+        if (!keysExist(['profilId'], $data)) {
             redirect('/');
         }
         $validate = new Validate(
@@ -34,7 +34,7 @@ class LikeController extends Models
         $request = new Request();
         $data = $request->toJson();
 
-        if (!keysExist(['profilId'], $data) || empty($data)) {
+        if (!keysExist(['profilId'], $data)) {
             redirect('/');
         }
         $validate = new Validate(
@@ -57,7 +57,7 @@ class LikeController extends Models
         $request = new Request();
         $data = $request->toJson();
 
-        if (!keysExist(['profilId'], $data) || empty($data)) {
+        if (!keysExist(['profilId'], $data)) {
             redirect('/');
         }
         $validate = new Validate(
@@ -83,7 +83,7 @@ class LikeController extends Models
         $request = new Request();
         $data = $request->toJson();
 
-        if (!keysExist(['profilId'], $data) || empty($data)) {
+        if (!keysExist(['profilId'], $data)) {
             redirect('/');
         }
         $validate = new Validate(

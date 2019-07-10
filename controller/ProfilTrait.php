@@ -21,7 +21,7 @@ trait ProfilTrait
             $validate = new Validate($data, ['bio' => 'text|min:5|max:1024'], 'editProfil.php', Message::$userMessages);
             $type = 'bio';
         }
-        if (keysExist(['city', 'country'], $data) && !empty($data)) {
+        if (keysExist(['city', 'country'], $data)) {
             $validate = new Validate(
                 $data,
                 ['city' => 'alpha|min:3|max:100', 'country' => 'alpha|min:3|max:100'],
@@ -39,7 +39,7 @@ trait ProfilTrait
         $request = new Request();
         $data = $request->toJson();
 
-        if (!keysExist(['user_id'], $data) || empty($data)) {
+        if (!keysExist(['user_id'], $data)) {
             redirect('/');
         }
         $result = $this->fetch('Profil', ['user_id' => $data['user_id']], PDO::FETCH_ASSOC);

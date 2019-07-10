@@ -63,7 +63,7 @@ class SearchController extends Models
         $request = new Request();
         $data = $request->toJson();
 
-        if (!keysExist(['pageNumber'], $data) || empty($data)) {
+        if (!keysExist(['pageNumber'], $data)) {
             redirect('/');
         }
         $validate = new Validate(

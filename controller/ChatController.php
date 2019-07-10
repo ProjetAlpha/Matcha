@@ -13,7 +13,7 @@ class ChatController extends Models
         $request = new Request();
         $data = $request->toJson();
         //roomId:this.roomId, message:this.message, time:time
-        if (!keysExist(['roomId', 'message', 'time'], $data) || empty($data)) {
+        if (!keysExist(['roomId', 'message', 'time'], $data)) {
             redirect('/');
         }
         //var_dump($data);
@@ -40,7 +40,7 @@ class ChatController extends Models
         $request = new Request();
         $data = $request->toJson();
 
-        if (!keysExist(['search'], $data) || empty($data)) {
+        if (!keysExist(['search'], $data)) {
             redirect('/');
         }
         $validate = new Validate(
@@ -63,7 +63,7 @@ class ChatController extends Models
         $request = new Request();
         $data = $request->toJson();
 
-        if (!keysExist(['userId'], $data) || empty($data)) {
+        if (!keysExist(['userId'], $data)) {
             redirect('/');
         }
         $validate = new Validate(

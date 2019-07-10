@@ -46,7 +46,10 @@ if (!function_exists('imagecopymerge_alpha')) {
 if (!function_exists('keysExist')) {
     function keysExist($required, $data)
     {
-        if ($data === null) {
+        if (!isset($data) || empty($data)) {
+            return (false);
+        }
+        if (in_array(null, $data, true) || in_array('', $data, true)) {
             return (false);
         }
         return (count(array_intersect_key(array_flip($required), $data)) === count($required));

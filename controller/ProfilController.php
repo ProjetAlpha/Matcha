@@ -80,7 +80,7 @@ class ProfilController extends Models
         $request = new Request();
         $data = $request->toJson();
 
-        if (!keysExist(['profilId'], $data) || empty($data)) {
+        if (!keysExist(['profilId'], $data)) {
             redirect('/');
         }
         $validate = new Validate(
@@ -127,7 +127,7 @@ class ProfilController extends Models
         $request = new Request();
         $data = $request->toJson();
 
-        if (!keysExist(['user_id'], $data) || empty($data)) {
+        if (!keysExist(['user_id'], $data)) {
             redirect('/');
         }
         $validate = new Validate(

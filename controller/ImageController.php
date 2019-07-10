@@ -6,7 +6,7 @@ class ImageController extends Models
     {
         $request = new Request();
         $data = $request->toJson();
-        if (!keysExist(['name'], $data) || empty($data)) {
+        if (!keysExist(['name'], $data)) {
             redirect('/');
         }
         // regex pour les names des images.
@@ -34,7 +34,7 @@ class ImageController extends Models
         $request = new Request();
         $data = $request->toJson();
         // regex pour les names des images ---
-        if (!keysExist(['image', 'name'], $data) || empty($data)) {
+        if (!keysExist(['image', 'name'], $data)) {
             redirect('/');
         }
         $validate = new Validate(
@@ -66,7 +66,7 @@ class ImageController extends Models
         $request = new Request();
         $data = $request->toJson();
         // validate
-        if (!keysExist(['name'], $data) || empty($data)) {
+        if (!keysExist(['name'], $data)) {
             redirect('/');
         }
         $validate = new Validate(
@@ -128,7 +128,7 @@ class ImageController extends Models
         $request = new Request();
         $data = $request->toJson();
         // validate
-        if (!keysExist(['userId'], $data) || empty($data)) {
+        if (!keysExist(['userId'], $data)) {
             redirect('/');
         }
         $validate = new Validate(
