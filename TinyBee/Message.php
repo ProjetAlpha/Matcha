@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * User information messages
+ */
 class Message
 {
     public static $userMessages = [

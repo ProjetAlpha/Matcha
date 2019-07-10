@@ -2,11 +2,6 @@
 
 class SignalUserController extends Models
 {
-    public function __construct()
-    {
-        parent::__construct(createClassArray('model'));
-    }
-
     // reporter = 1 fois -- admin qui decide de delete le compte ou pas |
     // block ou unblock le user => liste de user blockées (sur le profil... menu déroulant + nom / prénom / lien vers le profil pour debloquer).
     public function reportUser()

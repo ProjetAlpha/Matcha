@@ -156,8 +156,9 @@ class Route
             return ;
         }
         $this->runMiddleware();
-        if (file_exists(__DIR__."/controller/".$name.".php")) {
-            require_once(__DIR__."/controller/".$name.".php");
+        $path = dirname(__DIR__)."/controller/".$name.".php";
+        if (file_exists($path)) {
+            require_once($path);
         }
         if (class_exists($name) && method_exists($name, $method)) {
             $init = new $name();
@@ -214,9 +215,9 @@ class Route
                 }
             }
         }
-        $pageNotFoundView = __DIR__.'/views/page_404.php';
+        $pageNotFoundView = dirname(__DIR__).'/views/page_404.php';
         if (file_exists($pageNotFoundView)) {
-            require_once(__DIR__.'/views/page_404.php');
+            require_once($pageNotFoundView);
         }
     }
 

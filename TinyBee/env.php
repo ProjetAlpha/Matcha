@@ -35,6 +35,6 @@
 !defined('REDIS_PORT') && define('REDIS_PORT', $REDIS_PORT);
 
 /**
- * Seeder config
+ * Seeder config -- DEV ONLY !
  */
 !defined('SEEDER') && define('SEEDER', 1);

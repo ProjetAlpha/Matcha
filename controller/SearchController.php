@@ -6,11 +6,6 @@ class SearchController extends Models
 {
     use SearchAlgoTrait;
 
-    public function __construct()
-    {
-        parent::__construct(createClassArray('model'));
-    }
-
     public function searchSugestions()
     {
         //  si le numero de la page === 1, refresh le cache, sinon paginate avec les datas en cache.

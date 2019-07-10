@@ -2,11 +2,6 @@
 
 class LikeController extends Models
 {
-    public function __construct()
-    {
-        parent::__construct(createClassArray('model'));
-    }
-
     public function setLike()
     {
         $request = new Request();

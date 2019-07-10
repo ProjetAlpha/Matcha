@@ -6,11 +6,6 @@ class ProfilController extends Models
 {
     use ProfilTrait;
 
-    public function __construct()
-    {
-        parent::__construct(createClassArray('model'));
-    }
-
     public function getUserProfil()
     {
         if (isAuth()) {

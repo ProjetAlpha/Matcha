@@ -6,11 +6,6 @@ class UserController extends Models
 {
     use UserGeoLocTrait;
 
-    public function __construct()
-    {
-        parent::__construct(createClassArray('model'));
-    }
-
     public function create()
     {
         $request = new Request();

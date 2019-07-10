@@ -6,19 +6,26 @@ class Models
     public $db;
     public $redis;
 
-    public function __construct($classArray)
+    /**
+     * Setup connection to redis and pdo, then make all models methods accessible from the controllers.
+     */
+    public function __construct()
     {
         $this->setupRedis();
         $this->db = new PDO(DB_DSN, DB_USER, DB_PASSWORD);
         $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $this->createObjects($classArray);
+        $this->createObjects(createClassArray(dirname(__DIR__).'/model'));
     }
 
+    /**
+     * Check if a redis is setup properly and connect to redis
+     * @return void
+     */
     private function setupRedis()
     {
-        if (!extension_loaded('redis')) {
-            die('redis : extension not supported');
+        if (!extension_loaded('redis') || REDIS_HOST === null || REDIS_PORT === null) {
+            die();
         }
         $this->redis = new Redis();
         $connect = $this->redis->connect(REDIS_HOST, REDIS_PORT);
@@ -33,15 +40,17 @@ class Models
         }
     }
 
+    /**
+     * Create properties to access all models methods.
+     * @param  array - an associative array (key : class name, value : class instance)
+     * @return void
+     */
     private function createObjects($classArray)
     {
         foreach ($classArray as $key => $value) {
             if (!property_exists($this, $key)) {
                 $propertyName = str_replace('models', '', strtolower($key));
-                if (property_exists($value, 'linkTable') && isset($_SESSION, $_SESSION['user_id'])) {
-                    // Todo : relations entre les tables (inner join, left join...)
-                    //$this->{strtolower($linkTable)} = $this->fetchAll($linkTable, ['user_id' => $_SESSION['user_id']], PDO::FETCH_OBJ);
-                }
+                // Todo : relations entre les tables (inner join, left join...).
                 $value->db = $this->db;
                 $value->redis = $this->redis;
                 $this->{$propertyName} = $value;
@@ -49,6 +58,12 @@ class Models
         }
     }
 
+    /**
+     * Build a select PDO query.
+     * @param  string - table name
+     * @param  array - query conditions
+     * @return string - query string
+     */
     private function buildSelect($table, $columns)
     {
         $sql = "SELECT * ";
@@ -59,6 +74,12 @@ class Models
         return ($sql);
     }
 
+    /**
+     * Build an insert PDO query.
+     * @param  string - table name
+     * @param  array - query values
+     * @return string - query string
+     */
     private function buildInsert($table, $columns)
     {
         $sql = "INSERT INTO ";
@@ -69,6 +90,13 @@ class Models
         return ($sql);
     }
 
+    /**
+     * Build an update PDO query.
+     * @param  string - table name
+     * @param  array - table columns to update
+     * @param  array - query conditions
+     * @return string - query string
+     */
     private function buildUpdate($table, $columns, $condition)
     {
         $sql = "UPDATE ";
@@ -79,6 +107,12 @@ class Models
         return ($sql);
     }
 
+    /**
+     * Build a delete PDO query.
+     * @param string - table name
+     * @param array - query values
+     * @return string - query string
+     */
     private function buildDelete($table, $columns)
     {
         $sql = "DELETE FROM ";
@@ -88,6 +122,13 @@ class Models
         return ($sql);
     }
 
+    /**
+     * Fetch one result
+     * @param  string - table name
+     * @param  array - table columns
+     * @param  boolean - PDO fetch option
+     * @return PDO results
+     */
     public function fetch($table, $columns, $option = false)
     {
         $sql = $this->buildSelect($table, $columns);
@@ -95,6 +136,13 @@ class Models
         return ($result);
     }
 
+    /**
+     * Fetch all result
+     * @param  string - table name
+     * @param  array - table columns
+     * @param  boolean - PDO fetch option
+     * @return PDO results
+     */
     public function fetchAll($table, $columns, $option = false)
     {
         $sql = $this->buildSelect($table, $columns);
@@ -102,25 +150,52 @@ class Models
         return ($result);
     }
 
-    public function insert($table, $columns, $option = false)
+    /**
+     * Insert query
+     * @param string  - table name
+     * @param array - table columns
+     * @return void
+     */
+    public function insert($table, $columns)
     {
         $sql = $this->buildInsert($table, $columns);
-        $this->exec($sql, $columns, $option);
+        $this->exec($sql, $columns);
     }
 
-    public function update($table, $columns, $conditions, $option = false)
+    /**
+     * Update query
+     * @param  string - table name
+     * @param  array - table columns
+     * @param  array - query conditions
+     * @return void
+     */
+    public function update($table, $columns, $conditions)
     {
         $sql = $this->buildUpdate($table, $columns, $conditions);
-        $this->exec($sql, array_merge($columns, $conditions), $option);
+        $this->exec($sql, array_merge($columns, $conditions));
     }
 
-    public function delete($table, $columns, $option = false)
+    /**
+     * Delete query
+     * @param  string - table name
+     * @param  array - query conditions
+     * @return void
+     */
+    public function delete($table, $columns)
     {
         $sql = $this->buildDelete($table, $columns);
-        $this->exec($sql, $columns, $option);
+        $this->exec($sql, $columns);
     }
 
-    private function exec($sql, $data, $option, $fetchMethod = false)
+    /**
+     * Execute a PDO query with some options if they are provided.
+     * @param  string - query string
+     * @param  array - values to bind with PDO
+     * @param  boolean - PDO fetch option
+     * @param  boolean - PDO fetch method (one or every results)
+     * @return void
+     */
+    private function exec($sql, $data, $option = false, $fetchMethod = false)
     {
         $prepare = $this->db->prepare($sql);
         try {
@@ -135,14 +210,11 @@ class Models
         }
     }
 }
+
 /*
     --> Usage <--
     class A extends Models
     {
-        public function __construct()
-        {
-            parent::__construct(createClassArray(__DIR__.'/model/'));
-        }
-        // acces a $this->className->method();
+        // acces a $this->ModelclassName->method();
     }
 */

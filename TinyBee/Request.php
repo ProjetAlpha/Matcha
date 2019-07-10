@@ -5,11 +5,18 @@ class Request
     private $request;
     public $headers;
 
+    /**
+     * Get the request data.
+     */
     public function __construct()
     {
         $this->run();
     }
 
+    /**
+     * Resolve the request method and set the data.
+     * @return void
+     */
     private function run()
     {
         $method = $_SERVER['REQUEST_METHOD'];
@@ -25,6 +32,10 @@ class Request
         }
     }
 
+    /**
+     * Get all request headers
+     * @return array
+     */
     public function getHeaders()
     {
         $headers = array();
@@ -38,11 +49,20 @@ class Request
         return $headers;
     }
 
+    /**
+     * Get stored request data if they are available
+     * @return array request data or null if no data
+     */
     public function get()
     {
         return ($this->request ?? null);
     }
 
+    /**
+     * Convert a json object to an array.
+     * @param  boolean - true by default (create an array)
+     * @return array - by default return the request data
+     */
     public function toJson($param = true)
     {
         if (is_bool($param)) {

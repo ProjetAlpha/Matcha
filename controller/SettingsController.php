@@ -3,11 +3,6 @@
 
 class SettingsController extends Models
 {
-    public function __construct()
-    {
-        parent::__construct(createClassArray('model'));
-    }
-
     public function getUserInfo()
     {
         $result = $this->fetch('User', ['id' => $_SESSION['user_id']], PDO::FETCH_ASSOC);

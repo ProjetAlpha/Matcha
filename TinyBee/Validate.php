@@ -6,6 +6,14 @@ class Validate
     public $loadedMessage = [];
     private $customType;
 
+    /**
+     * Load a given filter on the request's data
+     * @param array - data to filter
+     * @param array - filter rules
+     * @param string - path to view
+     * @param array - message displayed to the user if any check failed.
+     * @param array - custom data accessible from view
+     */
     public function __construct($data, $filter, $path, $message, $customType = null)
     {
         $this->path = $path;
@@ -14,6 +22,12 @@ class Validate
         $this->filterData($data, $filter);
     }
 
+    /**
+     * Load rules on the request's data and call a filter method
+     * @param array - data to filter
+     * @param array - filter rules
+     * @return void
+     */
     private function filterData($data, $filter)
     {
         foreach ($filter as $column => $filterValue) {
@@ -39,6 +53,13 @@ class Validate
         }
     }
 
+    /**
+     * Load a message into view ($warning) or store the messages (ex: js call).
+     * @param  string - message name
+     * @param  string - custom data name
+     * @param  array - associative array of messages (name => value)
+     * @return void
+     */
     public function loadMessage($column, $customTypeKey, $message)
     {
         if ($this->path == "sendToJs") {
@@ -54,6 +75,12 @@ class Validate
         }
     }
 
+    /**
+     * Check if the string value is alphanumeric
+     * @param  string - message name
+     * @param  string - data value
+     * @return void
+     */
     public function validAlphanum($column, $data)
     {
         if (!isValidRegex(ALPHA_NUM, $data)) {
@@ -62,6 +89,12 @@ class Validate
         }
     }
 
+    /**
+     * Check if the string value is alphabetic
+     * @param  string - message name
+     * @param  string - data value
+     * @return void
+     */
     public function validAlpha($column, $data)
     {
         if (!isValidRegex(ALPHA, $data)) {
@@ -70,6 +103,12 @@ class Validate
         }
     }
 
+    /**
+     * Check if the data value is a digit
+     * @param  string - message name
+     * @param  string - data value
+     * @return void
+     */
     public function validDigit($column, $data)
     {
         if (!isValidRegex(DIGITS, $data)) {
@@ -78,6 +117,12 @@ class Validate
         }
     }
 
+    /**
+     * Check if the data value is a password
+     * @param  string - message name
+     * @param  string - data value
+     * @return void
+     */
     public function validPassword($column, $data)
     {
         if (!isValidRegex(PASSWORD, $data)) {
@@ -86,6 +131,12 @@ class Validate
         }
     }
 
+    /**
+     * Check if the data value is an email
+     * @param  string - message name
+     * @param  string - data value
+     * @return void
+     */
     public function validEmail($column, $data)
     {
         if (!filterData($data, "mail")) {
@@ -94,6 +145,12 @@ class Validate
         }
     }
 
+    /**
+     * Check if the data is a valid base 64 string
+     * @param  string - message name
+     * @param  string - data value
+     * @return void
+     */
     public function validImage($column, $data)
     {
         if (!checkBase64Format($data)) {
@@ -102,6 +159,13 @@ class Validate
         }
     }
 
+    /**
+     * Check if the data length is less than a given value
+     * @param  string - message name
+     * @param  string - data value
+     * @param  string - min length value
+     * @return void
+     */
     public function validMin($column, $data, $length)
     {
         if (strlen($data) < $length) {
@@ -110,6 +174,13 @@ class Validate
         }
     }
 
+    /**
+     * Check if the data length is greater than a given value
+     * @param  string - message name
+     * @param  string - data value
+     * @param  string - max length value
+     * @return void
+     */
     public function validMax($column, $data, $length)
     {
         if (strlen($data) > $length) {
@@ -118,6 +189,12 @@ class Validate
         }
     }
 
+    /**
+     * Check if the data have a valid text format
+     * @param  string - message name
+     * @param  string - data value
+     * @return void
+     */
     public function validText($column, $data)
     {
         if (!isValidRegex(TEXT, $data)) {

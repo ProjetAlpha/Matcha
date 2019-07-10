@@ -1,7 +1,5 @@
 <?php
 
-require_once(__DIR__.'/config/database.php');
-
 if (!function_exists('randomPassword')) {
     function randomPassword()
     {
@@ -97,7 +95,7 @@ if (!function_exists('view')) {
         if ($data !== null) {
             extract($data, EXTR_SKIP);
         }
-        require_once(__DIR__.'/views/'.$path);
+        require_once(dirname(__DIR__).'/views/'.$path);
         die();
     }
 }
@@ -209,7 +207,7 @@ if (!function_exists('createClassArray')) {
     function createClassArray($path)
     {
         $arrayClass = [];
-        foreach (new DirectoryIterator(__DIR__.'/'.$path) as $file) {
+        foreach (new DirectoryIterator($path) as $file) {
             if ($file->isFile()) {
                 $fullName = $file->getFilename();
                 $name = strtolower(str_replace(['.php', ucfirst($path)], '', $fullName));

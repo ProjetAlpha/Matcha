@@ -2,11 +2,6 @@
 
 class ImageController extends Models
 {
-    public function __construct()
-    {
-        parent::__construct(createClassArray('model'));
-    }
-
     public function addProfilImg()
     {
         $request = new Request();

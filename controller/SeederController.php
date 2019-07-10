@@ -2,11 +2,6 @@
 
 class SeederController extends Models
 {
-    public function __construct()
-    {
-        parent::__construct(createClassArray('model'));
-    }
-
     /**
      * Optimized sql insert.
      */
