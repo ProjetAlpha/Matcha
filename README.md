@@ -3,6 +3,7 @@
 #### Projet web de l'école 42 lyon qui consiste à creer un site de rencontre.
 
 * Technologies utilisées
+    * **webpack**
     * **vuejs**
     * **axios**
     * **php**
