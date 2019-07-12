@@ -6,7 +6,14 @@ document.addEventListener('DOMContentLoaded', function() {
     edge: 'left'
   });
   var elems = document.querySelectorAll('select');
-  var instances = M.FormSelect.init(elems, {});
+  var instances = M.FormSelect.init(elems, {
+    dropdownOptions: {
+      inDuration: 350,
+      outDuration: 350,
+      coverTrigger: false,
+      constrainWidth: true
+    }
+  });
 
   var elems = document.querySelectorAll('.collapsible');
   var instances = M.Collapsible.init(elems, {

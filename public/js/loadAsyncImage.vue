@@ -16,13 +16,13 @@ export default {
     this.loadPic(this.profilId)
   },
 
-  mounted(){
+  /*mounted(){
     if (this.needWatch === true){
       this.$watch('profilId', () => {
         this.loadPic(this.profilId)
       }, {immediate:true});
     }
-  },
+  },*/
 
   data(){
     return {

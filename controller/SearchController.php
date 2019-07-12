@@ -8,24 +8,32 @@ class SearchController extends Models
 
     public function searchSugestions()
     {
-        //  si le numero de la page === 1, refresh le cache, sinon paginate avec les datas en cache.
         $result = [];
         $usersCollection = $this->search->fetchAllUsersInfo();
         $currentUser = $this->search->fetchCurrentUserInfo($_SESSION['user_id']);
         $commonTags = $this->search->fetchCommonTags($_SESSION['user_id']);
         $currentUserTags = oneDimArray($this->search->fetchUserTags($_SESSION['user_id']));
-
+        // fetch tout les tags des users + mettre en cache [id][...tags]
         foreach ($usersCollection as $user) {
             if ($currentUser->id == $user->id) {
                 continue;
             }
             $targetUserTags = '';
             $score = 0.0;
-            if ($currentUser->orientation === $user->orientation) {
+            if ($currentUser->orientation && !isset($user->orientation) && ($currentUser->orientation == 'bisexuel')) {
+                $score += 10;
+            } elseif ($user->orientation && $currentUser->orientation === $user->orientation) {
                 $score += $this->getOrientation($currentUser->orientation, $user->orientation, $currentUser->genre, $user->genre);
             } else {
-                $score += 10;
+                if ($currentUser->genre == $user->genre && $currentUser->orientation == 'homosexuel') {
+                    $score += 10;
+                } elseif ($currentUser->orientation == 'bisexuel') {
+                    $score += 10;
+                } else {
+                    $score += 25;
+                }
             }
+
             $distance = geoCoordsDistance($currentUser->latitude, $currentUser->longitude, $user->latitude, $user->longitude);
             if ($distance !== 0.0) {
                 $score += $this->getDistance($distance);
@@ -40,9 +48,10 @@ class SearchController extends Models
             } else {
                 $score += 5;
             }
-            if ($score !== 0.0) {
+            if ($score !== 0.0 && $score < 40) {
                 $formatDist = round($distance, 3);
                 $user->computed_score = $score;
+                $user->distance = $formatDist;
                 $user->km = (int)$formatDist;
                 $user->meters = (int)(($formatDist - (int)$formatDist) * 1000);
                 $user->commonTags = $targetUserTags;
@@ -52,7 +61,7 @@ class SearchController extends Models
         usort($result, function ($a, $b) {
             return $a->computed_score > $b->computed_score;
         });
-        // - hit le cache pour : pagination / filtre / sort.
+        // - mettre en cache tout les tags des users -- [id][...tags]
         $key = 'sugestion:'.$_SESSION['user_id'];
         $this->redis->set($key, encodeToJs($result));
         echo encodeToJs(['sugestions' => array_slice($result, 0, 10)]);
@@ -63,12 +72,14 @@ class SearchController extends Models
         $request = new Request();
         $data = $request->toJson();
 
-        if (!keysExist(['pageNumber'], $data)) {
+        if (!keysExist(['pageNumber', 'type'], $data)) {
             redirect('/');
         }
+        // type de pagination
         $validate = new Validate(
             $data,
             [
+            'type' => 'alpha',
             'pageNumber' => 'digit|max:4'
           ],
             'sendToJs',
@@ -77,29 +88,40 @@ class SearchController extends Models
         if (!empty($validate->loadedMessage)) {
             redirect('/');
         }
-        $key = 'sugestion:'.$_SESSION['user_id'];
+        // aussi type = search.
+        if ($data['type'] == 'sugestion') {
+            $key = 'sugestion:'.$_SESSION['user_id'];
+        } elseif ($data['type'] == 'filter') {
+            $key = 'filterResult:'.$_SESSION['user_id'];
+        }
         $result = json_decode($this->redis->get($key));
         $startData = (($data['pageNumber'] - 1) * 10);
         echo encodeToJs(['result' => array_slice($result, $startData, 10)]);
     }
 
-    public function sortSugestionsResults()
+    public function manageResult()
     {
-        // sort / filtrer les resultats mis en cache
-        // update les resultats mis en cache
-        // repaginate => redirect page 1
-    }
+        $request = new Request();
+        $data = $request->toJson();
 
-    public function searchUsers()
-    {
-        // met en cache les resultats de la recherche [paginate ...]
-        // si le numero de la page === 1, refresh le cache, sinon paginate avec les datas en cache.
-    }
-
-    public function sortUsersResults()
-    {
-        // sort / filtrer les resultats mis en cache
-        // update les resultats mis en cache
-        // repaginate => redirect page 1
+        if (!keysExist(['filterResult', 'sortResult'], $data)) {
+            redirect('/');
+        }
+        if (empty($data['filterResult']) && empty($data['sortResult'])) {
+            return ;
+        }
+        // reset le filter.
+        $key = 'filterResult:'.$_SESSION['user_id'];
+        if ($this->redis->exists($key)) {
+            $this->redis->del($key);
+        }
+        if (!empty($data['filterResult'])) {
+            $result = $this->filterResult($data['filterResult']);
+        }
+        //var_dump($result);
+        if (!empty($data['sortResult'])) {
+            $result = $this->sortResult($data['sortResult']);
+        }
+        echo encodeToJs($result);
     }
 }

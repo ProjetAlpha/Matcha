@@ -4,7 +4,7 @@ class Search
 {
     public function fetchAllUsersInfo()
     {
-        $sql = "SELECT User.id,score,orientation,latitude,longitude,lastname,firstname,age,genre FROM User
+        $sql = "SELECT User.id,score,orientation,latitude,longitude,lastname,firstname,age,genre,localisation FROM User
       INNER JOIN Profil ON Profil.user_id = User.id";
         return (execQuery($this->db, $sql, [], PDO::FETCH_OBJ, FETCH_ALL));
     }

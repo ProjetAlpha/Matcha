@@ -17,8 +17,8 @@
                 <label :for="name" style="color:black!important"></label>
                 <input :type="getInputType(name)" v-model="data[name]" class="validate" :name="name" :id="name" />
                 <div class="card-action right-align valign-wrapper" style="border-top:none!important; width:100%;">
-                  <button type="submit" v-on:click="sendData(name)" class="right-align mr-r-3 basic-txt btn-small green waves-effect waves-light" value="">Confirmer</button>
-                  <button type="submit" v-on:click="cancelData(name)" class="center-align basic-txt btn-small green waves-effect waves-light" value="">Annuler</button>
+                  <button v-on:click="sendData(name)" class="right-align mr-r-3 basic-txt btn-small green waves-effect waves-light" value="">Confirmer</button>
+                  <button v-on:click="cancelData(name)" class="center-align basic-txt btn-small green waves-effect waves-light" value="">Annuler</button>
                 </div>
               </div>
             </div>
@@ -42,7 +42,6 @@
 
       created() {
         this.$http.get('/settings/getUserInfo').then((response) => {
-          console.log(response.data)
           if (response.data && typeof response.data === 'object')
           {
             this.data = response.data

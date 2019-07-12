@@ -27,7 +27,8 @@
         <ul class="collection" v-for="(value, name, index) in matchedUserChat">
           <li class="row collection-item avatar">
             <div class="col s8 m6 l6">
-              <load-async-image needInfo="1" :user-id="value[0].user_profil_id" :profil-id="value[0].user_profil_id" img-style="center-img responsive-img rounded-img"></load-async-image>
+              <load-async-image needInfo="1" :user-id="value[0].user_profil_id" :profil-id="value[0].user_profil_id"
+              img-style="center-img responsive-img rounded-img" :key="value[0].user_profil_id"></load-async-image>
               <online-user-info :user-id="value[0].user_profil_id"></online-user-info>
             </div>
             <div class="row mr-t-4">

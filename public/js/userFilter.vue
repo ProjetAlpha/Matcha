@@ -1,39 +1,47 @@
 <template>
-  <div class="row fixed-search fixed-top" :style="customStyle">
-      <div :class="setStyle.value" :style="customStyleCard">
-        <div class="card-content white-text" style="padding:1em!important">
-          <p class="black-text center-align mr-b-1">{{ title.name }}</p>
-          <hr style="margin-bottom:2%!important;margin-top:1%!important">
-          <div class="row" v-for="(value, name, index) in rangeFilter" :key="index" >
-            <p class="black-text center-align mr-b-3">{{ name }}</p>
-            <div :id="setId(name, index)" :value="value" :name="name"></div>
-          </div>
-          <div class="row" style="margin-bottom:0!important">
-            <div class="input-field col s12" style="margin:0!important">
-              <input class="validate" @change="sendInput($event.target.value)" :id="createLoc(filterId.id)" type="text">
-              <label :for="createLoc(filterId.id)">Ville</label>
-            </div>
-          </div>
-          <div class="chips chips-autocomplete mr-b-1" id="chips-filter" style="margin-top:0!important"></div>
-          <!--<div v-if="actionBtn.name" class="card-action mr-t-2" style="border-top:none;">
-            <button type="" @click="sendData()" class="btn-small green waves-effect waves-light" value="">{{ actionBtn.name }} </button>
-          </div>-->
-        </div>
+  <div>
+    <p class="black-text center-align mr-b-1"><strong>{{ title.name }}</strong></p>
+    <hr style="margin-bottom:2%!important;margin-top:1%!important">
+    <div class="row" v-for="(value, name, index) in rangeFilter" :key="index" >
+      <p class="black-text center-align mr-b-3">{{ name.charAt(0).toUpperCase() + name.slice(1) }}</p>
+      <div :id="setId(name, index)" :value="value" :name="name"></div>
+    </div>
+    <div class="row" style="margin-bottom:0!important">
+      <div class="input-field col s12" style="margin:0!important">
+        <input class="validate" v-model="localisation" @change="sendInput($event.target.value)" :id="createLoc(filterId.id)" type="text">
+        <label :for="createLoc(filterId.id)">Ville</label>
       </div>
+    </div>
+    <div class="chips chips-autocomplete mr-b-1" id="chips-filter" style="margin-top:0!important"></div>
   </div>
 </template>
 
 <script>
 
-'use strict'
-
 export default {
-  props:['actionBtn', 'rangeFilter', 'sortFilter', 'sortFilterName', 'title', 'customStyle', 'customStyleCard', 'setStyle', 'filterId'],
+  props:[
+  'actionBtn', 'rangeFilter',
+  'sortFilter', 'sortFilterName', 'title',
+  'customStyle', 'customStyleCard', 'setStyle',
+  'filterId', 'refresh'
+  ],
 
   mounted(){
     this.initSlider()
     this.initChips()
     this.isDomReady = true
+  },
+
+  watch:{
+    refresh(value){
+      if (value === true){
+          //this.resetSlider()
+          this.initChips()
+          this.tags = []
+          this.localisation = ''
+          this.$emit('sendFilterData', 'resetRefresh')
+      }
+    }
   },
 
   data(){
@@ -43,7 +51,8 @@ export default {
       isDomReady:false,
       id : [],
       selectedSortFilter:'',
-      tags:[]
+      tags:[],
+      chipsInstance:''
     }
   },
 
@@ -58,7 +67,7 @@ export default {
       vm.id.forEach(function(value){
         var id = document.getElementById(value)
         vm.$noUiSlider.create(id, {
-          start: [0, 0],
+          start: [18, 45],
           connect: true,
           step: 1,
           orientation: 'horizontal',
@@ -77,6 +86,14 @@ export default {
         });
       });
     },
+
+    resetSlider(){
+      this.id.forEach((value) => {
+        const target = document.getElementById(value)
+        target.noUiSlider.reset()
+      })
+    },
+
     setId(name, index){
       const id = name+'-'+index;
       if (this.isDomReady === false){
@@ -107,12 +124,13 @@ export default {
             'Microsoft': null,
             'Ola': null
           },
-          limit: Infinity
+          limit: 10
         },
         onChipAdd(e, data){ vm.chipAdded(e, data); },
         onChipDelete(e, data) { vm.chipDelete(e, data); }
       };
-      var instances = M.Chips.init(elems, options);
+      M.Chips.init(elems, options)
+      this.chipInstance = M.Chips.getInstance(elems)
     },
 
     chipAdded(e, data){
@@ -121,6 +139,8 @@ export default {
     },
 
     chipDelete(e, data){
+      if (data === null || data === undefined)
+        return ;
       const index = this.tags.indexOf(data.childNodes[0].textContent)
       if (index !== -1)
         this.tags.splice(index, 1);
@@ -129,10 +149,6 @@ export default {
 
     sendInput(value){
       this.$emit('sendFilterData', {type:'localisation', value:value})
-    },
-
-    sendData(){
-      this.$emit('sendFilterData', 'sendData')
     }
   }
 }

@@ -7,7 +7,7 @@ class AntiCsrf
      */
     public function __construct()
     {
-        if (!isset($_SESSION['csrf_token'], $_SESSION['csrf_time']) || $this->isExpired()) {
+        if (!isset($_SESSION['csrf_token']) || $this->isExpired()) {
             $this->create();
         }
     }

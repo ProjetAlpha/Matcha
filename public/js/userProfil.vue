@@ -1,6 +1,6 @@
 <template>
 
-  <div class="container" style="max-width:100%!important">
+  <div class="container" style="max-width:100%!important;width:100%!important">
     <div class="row">
       <div class="col push-l1 l10 m12 s12">
         <div class="card-panel teal lighten-5 lighten-5 z-depth-1" style="width:100%!important">
@@ -47,8 +47,8 @@
                       <span href="#" class="mr-t-4"><i class="material-icons">info_outline</i>{{likesBy}} vous a like</span>
                     </div>
                     <div class="col s7 m6 l6" v-if="type === 'consultUserProfil' && profilPicName !== 'defaultProfil'">
-                      <a href="#" v-if="isLiked === false" @click="setLike"><i class="material-icons">thumb_up</i>J'aime</a>
-                      <a href="#" v-if="isLiked === true" @click="setDislike"><i class="material-icons">thumb_down</i>Je n'aime pas</a>
+                      <a v-if="isLiked === false" @click="setLike"><i class="material-icons">thumb_up</i>J'aime</a>
+                      <a v-if="isLiked === true" @click="setDislike"><i class="material-icons">thumb_down</i>Je n'aime pas</a>
                     </div>
                   </div>
 
