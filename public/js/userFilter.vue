@@ -14,11 +14,11 @@
     </div>
     <div class="row">
       <div class="input-field col s12" v-if="searchActive" style="margin:0!important;">
-          <div class="card" style ="overflow-y: auto;max-height: 150px;">
+          <div class="card" style ="overflow-y: auto;max-height: 200px;">
             <div class="card-content">
-                <a @click="sendInput($event.target.innerHTML, value.code)" class="card-title mr-l-3" style="cursor:pointer;font-size:14px;margin-bottom:0" v-for="(value, name, index) in searchResult">
-                  {{value.city}}
-                </a>
+                <span class="card-title mr-l-3" style="cursor:pointer;font-size:14px;margin-bottom:0" v-for="(value, name, index) in searchResult">
+                  <a @click="sendInput($event.target.innerHTML)"> {{value.city}}, {{value.code}} </a>
+                </span>
             </div>
           </div>
       </div>
@@ -61,8 +61,9 @@ export default {
     },
 
     getCode(code){
-      if (!Number.isInteger(parseInt(code)) || code == '' || code === false){
+      if (!Number.isInteger(parseInt(code)) || code == '' || code === false || this.isInputSent === true){
         this.isSearchActive = false;
+        this.isInputSent = false;
         return ;
       }
       const req = new Request('https://vicopo.selfbuild.fr/cherche/'+code)
@@ -72,11 +73,7 @@ export default {
             this.searchActive = false
             return ;
           }
-          if (this.searchActive === false && this.isInputSent === true){
-            this.isInputSent = false
-          }else if (this.searchActive === false && this.isInputSent === false){
-            this.searchActive = true
-          }
+          this.searchActive = true
           this.searchResult = (json.hasOwnProperty('cities') ? json.cities.slice(0, 15) : [{city:json.city}]);
         }
       })
@@ -94,6 +91,7 @@ export default {
     return {
       value:'',
       getCode:'',
+      code:'',
       localisation:'',
       isDomReady:false,
       id : [],
@@ -197,19 +195,20 @@ export default {
       this.$emit('sendFilterData', {type:'tags', value:this.tags})
     },
 
-    sendInput(val, code){
+    sendInput(val){
+      let loc = val.trim().split(',')
+      if (loc.length !== 2)
+        return ;
+      const code = loc[1].trim()
+      let city = loc[0]
       this.getCode = code
-      this.localisation = val.trim()
-      let city = ''
-      if (this.localisation.match(/\d/g))
-          city = this.localisation.replace(/[0-9]/g, '')
-      else {
-        city = this.localisation
-      }
+      if (city.match(/\d/g))
+          city = city.replace(/[0-9]/g, '')
       city = this.normalizeCity(city).trim()
       this.$emit('sendFilterData', {type:'localisation', value:city})
       this.localisation = city
       this.isInputSent = true
+      this.searchActive = false
     },
 
     normalizeCity(city){
