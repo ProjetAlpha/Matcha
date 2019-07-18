@@ -26,8 +26,16 @@
     props:['refresh'],
 
     mounted(){
-      // checkbox : age, popularite, localisation, tags.
       // this.initChips()
+      const elems = document.getElementById('type')
+      M.FormSelect.init(elems, {
+        dropdownOptions: {
+          inDuration: 350,
+          outDuration: 350,
+          coverTrigger: false,
+          constrainWidth: true
+        }
+      });
     },
 
     watch:{

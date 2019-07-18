@@ -1,7 +1,7 @@
 <template>
 
   <div class="container" style="width:100%!important;height:100%!important;max-width:100%!important">
-    <div v-if="type === 'result'" class="row" style="width:100%!important">
+    <div v-if="type === 'result' || isSearch === true" class="row" style="width:100%!important">
       <div class="col push-s1 s10 m4 l3">
         <div class="card teal lighten-5 s-responsive-row" style="width:100%!important">
           <div class="card-content" style="padding:1.5em!important">
@@ -13,7 +13,7 @@
             :sort-filter-name="{name:'Trier les résultats'}"
             :action-btn="{name:'Confirmer'}"
             :filter-id="{id:'1'}"
-            v-on:sendFilterData="handleData($event)" :refresh="isFilterRefreshed"></user-filter>
+            v-on:sendFilterData="handleData($event)" :refresh="isFilterRefreshed" :key="isFilterRefreshed"></user-filter>
             <user-sort-result v-on:sendSortData="handleSortData($event)" :refresh="isSortRefreshed"></user-sort-result>
             <div class="row" style="margin:0!important;padding:0!important">
               <button @click="sendResultOptions()"
@@ -40,7 +40,7 @@
               <span class="black-text">, {{value.age}} ans
               </span> <br>
               <span class="black-text"> {{value.localisation}} </span> <br> <br>
-              <span class="black-text">
+              <span class="black-text" v-if="value.hasOwnProperty('km')">
                 <strong>Distance :</strong> {{value.km}}.{{value.meters}} km
               </span> <br>
               <span class="black-text">
@@ -58,8 +58,8 @@
       </ul>
     </div>
   </div>
-  <div v-if="type === 'search'" :class="isFilterRefreshed ? 'hide' : 'row valign-wrapper'" style="width:100%!important">
-    <div class="col s12 pull-m1 m10 l8 push-l1 offset-l1">
+  <div v-if="type === 'search' && isSearch === false" class="row valign-wrapper'" style="width:100%!important">
+    <div class="col s12 push-m1 m10 l8 push-l1 offset-l1">
       <div class="card teal lighten-5 s-responsive-row" style="width:100%!important">
         <div class="card-content" style="padding:1.5em!important">
           <user-filter
@@ -117,7 +117,7 @@ export default {
   data() {
     return {
       windowScroll:0,
-      isSearch:'',
+      isSearch:false,
       isFilter:'',
       imageLoaded:0,
       pageCounter:1,
@@ -190,17 +190,14 @@ export default {
     },
 
     sendSearch(){
-      //this.setData(this.filterResult, data.filterResult)
-      //console.log(this.filterResult)
       // 1 - search results --- 2 - manageSearchResult [pagination = search:session_id]
       this.$http.post('/search/searchResult', {filterResult:this.filterResult}).then((response) => {
-        console.log(this.filterResult.localisation)
         this.isFilterRefreshed = true
         console.log(response.data)
-        if (response.data && Array.isArray(response.data.result)){
-          this.matchedResult = response.data.result
-          this.type = 'result'
+        if (response.data && Array.isArray(response.data.search)){
+          this.matchedResult = response.data.search
           this.isSearch = true
+          this.matchedResult['type'] = 'search'
           // ----> sendResultOptions() === isSearch ? manageResult // isSearch ? paginationResult.
         }
         //console.log(response.data)
@@ -239,15 +236,14 @@ export default {
     },
 
     sendData(content){
-      this.$http.post('/search/manageResult', content).then((response) => {
+      this.$http.post('/search/manageResult', {content:content, isSearch:this.isSearch}).then((response) => {
         console.log(response.data)
         if (response.data && Array.isArray(response.data.sugestions)){
           let countReloadedImg = 0;
-          //console.log(countReloadedImg);
-          //this.imageLoaded = countReloadedImg > 0 ? 1 : 0
           this.pageCounter = 1
-          this.matchedResult = response.data.sugestions
-          this.matchedResult['type'] = 'filter'
+          this.matchedResult = response.data.sugestions;
+          // sugestionFilter ou searchFilter
+          this.matchedResult['type'] = 'searchFilter'
           // update match result ou search result -- en fonction du type de la recherche.
         }
       })

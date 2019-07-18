@@ -75,15 +75,14 @@ trait SearchAlgoTrait
         return (true);
     }
 
-    public function filterCacheData($params)
+    public function filterCacheData($params, $isSearch = false)
     {
-        $key = 'sugestion:'.$_SESSION['user_id'];
+        $key = $isSearch ? 'search:'.$_SESSION['user_id'] : 'sugestion:'.$_SESSION['user_id'];
         $data = json_decode($this->redis->get($key));
         $countFilter = count($params);
         $result = [];
         foreach ($data as $user) {
             $userMatchFilter = 0;
-            // user : age - popularite - ville - tags.
             if (isset($params['age']) && !empty($params['age'])) {
                 if ($user->age >= $params['age']['minRange'] && $user->age <= $params['age']['maxRange']) {
                     ++$userMatchFilter;
@@ -99,7 +98,6 @@ trait SearchAlgoTrait
                     ++$userMatchFilter;
                 }
             }
-            // filtrer par tags des users...array intersect
             if (isset($params['tags']) && !empty($params['tags']) && $user->commonTags !== "") {
                 if (count(array_intersect($user->commonTags, $params['tags'])) == count($params['tags'])) {
                     ++$userMatchFilter;
@@ -110,14 +108,14 @@ trait SearchAlgoTrait
             }
         }
         if (!empty($result)) {
-            $key = 'filterResult:'.$_SESSION['user_id'];
+            $key = $isSearch ? 'searchFilter:'.$_SESSION['user_id'] : 'filterResult:'.$_SESSION['user_id'];
             $this->redis->set($key, encodeToJs($result));
             return (['sugestions' => array_slice($result, 0, 10)]);
         }
         // sinon message avec : aucun resultat pour ce filtre.
     }
 
-    public function filterResult($params)
+    public function filterResult($params, $isSearch = false)
     {
         if (empty($params) || !isset($params)) {
             return (false);
@@ -142,19 +140,19 @@ trait SearchAlgoTrait
                 return (false);
             }
         }
-        return ($this->filterCacheData($params));
+        return ($this->filterCacheData($params, $isSearch));
     }
 
-    public function sortCacheData($params)
+    public function sortCacheData($params, $isSearch)
     {
-        $key = 'filterResult:'.$_SESSION['user_id'];
+        // filtre / sugestion / search !
+        $key = $isSearch ? 'searchFilter:'.$_SESSION['user_id'] : 'filterResult:'.$_SESSION['user_id'];
         if ($this->redis->exists($key)) {
             $data = json_decode($this->redis->get($key));
         } else {
-            $key = 'sugestion:'.$_SESSION['user_id'];
+            $key = $isSearch ? 'search:'.$_SESSION['user_id'] : 'sugestion:'.$_SESSION['user_id'];
             $data = json_decode($this->redis->get($key));
         }
-        // ordre croissant ou decroissant.
         if (isset($params['type'])) {
             if ($params['type'] == 'user-Age') {
                 usort($data, function ($a, $b) {
@@ -171,27 +169,19 @@ trait SearchAlgoTrait
                     return $a->distance > $b->distance;
                 });
             }
-            // age - localisation - tags en commun avec le user - tags.
             if ($params['type'] == 'tags') {
                 $currentUserTags = oneDimArray($this->search->fetchUserTags($_SESSION['user_id']));
-                // tags en commun de data avec user_tags ...
                 usort($data, function ($a, $b) use ($currentUserTags) {
                     return (count(array_intersect($a->commonTags, $currentUserTags)) < count(array_intersect($b->commonTags, $currentUserTags)));
                 });
             }
         }
-        // sort par tags des users... + de tags a - de tags en commun ... / .. count(array_intersect($tags, $user->tags))
-        /*if (isset($params['tags'])) {
-            usort($data, function ($a, $b) use ($params) {
-                return (count(array_intersect($a->commonTags, $params['tags'])) < count(array_intersect($b->commonTags, $params['tags'])));
-            });
-        }*/
-        $key = 'filterResult:'.$_SESSION['user_id'];
+        $key = $isSearch ? 'searchFilter:'.$_SESSION['user_id'] : 'filterResult:'.$_SESSION['user_id'];
         $this->redis->set($key, encodeToJs($data));
         return (['sugestions' => array_slice($data, 0, 10)]);
     }
 
-    public function sortResult($params)
+    public function sortResult($params, $isSearch = false)
     {
         if (empty($params) || !isset($params)) {
             return (false);
@@ -211,7 +201,7 @@ trait SearchAlgoTrait
                 return (false);
             }
         }
-        return ($this->sortCacheData($params));
+        return ($this->sortCacheData($params, $isSearch));
         // usort ordre decroissant
     }
 }

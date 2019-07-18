@@ -92,6 +92,10 @@ class SearchController extends Models
             $key = 'sugestion:'.$_SESSION['user_id'];
         } elseif ($data['type'] == 'filter') {
             $key = 'filterResult:'.$_SESSION['user_id'];
+        } elseif ($data['type'] == 'search') {
+            $key = 'search:'.$_SESSION['user_id'];
+        } elseif ($data['type'] == 'searchFilter') {
+            $key = 'searchFilter:'.$_SESSION['user_id'];
         }
         $result = json_decode($this->redis->get($key));
         $startData = (($data['pageNumber'] - 1) * 10);
@@ -103,23 +107,27 @@ class SearchController extends Models
         $request = new Request();
         $data = $request->toJson();
 
-        if (!keysExist(['filterResult', 'sortResult'], $data)) {
+        if (!keysExist(['filterResult', 'sortResult'], $data['content'])) {
             redirect('/');
         }
-        if (empty($data['filterResult']) && empty($data['sortResult'])) {
+        if (empty($data['content']['filterResult']) && empty($data['content']['sortResult'])) {
             return ;
         }
-        // reset le filter.
-        $key = 'filterResult:'.$_SESSION['user_id'];
+        // reset le filter. // ou searchFilter.
+        if ($data['isSearch'] === true) {
+            $key = 'searchFilter:'.$_SESSION['user_id'];
+        } else {
+            $key = 'filterResult:'.$_SESSION['user_id'];
+        }
         if ($this->redis->exists($key)) {
             $this->redis->del($key);
         }
-        if (!empty($data['filterResult'])) {
-            $result = $this->filterResult($data['filterResult']);
+        if (!empty($data['content']['filterResult'])) {
+            $result = $this->filterResult($data['content']['filterResult'], $data['isSearch']);
         }
         //var_dump($result);
-        if (!empty($data['sortResult'])) {
-            $result = $this->sortResult($data['sortResult']);
+        if (!empty($data['content']['sortResult'])) {
+            $result = $this->sortResult($data['content']['sortResult'], $data['isSearch']);
         }
         echo encodeToJs($result);
     }
@@ -132,9 +140,38 @@ class SearchController extends Models
         if (!keysExist(['filterResult'], $data)) {
             redirect('/');
         }
-        // Liste de tags les + utilisés / Liste des localisations (departements)
-        if (isset($data['tags'])) {
+        $result = $this->search->findResult($data['filterResult']);
+        $data = [];
+        if (isset($data['filterResult']['tags'])) {
+            $count = count($data['filterResult']['tags']);
+            foreach ($result as $id => $user) {
+                $tags = [];
+                $info = $user[0];
+                foreach ($user as $value) {
+                    if (isset($value->tagName)) {
+                        $tags[] = $value->tagName;
+                    }
+                }
+                if (count(array_intersect($tags, $data['filterResult']['tags'])) == $count) {
+                    $data[] = ['id' => $id, 'age' => $info->age, 'score' => $info->score, 'commonTags' => $tags,
+                  'lastname' => $info->lastname, 'firstname' => $info->firstname, 'localisation' => $info->localisation];
+                }
+            }
+        } else {
+            foreach ($result as $id => $user) {
+                $tags = [];
+                $info = $user[0];
+                foreach ($user as $key => $value) {
+                    if (isset($value->tagName)) {
+                        $tags[] = $value->tagName;
+                    }
+                }
+                $data[] = ['id' => $id, 'age' => $info->age, 'score' => $info->score, 'commonTags' => $tags,
+            'lastname' => $info->lastname, 'firstname' => $info->firstname, 'localisation' => $info->localisation];
+            }
         }
-        var_dump($data);
+        $key = 'search:'.$_SESSION['user_id'];
+        $this->redis->set($key, encodeToJs($data));
+        echo encodeToJs(['search' => array_slice($data, 0, 10)]);
     }
 }
