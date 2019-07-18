@@ -50,16 +50,16 @@ trait SearchAlgoTrait
     public function validateRange($data)
     {
         $validate = new Validate(
-        $data,
-        [
+            $data,
+            [
           'minRange' => 'digit|max:3|min:1',
           'maxRange' => 'digit|max:3|min:1',
         ],
-        'sendToJs',
-        Message::$userMessages
+            'sendToJs',
+            Message::$userMessages
       );
         if (!empty($validate->loadedMessage)) {
-            var_dump($validate->loadedMessage);
+            //var_dump($validate->loadedMessage);
             return (false);
         }
         return (true);
@@ -101,7 +101,7 @@ trait SearchAlgoTrait
             }
             // filtrer par tags des users...array intersect
             if (isset($params['tags']) && !empty($params['tags']) && $user->commonTags !== "") {
-                if (count(array_intersect($user->commonTags, $params['tags'])) > 0) {
+                if (count(array_intersect($user->commonTags, $params['tags'])) == count($params['tags'])) {
                     ++$userMatchFilter;
                 }
             }
@@ -166,17 +166,25 @@ trait SearchAlgoTrait
                     return $a->score > $b->score;
                 });
             }
+            if ($params['type'] == 'localisation') {
+                usort($data, function ($a, $b) {
+                    return $a->distance > $b->distance;
+                });
+            }
+            // age - localisation - tags en commun avec le user - tags.
+            if ($params['type'] == 'tags') {
+                $currentUserTags = oneDimArray($this->search->fetchUserTags($_SESSION['user_id']));
+                // tags en commun de data avec user_tags ...
+                usort($data, function ($a, $b) use ($currentUserTags) {
+                    return (count(array_intersect($a->commonTags, $currentUserTags)) < count(array_intersect($b->commonTags, $currentUserTags)));
+                });
+            }
         }
-        if (isset($params['localisation'])) {
-            usort($data, function ($a, $b) {
-                return $a->distance > $b->distance;
+        // sort par tags des users... + de tags a - de tags en commun ... / .. count(array_intersect($tags, $user->tags))
+        /*if (isset($params['tags'])) {
+            usort($data, function ($a, $b) use ($params) {
+                return (count(array_intersect($a->commonTags, $params['tags'])) < count(array_intersect($b->commonTags, $params['tags'])));
             });
-        }
-        // sort par tags des users... + de tags a - de tags / .. count(array_intersect($tags, $user->tags))
-        /*if (isset($params['tags'])){
-          usort($data, function ($a, $b) {
-              return $a->distance > $b->distance;
-          });
         }*/
         $key = 'filterResult:'.$_SESSION['user_id'];
         $this->redis->set($key, encodeToJs($data));
@@ -189,15 +197,15 @@ trait SearchAlgoTrait
             return (false);
         }
         if (isset($params['type'])) {
-            if ($params['type'] !== 'user-Age' || $params['type'] !== 'score') {
+            if (!($params['type'] == 'user-Age' || $params['type'] == 'score' || $params['type'] == 'localisation' || $params['type'] == 'tags')) {
                 return (false);
             }
         }
-        if (isset($params['localisation'])) {
+        /*if (isset($params['localisation'])) {
             if (!isValidRegex(ALPHA, $params['localisation']) || strlen($params['localisation']) > 256) {
                 return (false);
             }
-        }
+        }*/
         if (isset($params['tags'])) {
             if (!$this->validateTags($params['tags'])) {
                 return (false);

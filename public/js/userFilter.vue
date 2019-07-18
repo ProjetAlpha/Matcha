@@ -8,8 +8,25 @@
     </div>
     <div class="row" style="margin-bottom:0!important">
       <div class="input-field col s12" style="margin:0!important">
-        <input class="validate" v-model="localisation" @change="sendInput($event.target.value)" :id="createLoc(filterId.id)" type="text">
-        <label :for="createLoc(filterId.id)">Ville</label>
+        <input class="validate" placeholder="" v-model="getCode" ref="code" @change="sendInput($event.target.value)" :id="createLoc(filterId.id)" type="text">
+        <label :for="createLoc(filterId.id)" ref="labLoc">Code postal</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s12" v-if="searchActive" style="margin:0!important;">
+          <div class="card" style ="overflow-y: auto;max-height: 150px;">
+            <div class="card-content">
+                <a @click="sendInput($event.target.innerHTML, value.code)" class="card-title mr-l-3" style="cursor:pointer;font-size:14px;margin-bottom:0" v-for="(value, name, index) in searchResult">
+                  {{value.city}}
+                </a>
+            </div>
+          </div>
+      </div>
+    </div>
+    <div v-if="localisation !== ''" class="row" style="margin-bottom:0!important">
+      <div class="input-field col s12" style="margin:0!important">
+        <input disabled class="validate" :value="localisation" id="ville" type="text">
+        <label class="active" for="ville">Ville</label>
       </div>
     </div>
     <div class="chips chips-autocomplete mr-b-1" id="chips-filter" style="margin-top:0!important"></div>
@@ -36,10 +53,39 @@ export default {
     refresh(value){
       if (value === true){
           //this.resetSlider()
-          this.initChips()
-          this.tags = []
-          this.localisation = ''
-          this.$emit('sendFilterData', 'resetRefresh')
+          //this.initChips()
+          //this.tags = []
+          //this.localisation = ''
+          //this.$emit('sendFilterData', 'resetRefresh')
+      }
+    },
+
+    getCode(code){
+      if (!Number.isInteger(parseInt(code)) || code == '' || code === false){
+        this.isSearchActive = false;
+        return ;
+      }
+      const req = new Request('https://vicopo.selfbuild.fr/cherche/'+code)
+      fetch(req).then(response => response.json()).then(json => {
+        if (json !== null && json !== undefined){
+          if (Array.isArray(json.cities) && json.cities.length === 0){
+            this.searchActive = false
+            return ;
+          }
+          if (this.searchActive === false && this.isInputSent === true){
+            this.isInputSent = false
+          }else if (this.searchActive === false && this.isInputSent === false){
+            this.searchActive = true
+          }
+          this.searchResult = (json.hasOwnProperty('cities') ? json.cities.slice(0, 15) : [{city:json.city}]);
+        }
+      })
+    },
+
+    localisation(value){
+      if (value !== '' && value !== null && this.searchActive === true){
+        this.isInputSent = true
+        this.searchActive = false
       }
     }
   },
@@ -47,12 +93,16 @@ export default {
   data(){
     return {
       value:'',
+      getCode:'',
       localisation:'',
       isDomReady:false,
       id : [],
       selectedSortFilter:'',
       tags:[],
-      chipsInstance:''
+      chipsInstance:'',
+      searchResult:[],
+      searchActive:false,
+      isInputSent:false
     }
   },
 
@@ -134,7 +184,7 @@ export default {
     },
 
     chipAdded(e, data){
-      this.tags = [...this.tags, data.childNodes[0].textContent]
+      this.tags = [...this.tags, data.childNodes[0].textContent.toLowerCase()]
       this.$emit('sendFilterData', {type:'tags', value:this.tags})
     },
 
@@ -147,8 +197,27 @@ export default {
       this.$emit('sendFilterData', {type:'tags', value:this.tags})
     },
 
-    sendInput(value){
-      this.$emit('sendFilterData', {type:'localisation', value:value})
+    sendInput(val, code){
+      this.getCode = code
+      this.localisation = val.trim()
+      let city = ''
+      if (this.localisation.match(/\d/g))
+          city = this.localisation.replace(/[0-9]/g, '')
+      else {
+        city = this.localisation
+      }
+      city = this.normalizeCity(city).trim()
+      this.$emit('sendFilterData', {type:'localisation', value:city})
+      this.localisation = city
+      this.isInputSent = true
+    },
+
+    normalizeCity(city){
+      return city
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
     }
   }
 }

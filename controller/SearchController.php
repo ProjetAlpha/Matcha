@@ -11,9 +11,10 @@ class SearchController extends Models
         $result = [];
         $usersCollection = $this->search->fetchAllUsersInfo();
         $currentUser = $this->search->fetchCurrentUserInfo($_SESSION['user_id']);
-        $commonTags = $this->search->fetchCommonTags($_SESSION['user_id']);
+        $time_start = microtime(true);
+        $commonTags = $this->search->fetchTags($_SESSION['user_id']);
         $currentUserTags = oneDimArray($this->search->fetchUserTags($_SESSION['user_id']));
-        // fetch tout les tags des users + mettre en cache [id][...tags]
+
         foreach ($usersCollection as $user) {
             if ($currentUser->id == $user->id) {
                 continue;
@@ -40,10 +41,10 @@ class SearchController extends Models
             }
             $score += $this->getPopularity($currentUser->score, $user->score);
             if (isset($commonTags[$user->id])) {
-                $targetUserTags = array_unique(oneDimArray($commonTags[$user->id]));
+                $targetUserTags = oneDimArray($commonTags[$user->id]);
                 $score += $this->getTags(
-                  $currentUserTags,
-                  $targetUserTags
+                    $currentUserTags,
+                    $targetUserTags
               );
             } else {
                 $score += 5;
@@ -61,10 +62,9 @@ class SearchController extends Models
         usort($result, function ($a, $b) {
             return $a->computed_score > $b->computed_score;
         });
-        // - mettre en cache tout les tags des users -- [id][...tags]
         $key = 'sugestion:'.$_SESSION['user_id'];
         $this->redis->set($key, encodeToJs($result));
-        echo encodeToJs(['sugestions' => array_slice($result, 0, 10)]);
+        echo encodeToJs(['sugestions' => array_slice($result, 0, 10), 'userTags' => $currentUserTags]);
     }
 
     public function paginateSugestion()
@@ -75,7 +75,6 @@ class SearchController extends Models
         if (!keysExist(['pageNumber', 'type'], $data)) {
             redirect('/');
         }
-        // type de pagination
         $validate = new Validate(
             $data,
             [
@@ -123,5 +122,19 @@ class SearchController extends Models
             $result = $this->sortResult($data['sortResult']);
         }
         echo encodeToJs($result);
+    }
+
+    public function searchResult()
+    {
+        $request = new Request();
+        $data = $request->toJson();
+
+        if (!keysExist(['filterResult'], $data)) {
+            redirect('/');
+        }
+        // Liste de tags les + utilisés / Liste des localisations (departements)
+        if (isset($data['tags'])) {
+        }
+        var_dump($data);
     }
 }

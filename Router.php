@@ -98,6 +98,7 @@ $route->addMiddlewareStack(
       '/chat/findUserRoom',
       '/getMoreSugestions',
       '/search/manageResult',
+      '/search/searchResult',
       'callback' => function () use ($csrf) {
           if ($csrf->check() === false) {
               redirect('/');
@@ -155,6 +156,7 @@ $route->addMiddlewareStack(
       '/searchSugestions',
       '/getMoreSugestions',
       '/search/manageResult',
+      '/search/searchResult',
       'callback' => function () {
           if (!isAuth()) {
               redirect('/');
@@ -174,6 +176,7 @@ $route->add('/profil/edit', 'get', function () {
 $route->add('/searchSugestions', 'get', 'SearchController@searchSugestions');
 $route->add('/getMoreSugestions', 'post', 'SearchController@paginateSugestion');
 $route->add('/search/manageResult', 'post', 'SearchController@manageResult');
+$route->add('/search/searchResult', 'post', 'SearchController@searchResult');
 
 $route->add('/profil/edit/modif', 'post', 'ProfilController@editProfil');
 $route->add('/profil/edit/getProfilData', 'get', 'ProfilController@getData');

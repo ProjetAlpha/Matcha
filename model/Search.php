@@ -15,9 +15,9 @@ class Search
         return (execQuery($this->db, $sql, [$userId], PDO::FETCH_ASSOC | PDO::FETCH_GROUP, FETCH_ALL));
     }
 
-    public function fetchCommonTags($userId)
+    public function fetchTags($userId)
     {
-        $sql = "SELECT user_id,name FROM Tag WHERE name IN (SELECT name FROM Tag WHERE Tag.user_id = ?)";
+        $sql = "SELECT user_id,name FROM Tag";
         return (execQuery($this->db, $sql, [$userId], PDO::FETCH_ASSOC | PDO::FETCH_GROUP, FETCH_ALL));
     }
 

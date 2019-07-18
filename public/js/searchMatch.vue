@@ -50,7 +50,7 @@
             <online-user-info :user-id="value.id"></online-user-info>
           </div>
           <div class="col s12 m7 l7" v-if="value.hasOwnProperty('commonTags')">
-            <div class="chip blue white-text center-align" v-for="(value, name, index) in value.commonTags">
+            <div class="chip blue white-text center-align" v-for="(value, name, index) in value.commonTags" v-if="isCommonTags(value)">
               #{{value}}
             </div>
           </div>
@@ -58,20 +58,26 @@
       </ul>
     </div>
   </div>
-  <div v-if="type === 'search'" class="row" style="width:100%!important">
-    <div class="col s12 push-m1 m10 l8 push-l1 offset-l1">
-      <user-filter
-      :custom-style="{width:'100%', height:'100%'}"
-      :custom-style-card="{width:'100%', height:'100%'}"
-      :set-style="{value:'mr-b-3 col card teal lighten-5 hoverable s12 m8 l3'}"
-      :title="{name:'Rechercher'}"
-      :range-filter="{age:'Age', popularite:'Popularite'}"
-      :sort-filter="{name:'Age', localisation:'Localisation', popularite:'Popularite', tags:'Tags'}"
-      :sort-filter-name="{name:'Trier les résultats'}"
-      :action-btn="{name:'Confirmer'}"
-      :filter-id="{id:'1'}"
-      v-on:sendFilterData="handleData($event)">
-    </user-filter>
+  <div v-if="type === 'search'" :class="isFilterRefreshed ? 'hide' : 'row valign-wrapper'" style="width:100%!important">
+    <div class="col s12 pull-m1 m10 l8 push-l1 offset-l1">
+      <div class="card teal lighten-5 s-responsive-row" style="width:100%!important">
+        <div class="card-content" style="padding:1.5em!important">
+          <user-filter
+          :custom-style="{margin:0,padding:0}"
+          :title="{name:'Rechercher'}"
+          :range-filter="{age:'Age', popularite:'Popularite'}"
+          :sort-filter="{name:'Age', localisatio:'Localisation', popularite:'Popularite', tags:'Tags'}"
+          :sort-filter-name="{name:'Trier les résultats'}"
+          :action-btn="{name:'Confirmer'}"
+          :filter-id="{id:'1'}"
+          v-on:sendFilterData="handleData($event)" :refresh="isFilterRefreshed" :key="isFilterRefreshed"></user-filter>
+          <div class="row" style="margin:0!important;padding:0!important">
+            <button @click="sendSearch()"
+            class="btn-small green waves-effect waves-light basic-txt mr-t-3 right">Confirmer
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 <div v-if="windowScroll !== 0" class="fixed-action-btn" style="right:23px;bottom:23px">
@@ -133,7 +139,8 @@ export default {
       },
       isFilterRefreshed:false,
       isSortRefreshed:false,
-      matchedResult:[]
+      matchedResult:[],
+      userTags:[]
     }
   },
 
@@ -182,6 +189,28 @@ export default {
       this.resetData()
     },
 
+    sendSearch(){
+      //this.setData(this.filterResult, data.filterResult)
+      //console.log(this.filterResult)
+      // 1 - search results --- 2 - manageSearchResult [pagination = search:session_id]
+      this.$http.post('/search/searchResult', {filterResult:this.filterResult}).then((response) => {
+        console.log(this.filterResult.localisation)
+        this.isFilterRefreshed = true
+        console.log(response.data)
+        if (response.data && Array.isArray(response.data.result)){
+          this.matchedResult = response.data.result
+          this.type = 'result'
+          this.isSearch = true
+          // ----> sendResultOptions() === isSearch ? manageResult // isSearch ? paginationResult.
+        }
+        //console.log(response.data)
+        this.filterResult.tags = []
+        this.filterResult.localisation = ''
+        this.filterResult.slider.age = ''
+        this.filterResult.slider.popularite = ''
+      })
+    },
+
     setData(target, data){
       for (let [key, value] of new Map(Object.entries(target))) {
         if(target.hasOwnProperty(key)) {
@@ -213,7 +242,9 @@ export default {
       this.$http.post('/search/manageResult', content).then((response) => {
         console.log(response.data)
         if (response.data && Array.isArray(response.data.sugestions)){
-          this.imageLoaded = 0
+          let countReloadedImg = 0;
+          //console.log(countReloadedImg);
+          //this.imageLoaded = countReloadedImg > 0 ? 1 : 0
           this.pageCounter = 1
           this.matchedResult = response.data.sugestions
           this.matchedResult['type'] = 'filter'
@@ -226,21 +257,26 @@ export default {
       this.sortResult.tags = []
       this.sortResult.localisation = ''
       //this.sortResult.type = ''
-      this.filterResult.tags = []
-      this.filterResult.localisation = ''
-      this.filterResult.slider.age = ''
-      this.filterResult.slider.popularite = ''
+      //this.filterResult.tags = []
+      //this.filterResult.localisation = ''
+      //this.filterResult.slider.age = ''
+      //this.filterResult.slider.popularite = ''
     },
 
     fetchSugestions(){
       this.$http.get('/searchSugestions').then((response) => {
-        console.log(response.data)
+        //console.log(response.data)
         if (response.data !== null && Array.isArray(response.data.sugestions)){
           window.scrollTo(0,0)
           this.matchedResult = response.data.sugestions
           this.matchedResult['type'] = 'sugestion'
+          this.userTags = response.data.userTags
         }
       });
+    },
+
+    isCommonTags(name){
+      return ((this.userTags.filter(element => element == name).length) > 0);
     },
 
     onScroll(e){
@@ -248,9 +284,9 @@ export default {
         this.windowScroll = window.scrollY
       if (window.scrollY < window.innerHeight)
         this.windowScroll = 0
-      console.log(this.imageLoaded)
-      if (this.imageLoaded !== this.pageCounter * 10)
-        return ;
+      //console.log(this.imageLoaded % 10)
+      /*if (this.imageLoaded 10 !== this.pageCounter * 10)
+        return ;*/
       if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight)
       {
         this.pageCounter++;

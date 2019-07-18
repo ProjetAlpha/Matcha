@@ -1,11 +1,11 @@
 <?php
 
-include_once(dirname(__DIR__)."/utils.php");
-include_once(__DIR__."/database.php");
+include_once(dirname(__DIR__)."/TinyBee/utils.php");
 
 class ManageScheme
 {
     private $db;
+    private $redis;
     private $create;
     private $dbName;
     public $displayCreate = true;
@@ -14,6 +14,7 @@ class ManageScheme
     public function __construct($info)
     {
         if (isset($info) && is_array($info) && keysExist(['username', 'password', 'host', 'db_name'], $info)) {
+            $file = file_get_contents('ville_france.json');
             $this->initDB($info);
         } else {
             throw new Exception("Invalid database information.");

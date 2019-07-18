@@ -12,7 +12,7 @@ class SeederController extends Models
         // docker / mac config
         // $connection = mysqli_connect("mysql", "root", "rootpass");
         // windows / xamp config
-        $connection = mysqli_connect("localhost", "root", "");
+        $connection = mysqli_connect("mysql", "root", "rootpass");
         $db_select = mysqli_select_db($connection, "Matcha");
         $sqlUser = '';
         $sqlProfil = '';
@@ -21,9 +21,10 @@ class SeederController extends Models
         $currentId = ++$lastId;
         foreach ($data as $value) {
             // modifier par sha1 + hash_equals au lieu de password_verify si besoin.
+            // password_hash('Test123', PASSWORD_BCRYPT, ['cost' => 4])
             if (isset($value['login'], $value['age'], $value['name'], $value['email'])) {
                 $email = mysqli_real_escape_string($connection, $value['email']);
-                $sqlUser .= "('".$value['login']['username']."','".password_hash($value['login']['password'], PASSWORD_BCRYPT, ['cost' => 4])."','".$value['name']['first']."','"
+                $sqlUser .= "('".$value['login']['username']."','".password_hash("Test1234", PASSWORD_BCRYPT, ['cost' => 4])."','".$value['name']['first']."','"
                 .$value['name']['last']."','".$value['age']."',1,'.$email.'),";
             }
             if (isset($value['location'], $value['gender'], $value['score'], $value['picture'], $value['orientation'])) {
@@ -44,6 +45,7 @@ class SeederController extends Models
         $sqlUserRes = substr($sqlUser, 0, -1);
         $sqlProfilRes = substr($sqlProfil, 0, -1);
         $sqlTagRes = substr($sqlTag, 0, -1);
+        var_dump($sqlUserRes);
         mysqli_query($connection, "INSERT INTO User (username,password,firstname,lastname,age,is_confirmed,email) VALUES {$sqlUserRes}");
         echo mysqli_errno($connection) . ": " . mysqli_error($connection) . "\n";
         mysqli_query($connection, "INSERT INTO Profil (user_id,bio,score,genre,orientation,localisation,profile_pic_path,profile_pic_name,longitude,latitude)
