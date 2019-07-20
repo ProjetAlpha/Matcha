@@ -18,15 +18,16 @@
           <!-- <li><a href="/settings"><i class="material-icons">settings</i></a></li> -->
           <li v-if="isAuth() && this.user !== ''">
             <a class='dropdown-trigger' data-target='dropdown3'>
-              <i class="material-icons left">notifications</i>
-              Notifications
+              <i class="material-icons notif">notifications</i>
+
+              <small class="notification-badge">5</small>
             </a>
           </li>
           <notifications notification-id="dropdown3" v-if="isAuth"></notifications>
           <li v-if="isAuth() && this.user !== ''">
             <a href="/chat">
-              <i class="material-icons left">chat_bubble</i>
-              Chat
+              <i class="material-icons">chat_bubble</i>
+              <small class="notification-badge">5</small> 
             </a>
           </li>
           <li>
@@ -62,7 +63,13 @@
       </ul>
       <li v-if="isAuth() && this.user !== ''"><a class='dropdown-trigger' data-target='dropdown4'><i class="material-icons">notifications</i>Notifications</a></li>
       <notifications notification-id="dropdown4" v-if="isAuth()"></notifications>
-      <li v-if="isAuth() && this.user !== ''"><a href="/chat"><i class="material-icons">chat_bubble</i>Chat</a></li>
+      <li v-if="isAuth() && this.user !== ''">
+        <a href="/chat">
+          <i class="material-icons notif">chat_bubble</i>
+          <small class="notification-badge">5</small>
+          <span class="mr-l-5">Chat</span>
+        </a>
+      </li>
       <li><a href="/search" class="mr-t-3"><i class="material-icons">search</i>Rechercher</a></li>
       <hr>
       <li v-if="!isAuth() && this.user !== ''">

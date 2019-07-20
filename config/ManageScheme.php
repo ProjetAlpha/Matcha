@@ -14,7 +14,6 @@ class ManageScheme
     public function __construct($info)
     {
         if (isset($info) && is_array($info) && keysExist(['username', 'password', 'host', 'db_name'], $info)) {
-            $file = file_get_contents('ville_france.json');
             $this->initDB($info);
         } else {
             throw new Exception("Invalid database information.");

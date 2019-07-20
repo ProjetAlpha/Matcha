@@ -59,7 +59,6 @@ trait SearchAlgoTrait
             Message::$userMessages
       );
         if (!empty($validate->loadedMessage)) {
-            //var_dump($validate->loadedMessage);
             return (false);
         }
         return (true);
@@ -112,7 +111,6 @@ trait SearchAlgoTrait
             $this->redis->set($key, encodeToJs($result));
             return (['sugestions' => array_slice($result, 0, 10)]);
         }
-        // sinon message avec : aucun resultat pour ce filtre.
     }
 
     public function filterResult($params, $isSearch = false)
@@ -145,7 +143,6 @@ trait SearchAlgoTrait
 
     public function sortCacheData($params, $isSearch)
     {
-        // filtre / sugestion / search !
         $key = $isSearch ? 'searchFilter:'.$_SESSION['user_id'] : 'filterResult:'.$_SESSION['user_id'];
         if ($this->redis->exists($key)) {
             $data = json_decode($this->redis->get($key));
@@ -191,17 +188,23 @@ trait SearchAlgoTrait
                 return (false);
             }
         }
-        /*if (isset($params['localisation'])) {
-            if (!isValidRegex(ALPHA, $params['localisation']) || strlen($params['localisation']) > 256) {
-                return (false);
-            }
-        }*/
         if (isset($params['tags'])) {
             if (!$this->validateTags($params['tags'])) {
                 return (false);
             }
         }
         return ($this->sortCacheData($params, $isSearch));
-        // usort ordre decroissant
+    }
+
+    public function formatTags($user)
+    {
+        $tags = [];
+        $info = $user[0];
+        foreach ($user as $value) {
+            if (isset($value->tagName)) {
+                $tags[] = $value->tagName;
+            }
+        }
+        return ($tags);
     }
 }

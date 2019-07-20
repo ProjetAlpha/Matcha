@@ -128,6 +128,22 @@ $scheme->add(
     user_profil_id INT(11)"
 );
 
+$scheme->add(
+    'Tag_list',
+    'create',
+    "id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(256),
+    count INT(11) default 0"
+);
+
+$scheme->add(
+    'Notification',
+    'create',
+    "id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT(11),
+    name VARCHAR(256)"
+);
+
 if (isset($argv[1]) && !empty($argv[1])) {
     $scheme->displayCreate = false;
 }

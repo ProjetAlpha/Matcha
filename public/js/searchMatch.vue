@@ -49,8 +49,13 @@
             </div>
             <online-user-info :user-id="value.id"></online-user-info>
           </div>
-          <div class="col s12 m7 l7" v-if="value.hasOwnProperty('commonTags')">
+          <div class="col s12 m7 l7" v-if="value.hasOwnProperty('commonTags') && isSearch === false">
             <div class="chip blue white-text center-align" v-for="(value, name, index) in value.commonTags" v-if="isCommonTags(value)">
+              #{{value}}
+            </div>
+          </div>
+          <div class="col s12 m7 l7" v-if="value.hasOwnProperty('commonTags') && isSearch === true">
+            <div class="chip blue white-text center-align" v-for="(value, name, index) in value.commonTags">
               #{{value}}
             </div>
           </div>
@@ -95,7 +100,7 @@ import userSortResult from './userSortResult.vue'
 
 export default {
 
-  props:['type'],
+  props:['type', 'isSearch'],
 
   components:{
     'user-filter':userFilter,
@@ -111,13 +116,12 @@ export default {
   },
 
   created(){
-    this.fetchSugestions();
+    !this.isSearch ? this.fetchSugestions() : this.fetchSearchResults();
   },
 
   data() {
     return {
       windowScroll:0,
-      isSearch:false,
       isFilter:'',
       imageLoaded:0,
       pageCounter:1,
@@ -171,7 +175,6 @@ export default {
     },
 
     sendResultOptions(){
-      // 1 - update match result
       let data = {
         filterResult:{},
         sortResult:{}
@@ -183,29 +186,14 @@ export default {
         this.setData(this.sortResult, data.sortResult)
       }
       this.sendData(data)
-      // 2 - reset tout les champs
       this.isSortRefreshed = true
       this.isFilterRefreshed = true
       this.resetData()
     },
 
     sendSearch(){
-      // 1 - search results --- 2 - manageSearchResult [pagination = search:session_id]
-      this.$http.post('/search/searchResult', {filterResult:this.filterResult}).then((response) => {
-        this.isFilterRefreshed = true
-        console.log(response.data)
-        if (response.data && Array.isArray(response.data.search)){
-          this.matchedResult = response.data.search
-          this.isSearch = true
-          this.matchedResult['type'] = 'search'
-          // ----> sendResultOptions() === isSearch ? manageResult // isSearch ? paginationResult.
-        }
-        //console.log(response.data)
-        this.filterResult.tags = []
-        this.filterResult.localisation = ''
-        this.filterResult.slider.age = ''
-        this.filterResult.slider.popularite = ''
-      })
+      this.$http.post('/search/searchResult', {filterResult:this.filterResult})
+      window.location.href = '/search/result'
     },
 
     setData(target, data){
@@ -237,14 +225,11 @@ export default {
 
     sendData(content){
       this.$http.post('/search/manageResult', {content:content, isSearch:this.isSearch}).then((response) => {
-        console.log(response.data)
         if (response.data && Array.isArray(response.data.sugestions)){
           let countReloadedImg = 0;
           this.pageCounter = 1
           this.matchedResult = response.data.sugestions;
-          // sugestionFilter ou searchFilter
           this.matchedResult['type'] = 'searchFilter'
-          // update match result ou search result -- en fonction du type de la recherche.
         }
       })
     },
@@ -252,21 +237,24 @@ export default {
     resetData(){
       this.sortResult.tags = []
       this.sortResult.localisation = ''
-      //this.sortResult.type = ''
-      //this.filterResult.tags = []
-      //this.filterResult.localisation = ''
-      //this.filterResult.slider.age = ''
-      //this.filterResult.slider.popularite = ''
     },
 
     fetchSugestions(){
       this.$http.get('/searchSugestions').then((response) => {
-        //console.log(response.data)
         if (response.data !== null && Array.isArray(response.data.sugestions)){
           window.scrollTo(0,0)
           this.matchedResult = response.data.sugestions
           this.matchedResult['type'] = 'sugestion'
           this.userTags = response.data.userTags
+        }
+      });
+    },
+
+    fetchSearchResults(){
+      this.$http.get('/search/getResults').then((response) => {
+        if (response.data && Array.isArray(response.data.search)){
+          this.matchedResult = response.data.search
+          this.matchedResult['type'] = 'search'
         }
       });
     },
@@ -280,9 +268,6 @@ export default {
         this.windowScroll = window.scrollY
       if (window.scrollY < window.innerHeight)
         this.windowScroll = 0
-      //console.log(this.imageLoaded % 10)
-      /*if (this.imageLoaded 10 !== this.pageCounter * 10)
-        return ;*/
       if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight)
       {
         this.pageCounter++;
@@ -296,7 +281,6 @@ export default {
     },
 
     addResults(){
-      // type
       this.$http.post('/getMoreSugestions', {pageNumber:this.pageCounter, type:this.matchedResult['type']}).then((response) => {
         if (response.data && Array.isArray(response.data.result)){
           this.matchedResult.push(...response.data.result)

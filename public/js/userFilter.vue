@@ -57,6 +57,7 @@ export default {
           //this.tags = []
           //this.localisation = ''
           //this.$emit('sendFilterData', 'resetRefresh')
+          // filtrer par departement / 
       }
     },
 
@@ -155,23 +156,19 @@ export default {
         return (target)
     },
 
-    initChips(){
-      var elems = document.getElementById('chips-filter')
+    async initChips(){
+      const elems = document.getElementById('chips-filter')
       var vm = this
+      const tags = await this.getMostUsedtags()
+      let tagList = {};
+      tags.forEach((value) => {
+        tagList[value.name] = null
+      })
       var options = {
         placeholder: 'Entrer un tag',
         secondaryPlaceholder: '+Tag',
         autocompleteOptions: {
-          data: {
-            'Php': null,
-            'Java': null,
-            'Js': null,
-            'Music': null,
-            'Film': null,
-            'Google': null,
-            'Microsoft': null,
-            'Ola': null
-          },
+          data: tagList,
           limit: 10
         },
         onChipAdd(e, data){ vm.chipAdded(e, data); },
@@ -217,6 +214,14 @@ export default {
       .split(' ')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
+    },
+
+    getMostUsedtags(){
+      return new Promise((resolve, reject) => {
+        this.$http.get('/tagList/get').then((response) => {
+          resolve(response.data)
+        });
+      })
     }
   }
 }

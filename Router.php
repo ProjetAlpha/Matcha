@@ -157,6 +157,7 @@ $route->addMiddlewareStack(
       '/getMoreSugestions',
       '/search/manageResult',
       '/search/searchResult',
+      '/tagList/get',
       'callback' => function () {
           if (!isAuth()) {
               redirect('/');
@@ -177,6 +178,7 @@ $route->add('/searchSugestions', 'get', 'SearchController@searchSugestions');
 $route->add('/getMoreSugestions', 'post', 'SearchController@paginateSugestion');
 $route->add('/search/manageResult', 'post', 'SearchController@manageResult');
 $route->add('/search/searchResult', 'post', 'SearchController@searchResult');
+$route->add('/search/getResults', 'get', 'SearchController@getResults');
 
 $route->add('/profil/edit/modif', 'post', 'ProfilController@editProfil');
 $route->add('/profil/edit/getProfilData', 'get', 'ProfilController@getData');
@@ -224,6 +226,7 @@ $route->add('/chat/fetchMatchedUser', 'get', 'ChatController@fetchMatchedUser');
 $route->add('/chat/searchMatchedUser', 'post', 'ChatController@searchMatchedUser');
 $route->add('/chat/findUserRoom', 'post', 'ChatController@findUserRoom');
 
+$route->add('/tagList/get', 'get', 'TagController@getTagList');
 /**
  * Seeder Route --- DEV ONLY.
  */

@@ -5,10 +5,10 @@
     <nav-bar></nav-bar>
     <div class="hero-body" style="align-items:;padding:2%!important">
       <?php if (isset($type) && $type == 'search'): ?>
-        <search-match type="search"></search-match>
+        <search-match type="search" :is-search="false"></search-match>
       <?php endif; ?>
       <?php if (isset($type) && $type == 'result'): ?>
-        <search-match type="result"></search-match>
+        <search-match type="result" :is-search="true"></search-match>
       <?php endif; ?>
     </div>
 </section>

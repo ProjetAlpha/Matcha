@@ -32,7 +32,7 @@ class Search
     public function findResult($filter)
     {
         $match = 0;
-        $sql = "SELECT User.id AS 'id',age,score,localisation,Tag.name AS 'tagName',lastname,firstname FROM User
+        $sql = "SELECT User.id AS 'id',age,score,localisation,Tag.name AS 'tagName',lastname,firstname,latitude,longitude FROM User
         INNER JOIN Profil ON Profil.user_id = User.id
         INNER JOIN Tag ON Tag.user_id = User.id
       ";
@@ -54,7 +54,7 @@ class Search
             $value[] = $filter['slider']['age']['maxRange'];
             $condition .= $match > 0  ? ' AND age >= ? AND age <= ?' : ' age >= ? AND age <= ?';
         }
-        $sql .= $condition;
+        $sql .= $match > 0 ? $condition : '';
         return (execQuery($this->db, $sql, $value, PDO::FETCH_GROUP | PDO::FETCH_OBJ, FETCH_ALL));
     }
 }

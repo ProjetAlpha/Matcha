@@ -87,7 +87,6 @@ class SearchController extends Models
         if (!empty($validate->loadedMessage)) {
             redirect('/');
         }
-        // aussi type = search.
         if ($data['type'] == 'sugestion') {
             $key = 'sugestion:'.$_SESSION['user_id'];
         } elseif ($data['type'] == 'filter') {
@@ -140,38 +139,47 @@ class SearchController extends Models
         if (!keysExist(['filterResult'], $data)) {
             redirect('/');
         }
+        $currentUser = $this->search->fetchCurrentUserInfo($_SESSION['user_id']);
         $result = $this->search->findResult($data['filterResult']);
         $data = [];
         if (isset($data['filterResult']['tags'])) {
             $count = count($data['filterResult']['tags']);
             foreach ($result as $id => $user) {
-                $tags = [];
+                $tags = $this->formatTags($user);
                 $info = $user[0];
-                foreach ($user as $value) {
-                    if (isset($value->tagName)) {
-                        $tags[] = $value->tagName;
-                    }
-                }
+                $distance = geoCoordsDistance($currentUser->latitude, $currentUser->longitude, $info->latitude, $info->longitude);
+                $formatDist = round($distance, 3);
                 if (count(array_intersect($tags, $data['filterResult']['tags'])) == $count) {
-                    $data[] = ['id' => $id, 'age' => $info->age, 'score' => $info->score, 'commonTags' => $tags,
-                  'lastname' => $info->lastname, 'firstname' => $info->firstname, 'localisation' => $info->localisation];
+                    $data[] = [
+                      'id' => $id, 'age' => $info->age, 'score' => $info->score, 'commonTags' => $tags,
+                      'lastname' => $info->lastname, 'firstname' => $info->firstname, 'localisation' => $info->localisation, 'distance' => $distance,
+                      'km' => (int)$formatDist, 'meters' => (int)(($formatDist - (int)$formatDist) * 1000), 'distance' => $formatDist
+                  ];
                 }
             }
         } else {
             foreach ($result as $id => $user) {
-                $tags = [];
+                $tags = $this->formatTags($user);
                 $info = $user[0];
-                foreach ($user as $key => $value) {
-                    if (isset($value->tagName)) {
-                        $tags[] = $value->tagName;
-                    }
-                }
-                $data[] = ['id' => $id, 'age' => $info->age, 'score' => $info->score, 'commonTags' => $tags,
-            'lastname' => $info->lastname, 'firstname' => $info->firstname, 'localisation' => $info->localisation];
+                $distance = geoCoordsDistance($currentUser->latitude, $currentUser->longitude, $info->latitude, $info->longitude);
+                $formatDist = round($distance, 3);
+                $data[] = [
+                  'id' => $id, 'age' => $info->age, 'score' => $info->score, 'commonTags' => $tags,
+                  'lastname' => $info->lastname, 'firstname' => $info->firstname, 'localisation' => $info->localisation, 'km' => (int)$formatDist,
+                  'meters' => (int)(($formatDist - (int)$formatDist) * 1000), 'distance' => $formatDist
+                ];
             }
         }
         $key = 'search:'.$_SESSION['user_id'];
         $this->redis->set($key, encodeToJs($data));
-        echo encodeToJs(['search' => array_slice($data, 0, 10)]);
+    }
+
+    public function getResults()
+    {
+        $key = 'search:'.$_SESSION['user_id'];
+        if ($this->redis->exists($key)) {
+            $data = json_decode($this->redis->get($key));
+            echo encodeToJs(['search' => array_slice($data, 0, 10)]);
+        }
     }
 }

@@ -5,7 +5,7 @@
   <nav-bar></nav-bar>
   <?php if (isAuth()): ?>
     <div class="hero-body" style="display:block!important;padding:3%!important">
-      <search-match type="result"></search-match>
+      <search-match type="result" :is-search="false"></search-match>
     </div>
   <?php else: ?>
     <div class="hero-body">
