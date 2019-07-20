@@ -227,6 +227,7 @@ $route->add('/chat/searchMatchedUser', 'post', 'ChatController@searchMatchedUser
 $route->add('/chat/findUserRoom', 'post', 'ChatController@findUserRoom');
 
 $route->add('/tagList/get', 'get', 'TagController@getTagList');
+$route->add('/notification/get', 'get', 'NotificationController@getAll');
 /**
  * Seeder Route --- DEV ONLY.
  */

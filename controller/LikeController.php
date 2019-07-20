@@ -25,7 +25,9 @@ class LikeController extends Models
         if (isset($result['liked_by']) && $result['liked_by'] == $data['profilId']) {
             $this->insert('Matched', ['user_id' => $_SESSION['user_id'], 'user_profil_id' => $data['profilId']]);
             $this->insert('Matched', ['user_id' => $data['profilId'], 'user_profil_id' => $_SESSION['user_id']]);
+            $this->insert('Notification', ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id'], 'name' => 'match']);
         }
+        $this->insert('Notification', ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id'], 'name' => 'like']);
         $this->insert('Likes', ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id']]);
     }
 
@@ -47,6 +49,11 @@ class LikeController extends Models
         );
         if (!empty($validate->loadedMessage)) {
             redirect('/');
+        }
+        // 'user_id' = $_SESSION['user_id'] OR 'user_id' = $_SESSION['user_id']
+        $result = $this->fetch('Matched', ['user_id' => $_SESSION['user_id'], 'user_profil_id' => $data['profilId']]);
+        if (isset($result)) {
+            $this->insert('Notification', ['user_id' => $data['profilId'], 'unmatched_by' => $_SESSION['user_id']], 'name' => 'unmatch']);
         }
         $this->delete('Likes', ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id']]);
     }

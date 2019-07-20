@@ -49,6 +49,9 @@ $scheme->add(
     'create',
     "id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT(11) NOT NULL,
+    liked_by INT(11) default NULL,
+    visiter_id INT(11) default NULL,
+    room_id INT(11) default NULL
     name VARCHAR(256) NOT NULL"
 );
 

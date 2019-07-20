@@ -65,6 +65,7 @@ class ProfilController extends Models
                 if ($result['user_id'] !== $_SESSION['user_id']) {
                     if (!$this->fetch('Visite', ['user_id' => $userId, 'visiter_id' => $_SESSION['user_id']])) {
                         $this->insert('Visite', ['user_id' => $userId, 'visiter_id' => $_SESSION['user_id']]);
+                        $this->insert('Notification', ['user_id' => $userId, 'visiter_id' => $_SESSION['user_id'], 'name' => 'visiter']);
                     }
                     $result['visitedUserId'] = $userId;
                     view('profil.php', ['userProfilData' => encodeToJs($result), 'profilType' => 'consultUserProfil']);

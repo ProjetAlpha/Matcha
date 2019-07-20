@@ -116,7 +116,7 @@ hr {
 .notification-badge {
     position: relative;
     right: 5px;
-    top: -20px;
+    top: -10px;
     color: #941e1e;
     background-color: #f5f1f2;
     margin: 0 -.8em;

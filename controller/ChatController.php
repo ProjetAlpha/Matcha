@@ -12,7 +12,6 @@ class ChatController extends Models
     {
         $request = new Request();
         $data = $request->toJson();
-        //roomId:this.roomId, message:this.message, time:time
         if (!keysExist(['roomId', 'message', 'time'], $data)) {
             redirect('/');
         }
@@ -32,11 +31,13 @@ class ChatController extends Models
           'room_id' => $data['roomId'],
           'content' => $data['message'],
           'date' => $data['time']]);
+        $this->insert('Notification', ['user_id' => $_SESSION['user_id'], 'room_id' => $data['roomId'], 'name' => 'addroomMessage']);
         $this->insert('Rooms', ['last_msg_date' => $data['time']], ['id' => $data['roomId']]);
     }
 
     public function searchMatchedUser()
     {
+        // si le user n'est pas bloque
         $request = new Request();
         $data = $request->toJson();
 
@@ -60,6 +61,7 @@ class ChatController extends Models
 
     public function findUserRoom()
     {
+        // si le user n'est pas bloque
         $request = new Request();
         $data = $request->toJson();
 

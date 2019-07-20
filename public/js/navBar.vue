@@ -16,23 +16,22 @@
               <i class="material-icons left">settings</i>Paramétres</a>
           </li>
           <!-- <li><a href="/settings"><i class="material-icons">settings</i></a></li> -->
+          <li>
+            <a href="/search"><i class="material-icons left">search</i>
+              Rechercher
+            </a>
+          </li>
           <li v-if="isAuth() && this.user !== ''">
             <a class='dropdown-trigger' data-target='dropdown3'>
-              <i class="material-icons notif">notifications</i>
-
+              <i class="material-icons left">notifications</i>
               <small class="notification-badge">5</small>
             </a>
           </li>
           <notifications notification-id="dropdown3" v-if="isAuth"></notifications>
           <li v-if="isAuth() && this.user !== ''">
             <a href="/chat">
-              <i class="material-icons">chat_bubble</i>
-              <small class="notification-badge">5</small> 
-            </a>
-          </li>
-          <li>
-            <a href="/search"><i class="material-icons left">search</i>
-              Rechercher
+              <i class="material-icons left">chat_bubble</i>
+              <small class="notification-badge" style="margin:0 -1.3em;right:0">5</small>
             </a>
           </li>
           <li v-if="!isAuth() && this.user !== ''">
@@ -98,6 +97,7 @@ export default{
       this.$checkIfLogged().then(response => {
         this.user = response ? response : false;
       });
+      setInterval(() => this.getNotification(), 1000);
     },
 
     data(){
@@ -138,6 +138,15 @@ export default{
       getNewChatMessage(){
         // is_read col dans message.
         // new message à chaque fois => fetch les messages des rooms + compte ceux qui ne sont pas lues.
+      },
+
+      getNotification(){
+        this.$http.get('/notification/get').then((response) => {
+          if (response.data && Array.isArray(response.data)){
+            console.log(response.data)
+          }
+          console.log('notif loged')
+        });
       },
 
       isAuth(){
