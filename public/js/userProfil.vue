@@ -153,6 +153,7 @@ export default{
 
     isLikedByUser(){
       this.$http.post('/like/isLikedByUser', {profilId:this.profilData.user_id}).then((response) => {
+        console.log(response.data)
         if (response.data){
           this.isLiked = response.data.isLiked;
         }

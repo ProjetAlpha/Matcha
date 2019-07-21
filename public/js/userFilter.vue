@@ -57,7 +57,7 @@ export default {
           //this.tags = []
           //this.localisation = ''
           //this.$emit('sendFilterData', 'resetRefresh')
-          // filtrer par departement / 
+          // filtrer par departement /
       }
     },
 
@@ -160,6 +160,7 @@ export default {
       const elems = document.getElementById('chips-filter')
       var vm = this
       const tags = await this.getMostUsedtags()
+      console.log(tags)
       let tagList = {};
       tags.forEach((value) => {
         tagList[value.name] = null

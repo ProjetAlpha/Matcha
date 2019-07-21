@@ -19,7 +19,7 @@ class Profil
       Profil.user_id AS 'user_id', Profil.id AS 'profil_id' FROM Profil INNER JOIN User ON Profil.user_id = User.id
       INNER JOIN Visite ON Visite.visiter_id = User.id WHERE Visite.user_id = ?";
         $visitedUserInfo = execQuery($this->db, $sql, [$userId], PDO::FETCH_ASSOC, FETCH_ALL);
-        $sql = "SELECT name,visiter_id FROM Tag INNER JOIN Visite ON Visite.visiter_id = Tag.user_id WHERE Visite.user_id = ?";
+        $sql = "SELECT name,Visite.visiter_id FROM Tag INNER JOIN Visite ON Visite.visiter_id = Tag.user_id WHERE Visite.user_id = ?";
         $visitedUserTags = execQuery($this->db, $sql, [$userId], PDO::FETCH_ASSOC, FETCH_ALL);
         $visitedUserInfo['visiterTags'] = $visitedUserTags;
         return ($visitedUserInfo);
@@ -31,7 +31,7 @@ class Profil
     Profil.user_id AS 'user_id', Profil.id AS 'profil_id' FROM Profil INNER JOIN User ON Profil.user_id = User.id
     INNER JOIN Likes ON Likes.liked_by = User.id WHERE Likes.user_id = ?";
         $likeUserInfo = execQuery($this->db, $sql, [$userId], PDO::FETCH_ASSOC, FETCH_ALL);
-        $sql = "SELECT name,liked_by FROM Tag INNER JOIN Likes ON Likes.liked_by = Tag.user_id WHERE Likes.user_id = ?";
+        $sql = "SELECT name,Likes.liked_by FROM Tag INNER JOIN Likes ON Likes.liked_by = Tag.user_id WHERE Likes.user_id = ?";
         $likeUserTags = execQuery($this->db, $sql, [$userId], PDO::FETCH_ASSOC, FETCH_ALL);
         $likeUserInfo['likesTags'] = $likeUserTags;
         return ($likeUserInfo);

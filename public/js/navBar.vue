@@ -24,10 +24,10 @@
           <li v-if="isAuth() && this.user !== ''">
             <a class='dropdown-trigger' data-target='dropdown3'>
               <i class="material-icons left">notifications</i>
-              <small class="notification-badge">5</small>
+              <small class="notification-badge">{{notificationCount}}</small>
             </a>
           </li>
-          <notifications notification-id="dropdown3" v-if="isAuth"></notifications>
+          <notifications notification-id="dropdown3" :notification-data="notifications" v-if="isAuth"></notifications>
           <li v-if="isAuth() && this.user !== ''">
             <a href="/chat">
               <i class="material-icons left">chat_bubble</i>
@@ -61,7 +61,7 @@
         </li>
       </ul>
       <li v-if="isAuth() && this.user !== ''"><a class='dropdown-trigger' data-target='dropdown4'><i class="material-icons">notifications</i>Notifications</a></li>
-      <notifications notification-id="dropdown4" v-if="isAuth()"></notifications>
+      <notifications notification-id="dropdown4" :notification-data="notifications" v-if="isAuth()"></notifications>
       <li v-if="isAuth() && this.user !== ''">
         <a href="/chat">
           <i class="material-icons notif">chat_bubble</i>
@@ -103,7 +103,9 @@ export default{
     data(){
         return {
             user:'',
-            isDropDownDisplayed:false
+            isDropDownDisplayed:false,
+            notifications:'',
+            notificationCount:0
         }
     },
 
@@ -141,11 +143,14 @@ export default{
       },
 
       getNotification(){
+        // is notif seen.
         this.$http.get('/notification/get').then((response) => {
-          if (response.data && Array.isArray(response.data)){
-            console.log(response.data)
+          if (response.data && response.data.hasOwnProperty('notifications')){
+            // si new notification...
+            this.notifications = response.data.notifications
+            this.notificationCount = response.data.notifications.notifCount
+            delete this.notifications.notifCount
           }
-          console.log('notif loged')
         });
       },
 
