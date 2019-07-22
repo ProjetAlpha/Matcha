@@ -108,7 +108,7 @@ trait SearchAlgoTrait
         }
         if (!empty($result)) {
             $key = $isSearch ? 'searchFilter:'.$_SESSION['user_id'] : 'filterResult:'.$_SESSION['user_id'];
-            $this->redis->set($key, encodeToJs($result));
+            $this->redis->set($key, json_encode($result));
             return (['sugestions' => array_slice($result, 0, 10)]);
         }
     }
@@ -174,7 +174,7 @@ trait SearchAlgoTrait
             }
         }
         $key = $isSearch ? 'searchFilter:'.$_SESSION['user_id'] : 'filterResult:'.$_SESSION['user_id'];
-        $this->redis->set($key, encodeToJs($data));
+        $this->redis->set($key, json_encode($data));
         return (['sugestions' => array_slice($data, 0, 10)]);
     }
 

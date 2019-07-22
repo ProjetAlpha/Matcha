@@ -24,14 +24,15 @@
           <li v-if="isAuth() && this.user !== ''">
             <a class='dropdown-trigger' data-target='dropdown3'>
               <i class="material-icons left">notifications</i>
-              <small class="notification-badge">{{notificationCount}}</small>
+              <small v-if="notificationCount !== 0" class="notification-badge">{{notificationCount}}</small>
             </a>
           </li>
-          <notifications notification-id="dropdown3" :notification-data="notifications" v-if="isAuth"></notifications>
+          <notifications :is-side-nav="false" notification-id="dropdown3"
+          :notification-data="notifications" v-if="isAuth"></notifications>
           <li v-if="isAuth() && this.user !== ''">
             <a href="/chat">
               <i class="material-icons left">chat_bubble</i>
-              <small class="notification-badge" style="margin:0 -1.3em;right:0">5</small>
+              <small v-if="messageCount !== 0" class="notification-badge" style="margin:0 -1.3em;right:0">{{messageCount}}</small>
             </a>
           </li>
           <li v-if="!isAuth() && this.user !== ''">
@@ -60,13 +61,20 @@
           </div>
         </li>
       </ul>
-      <li v-if="isAuth() && this.user !== ''"><a class='dropdown-trigger' data-target='dropdown4'><i class="material-icons">notifications</i>Notifications</a></li>
-      <notifications notification-id="dropdown4" :notification-data="notifications" v-if="isAuth()"></notifications>
+      <li v-if="isAuth() && this.user !== ''">
+        <a class='dropdown-trigger' data-target='dropdown4'>
+          <i class="material-icons">notifications</i>
+          Notifications
+          <small v-if="notificationCount !== 0" class="notification-badge" style="left:-150px;color:white;background:#ef5350">{{notificationCount}}</small>
+        </a>
+      </li>
+      <notifications :is-side-nav="true" notification-id="dropdown4"
+      :notification-data="notifications" v-if="isAuth()"></notifications>
       <li v-if="isAuth() && this.user !== ''">
         <a href="/chat">
-          <i class="material-icons notif">chat_bubble</i>
-          <small class="notification-badge">5</small>
-          <span class="mr-l-5">Chat</span>
+          <i class="material-icons">chat_bubble</i>
+          Chat
+          <small v-if="messageCount !== 0" class="notification-badge" style="left:-100px;color:white;background:#ef5350">{{messageCount}}</small>
         </a>
       </li>
       <li><a href="/search" class="mr-t-3"><i class="material-icons">search</i>Rechercher</a></li>
@@ -105,7 +113,8 @@ export default{
             user:'',
             isDropDownDisplayed:false,
             notifications:'',
-            notificationCount:0
+            notificationCount:0,
+            messageCount:0
         }
     },
 
@@ -143,13 +152,13 @@ export default{
       },
 
       getNotification(){
-        // is notif seen.
         this.$http.get('/notification/get').then((response) => {
           if (response.data && response.data.hasOwnProperty('notifications')){
-            // si new notification...
             this.notifications = response.data.notifications
             this.notificationCount = response.data.notifications.notifCount
+            this.messageCount = response.data.notifications.hasOwnProperty('countMessage') ? response.data.notifications.countMessage : 0;
             delete this.notifications.notifCount
+            delete this.notifications.countMessage
           }
         });
       },

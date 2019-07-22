@@ -112,7 +112,6 @@ class SearchController extends Models
         if (empty($data['content']['filterResult']) && empty($data['content']['sortResult'])) {
             return ;
         }
-        // reset le filter. // ou searchFilter.
         if ($data['isSearch'] === true) {
             $key = 'searchFilter:'.$_SESSION['user_id'];
         } else {
@@ -124,7 +123,6 @@ class SearchController extends Models
         if (!empty($data['content']['filterResult'])) {
             $result = $this->filterResult($data['content']['filterResult'], $data['isSearch']);
         }
-        //var_dump($result);
         if (!empty($data['content']['sortResult'])) {
             $result = $this->sortResult($data['content']['sortResult'], $data['isSearch']);
         }
@@ -141,6 +139,9 @@ class SearchController extends Models
         }
         $currentUser = $this->search->fetchCurrentUserInfo($_SESSION['user_id']);
         $result = $this->search->findResult($data['filterResult']);
+        if (!$result || empty($result)) {
+            die('result error');
+        }
         $data = [];
         if (isset($data['filterResult']['tags'])) {
             $count = count($data['filterResult']['tags']);

@@ -25,8 +25,34 @@ class Notification
         INNER JOIN Rooms ON Rooms.user1_id = User.id OR Rooms.user2_id = User.id
         WHERE Rooms.id = ?";
         $result = execQuery($this->db, $sql, [$roomId], PDO::FETCH_ASSOC, FETCH_ALL);
-        $dstUser = $result[0]['id'] !== $userId ? $result[0] : $result[1];
         $result['type'] = 'message';
+        if ($result[0]['id'] !== $userId) {
+            return ($result[0]);
+        } elseif ($result[1]['id'] !== $userId) {
+            return ($result[1]);
+        } else {
+            return (false);
+        }
+    }
+
+    public function getAllNotif($userId)
+    {
+        $sql = "SELECT * FROM Notification WHERE user_id = ? ORDER BY created_at DESC";
+        $result = execQuery($this->db, $sql, [$userId], PDO::FETCH_ASSOC, FETCH_ALL);
+        return ($result);
+    }
+
+    public function countSeenNotification($userId)
+    {
+        $sql = "SELECT count(is_seen) AS 'is_seen_counter' FROM Notification WHERE user_id = ? AND is_seen = 0";
+        $result = execQuery($this->db, $sql, [$userId], PDO::FETCH_ASSOC, FETCH_ONE);
+        return ($result['is_seen_counter']);
+    }
+
+    public function getAllMessageNotif($userId)
+    {
+        $sql = "SELECT * FROM Notification WHERE user_id = ? AND name ='addroomMessage'";
+        $result = execQuery($this->db, $sql, [$userId], PDO::FETCH_ASSOC, FETCH_ALL);
         return ($result);
     }
 }

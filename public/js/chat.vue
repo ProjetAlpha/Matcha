@@ -44,6 +44,7 @@
                     <span v-if="value[value.length - 1].hasOwnProperty('content')"> {{value[value.length - 1].content}} </span>
                   </h6>
                 </a>
+                <span v-if="chatNotification[value[0].room_id]">{{chatNotification[value[0].room_id].countMessage}}</span>
               </div>
             </div>
           </li>
@@ -65,6 +66,7 @@ export default {
     this.$checkIfLogged().then(response => {
       this.user = response ? response : false;
     });
+
   },
 
   updated(){
@@ -84,6 +86,7 @@ export default {
         isMessageLoaded:false,
         isSearchActivated:false,
         matchedUserSearch:'',
+        chatNotification:'',
         matchedUserChat:'',
         searchInput:'',
         searchResult:false
@@ -120,6 +123,7 @@ export default {
 
     fetchConversation(){
       this.$http.get('/chat/fetchMatchedUser').then((response) => {
+        console.log(response.data)
         if (response.data){
           this.matchedUserChat = response.data.matched
           for (const property in this.matchedUserChat){
@@ -127,6 +131,9 @@ export default {
                 this.sortMsgTime(this.matchedUserChat[property])
               }
             }
+          }
+          if (response.data.notifications){
+            this.chatNotification = response.data.notifications
           }
       });
 

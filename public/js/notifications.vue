@@ -2,42 +2,53 @@
 
 
   <!-- Dropdown Structure -->
-<ul :id="notificationId" class='dropdown-content'>
-  <div class="row" v-for="(value, name, index) in notificationData">
-        <li v-if="value.type == 'like'" style="line-height:0!important;">
-          <a :href="/profil/+value.id">
-            <i class="material-icons">thumb_up</i>
-            <strong>{{value.firstname}}, {{value.lastname}}</strong> vous a like
-          </a>
-        </li>
-        <li v-if="value.type == 'like'" class="divider" tabindex="-1"></li>
-        <li v-if="value.type == 'visiter'" style="line-height:0!important;">
-          <a :href="/profil/+value.id"><i class="material-icons">visibility</i>
-            <strong>{{value.firstname}}, {{value.lastname}}</strong> a visite votre profil
-          </a>
-        </li>
-        <li v-if="value.type == 'visiter'" class="divider" tabindex="-1"></li>
-        <li v-if="value.type == 'newMessage'" style="line-height:0!important;">
-          <a :href="/profil/+value.id">
-            <i class="material-icons">message</i>
-            <strong>{{value.firstname}}, {{value.lastname}}</strong> vous a envoye um message
-          </a>
-        </li>
-        <li v-if="value.type == 'newMessage'" class="divider" tabindex="-1"></li>
-        <li v-if="value.type == 'match'" style="line-height:0!important;">
-          <a :href="/profil/+value.id">
-            <i class="material-icons">thumb_up</i>
-            <strong>{{value.firstname}}, {{value.lastname}}</strong> vous a envoye un like en retour
-          </a>
-        </li>
-        <li v-if="value.type == 'match'" class="divider" tabindex="-1"></li>
-        <li v-if="value.type == 'unmatch'" style="line-height:0!important;">
-          <a :href="/profil/+value.id">
-            <i class="material-icons">thumb_down</i>
-            <strong>{{value.firstname}}, {{value.lastname}}</strong> matche ne vous like plu
-          </a>
-        </li>
-  </div>
+<ul :id="notificationId" ref="dropdown" class='dropdown-content' style="height:400px!important">
+    <div v-for="(value, name, index) in notificationData">
+      <li v-if="value.type == 'like'" style="line-height:0!important;">
+        <a :href="/profil/+value.id">
+          <i class="material-icons" style="color:#2196f3">thumb_up</i>
+          <span v-if="isSideNav === true">Like : </span>
+          <strong>{{value.firstname}}, {{value.lastname}}</strong>
+            <span v-if="isSideNav === false">vous a like</span>
+        </a>
+      </li>
+      <li v-if="value.type == 'like'" class="divider" tabindex="-1"></li>
+      <li v-if="value.type == 'visiter'">
+        <a :href="/profil/+value.id"><i class="material-icons" style="color:#4caf50">visibility</i>
+          <span v-if="isSideNav === true">Vue : </span>
+          <strong>{{value.firstname}}, {{value.lastname}}</strong>
+          <span v-if="isSideNav === false">a visite votre profil</span>
+        </a>
+      </li>
+      <li v-if="value.type == 'visiter'" class="divider" tabindex="-1"></li>
+      <li v-if="value.type == 'newMessage'" style="line-height:0!important;">
+        <a :href="/profil/+value.id">
+          <i class="material-icons">message</i>
+          <span v-if="isSideNav === true">Message : </span>
+          <strong>{{value.firstname}}, {{value.lastname}}</strong>
+          <span v-if="isSideNav === false">vous a envoye um message</span>
+        </a>
+      </li>
+      <li v-if="value.type == 'newMessage'" class="divider" tabindex="-1"></li>
+      <li v-if="value.type == 'match'" style="line-height:0!important;">
+        <a :href="/profil/+value.id">
+          <i class="material-icons" style="color:#e53935">favorite</i>
+          <span v-if="isSideNav === true">Match : </span>
+          <strong>{{value.firstname}}, {{value.lastname}}</strong>
+          <span v-if="isSideNav === false">vous a envoye un like en retour</span>
+        </a>
+      </li>
+      <li v-if="value.type == 'match'" class="divider" tabindex="-1"></li>
+      <li v-if="value.type == 'unmatch'">
+        <a :href="/profil/+value.id">
+          <i class="material-icons" style="color:#2196f3">thumb_down</i>
+          <span v-if="isSideNav === true">Dislike : </span>
+          <strong>{{value.firstname}}, {{value.lastname}}</strong>
+          <span v-if="isSideNav === false">matche ne vous like plu</span>
+        </a>
+      </li>
+      <li v-if="value.type == 'unmatch'" class="divider" tabindex="-1"></li>
+    </div>
 </ul>
 
 </template>
@@ -49,16 +60,16 @@
 // qd on a une notif recalcul le drop down: instance.recalculateDimensions();
 // requete toute les 1 secondes.
   export default{
-      props:['notificationId', 'notificationData'],
-
-
-      created(){
-
-      },
+      props:['notificationId', 'notificationData', 'isSideNav'],
 
       watch:{
         notificationData(){
-          console.log(this.notificationData)
+          // si le drop est active => is_seen = 1 pour toute les currents notifs data.
+          if (this.$refs.dropdown.style.display == 'block'){
+            this.$http.post('/notification/set', {notification:this.notificationData});
+          }
+          //console.log(this.notificationData)
+          // notification is_seen = count is_seen.
         }
       },
 

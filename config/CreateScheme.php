@@ -148,7 +148,9 @@ $scheme->add(
     visiter_id INT(11) default 0,
     liked_by INT(11) default 0,
     unmatched_by INT(11) default 0,
-    name VARCHAR(256) default NULL"
+    name VARCHAR(256) default NULL,
+    is_seen boolean not null default 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
 );
 
 if (isset($argv[1]) && !empty($argv[1])) {

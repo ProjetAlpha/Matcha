@@ -192,8 +192,13 @@ export default {
     },
 
     sendSearch(){
-      this.$http.post('/search/searchResult', {filterResult:this.filterResult})
-      window.location.href = '/search/result'
+      this.$http.post('/search/searchResult', {filterResult:this.filterResult}).then((response) => {
+        if (response.data == 'result error'){
+          // --> no result founded.
+        }else {
+          window.location.href = '/search/result'
+        }
+      })
     },
 
     setData(target, data){
@@ -229,7 +234,7 @@ export default {
           let countReloadedImg = 0;
           this.pageCounter = 1
           this.matchedResult = response.data.sugestions;
-          this.matchedResult['type'] = 'searchFilter'
+          this.matchedResult['type'] = this.isSearch === true ? 'searchFilter' : 'filter'
         }
       })
     },

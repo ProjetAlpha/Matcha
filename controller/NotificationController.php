@@ -5,9 +5,10 @@ class NotificationController extends Models
 {
     public function getAll()
     {
-        if (($notifications = $this->fetchAll('Notification', ['user_id' => $_SESSION['user_id']]))) {
+        if (($notifications = $this->notification->getAllNotif($_SESSION['user_id']))) {
             $result = [];
             $userId = $_SESSION['user_id'];
+            $countNotSeen = 0;
             foreach ($notifications as $value) {
                 if ($value['name'] === null) {
                     continue;
@@ -24,15 +25,30 @@ class NotificationController extends Models
                 if ($value['name'] == 'visiter' && !$this->fetch('Blocked', ['user_id' => $userId, 'blocked_user' => $value['visiter_id']])) {
                     $result[] = $this->notification->getVisiter($value['visiter_id'], $userId);
                 }
-                if ($value['name'] == 'addroomMessage') {
-                    $dstMsg = $this->notification->getUserRoom($value['user_id'], $value['room_id']);
-                    if ($dstMsg !== false && !$this->fetch('Blocked', ['user_id' => $userId, 'blocked_user' => $dstMsg['id']]) && $userId == $dstMsg['id']) {
-                        $result[] = $dstMsg;
+                if ($value['name'] == 'addroomMessage' && $value['is_seen'] == 0) {
+                    $dstMsg = $this->notification->getUserRoom($_SESSION['user_id'], $value['room_id']);
+                    if ($dstMsg !== false && !$this->fetch('Blocked', ['user_id' => $userId, 'blocked_user' => $dstMsg['id']])) {
+                        !isset($result['countMessage']) ? $result['countMessage'] = 1 : $result['countMessage']++;
                     }
                 }
+                $countNotSeen += $value['is_seen'] == 0 ?  1 : 0;
             }
-            $result['notifCount'] = count($notifications);
+            $result['notifCount'] = $countNotSeen - ((isset($result['countMessage']) ? $result['countMessage'] : 0));
             echo encodeToJs(['notifications' => $result]);
+        }
+    }
+
+    public function setSeenNotification()
+    {
+        $request = new Request();
+        $data = $request->toJson();
+        if (!keysExist(['notification'], $data)) {
+            redirect('/');
+        }
+        foreach ($data['notification'] as $key => $value) {
+            if (isset($value['type']) && ($value['type'] == 'like' || $value['type'] == 'visiter' || $value['type'] == 'match' || $value['type'] == 'unmatch')) {
+                $this->update('Notification', ['is_seen' => 1], ['user_id' => $_SESSION['user_id'], 'name' => $value['type']]);
+            }
         }
     }
 }

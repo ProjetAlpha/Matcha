@@ -38,18 +38,27 @@ class Search
       ";
         $condition = ' WHERE ';
         $value = [];
-        if (isset($filter['localisation'])) {
+        if (isset($filter['localisation']) && !empty($filter['localisation'])) {
+            if (!ctype_alpha($filter['localisation'])) {
+                return (false);
+            }
             $value[] = $filter['localisation'];
             $condition .= "substring_index(`localisation`,',',1) = ?";
             $match++;
         }
-        if (isset($filter['slider']['popularite'])) {
+        if (isset($filter['slider']['popularite']) && !empty($filter['slider']['popularite'])) {
+            if (!isValidRegex(DIGITS, $filter['slider']['popularite']['minRange']) || !isValidRegex(DIGITS, $filter['slider']['popularite']['maxRange'])) {
+                return (false);
+            }
             $value[] = $filter['slider']['popularite']['minRange'];
             $value[] = $filter['slider']['popularite']['maxRange'];
             $condition .= $match > 0 ? ' AND score >= ? AND score <= ?' : ' score >= ? AND score <= ?';
             $match++;
         }
         if (isset($filter['slider']['age'])) {
+            if (!isValidRegex(DIGITS, $filter['slider']['age']['minRange']) || !isValidRegex(DIGITS, $filter['slider']['age']['maxRange'])) {
+                return (false);
+            }
             $value[] = $filter['slider']['age']['minRange'];
             $value[] = $filter['slider']['age']['maxRange'];
             $condition .= $match > 0  ? ' AND age >= ? AND age <= ?' : ' age >= ? AND age <= ?';
