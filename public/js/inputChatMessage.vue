@@ -27,6 +27,7 @@ export default{
       const time = this.getDate()
       this.$http.post('/chat/addMessage', {roomId:this.roomId, message:this.message, time:time}).then((response) => {
           //console.log(response.data)
+          //
       });
       this.$emit('addRoomMsg', {roomId:this.roomId, content:this.message, msg_time:time, user_msg_id:this.user.id});
       this.message = '';

@@ -352,7 +352,7 @@ if (!function_exists('oneDimArray')) {
     function oneDimArray($array)
     {
         return iterator_to_array(new RecursiveIteratorIterator(new RecursiveArrayIterator(
-        $array
+            $array
       )), 0);
     }
 }
@@ -361,5 +361,13 @@ if (!function_exists('normalize')) {
     function normalize($val, $min, $max)
     {
         return ($val - $min) / ($max - $min);
+    }
+}
+
+if (!function_exists('echoJsAndDie')) {
+    function outputJsError($data)
+    {
+        echo encodeToJs(['error' => $data]);
+        die();
     }
 }

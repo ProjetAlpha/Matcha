@@ -2,20 +2,22 @@
 
 class Notification
 {
-    public function getUserInfo($userId, $type)
+    public function getUserInfo($userId, $type, $isSeen)
     {
         $sql = "SELECT firstname,lastname,User.id FROM User WHERE User.id = ?";
         $result = execQuery($this->db, $sql, [$userId], PDO::FETCH_ASSOC, FETCH_ONE);
         $result['type'] = $type;
+        $result['isSeen'] = $isSeen;
         return ($result);
     }
 
-    public function getVisiter($userId, $currentUser)
+    public function getVisiter($userId, $currentUser, $isSeen)
     {
         $sql = "SELECT firstname,lastname,User.id FROM User
         INNER JOIN Visite ON User.id = Visite.visiter_id WHERE Visite.visiter_id = ? AND Visite.user_id = ?";
         $result = execQuery($this->db, $sql, [$userId, $currentUser], PDO::FETCH_ASSOC, FETCH_ONE);
         $result['type'] = 'visiter';
+        $result['isSeen'] = $isSeen;
         return ($result);
     }
 
@@ -55,4 +57,6 @@ class Notification
         $result = execQuery($this->db, $sql, [$userId], PDO::FETCH_ASSOC, FETCH_ALL);
         return ($result);
     }
+
+    //public function updateChatNotification($userId)
 }

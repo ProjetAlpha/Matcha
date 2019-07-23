@@ -142,7 +142,9 @@ export default{
 
   methods:{
     setLike(e){
-      this.$http.post('/like/setLike', {profilId:this.profilData.user_id});
+      this.$http.post('/like/setLike', {profilId:this.profilData.user_id}).then((response) => {
+        console.log(response.data)
+      });
       this.isLiked = true;
     },
 

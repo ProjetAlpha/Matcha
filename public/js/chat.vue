@@ -26,14 +26,13 @@
       <div class="col s12 m10 push-m1 l9 push-l1">
         <ul class="collection" v-for="(value, name, index) in matchedUserChat">
           <li class="row collection-item avatar">
-            <div class="col s8 m6 l6">
+            <div class="col s7 m4 l4">
               <load-async-image needInfo="1" :user-id="value[0].user_profil_id" :profil-id="value[0].user_profil_id"
               img-style="center-img responsive-img rounded-img" :key="value[0].user_profil_id"></load-async-image>
               <online-user-info :user-id="value[0].user_profil_id"></online-user-info>
             </div>
-            <div class="row mr-t-4">
-              <div class="col s8 m6 l6">
-                <a style="" @click="loadMessage(value, name)">
+              <div class="col s4 m8 l6 valign-wrapper" style="height:100%;min-height: 15vh;">
+                <a @click="loadMessage(value, name)" style="max-width:80%">
                   <h6 class="truncate">
                     <span v-if="value[value.length - 1].hasOwnProperty('user_msg_id') && value[value.length - 1].user_msg_id == user.id">
                       Vous :
@@ -44,8 +43,8 @@
                     <span v-if="value[value.length - 1].hasOwnProperty('content')"> {{value[value.length - 1].content}} </span>
                   </h6>
                 </a>
-                <span v-if="chatNotification[value[0].room_id]">{{chatNotification[value[0].room_id].countMessage}}</span>
-              </div>
+                <div class="row" style="border-radius: 50%;background:#ef5350;color:white;padding: 5px 10px;margin-left:4%;"
+                v-if="chatNotification[value[0].room_id]">{{chatNotification[value[0].room_id].countMessage}}</div>
             </div>
           </li>
         </ul>
@@ -123,7 +122,6 @@ export default {
 
     fetchConversation(){
       this.$http.get('/chat/fetchMatchedUser').then((response) => {
-        console.log(response.data)
         if (response.data){
           this.matchedUserChat = response.data.matched
           for (const property in this.matchedUserChat){
@@ -142,12 +140,15 @@ export default {
         //console.log(response.data)
         if (response.data){
           this.matchedUserChat = response.data.matched
-          if (this.matchedUserChat[this.currentRoomId])
+          if (this.matchedUserChat !== undefined && this.matchedUserChat[this.currentRoomId])
             this.selectedRoom = this.matchedUserChat[this.currentRoomId]
           for (const property in this.matchedUserChat){
             if (this.matchedUserChat.hasOwnProperty(property)){
                 this.sortMsgTime(this.matchedUserChat[property])
               }
+            }
+            if (response.data.notifications){
+              this.chatNotification = response.data.notifications
             }
           }
         });

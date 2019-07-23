@@ -11,7 +11,6 @@ class SearchController extends Models
         $result = [];
         $usersCollection = $this->search->fetchAllUsersInfo();
         $currentUser = $this->search->fetchCurrentUserInfo($_SESSION['user_id']);
-        $time_start = microtime(true);
         $commonTags = $this->search->fetchTags($_SESSION['user_id']);
         $currentUserTags = oneDimArray($this->search->fetchUserTags($_SESSION['user_id']));
 
@@ -182,5 +181,18 @@ class SearchController extends Models
             $data = json_decode($this->redis->get($key));
             echo encodeToJs(['search' => array_slice($data, 0, 10)]);
         }
+    }
+
+    public function loadSugestions()
+    {
+        $profilInfo = $this->fetch('Profil', ['user_id' => $_SESSION['user_id']], PDO::FETCH_ASSOC);
+        if (!$profilInfo || in_array(0, $profilInfo, true) || in_array(null, $profilInfo, true) || in_array('', $profilInfo, true)) {
+            view('sugestions.php', ['info' => 'profilInfo']);
+        }
+        $tags = $this->fetchAll('Tag', ['user_id' => $_SESSION['user_id']]);
+        if (!$tags) {
+            view('sugestions.php', ['info' => 'profilInfo']);
+        }
+        view('sugestions.php');
     }
 }

@@ -12,6 +12,7 @@ import onlineUserInfo from './onlineUserInfo.vue'
 import chatMessage from './chatMessage.vue'
 import inputChatMessage from './inputChatMessage.vue'
 import getUserProfilInfo from './getUserProfilInfo.vue'
+import error from './error.vue'
 import chat from './chat.vue'
 import seeder from './seeder.vue'
 import axios from 'axios'
@@ -56,6 +57,7 @@ Vue.component('chat', chat);
 Vue.component('chat-message', chatMessage);
 Vue.component('input-chat-message', inputChatMessage);
 Vue.component('get-user-profil-info', getUserProfilInfo);
+Vue.component('error', error);
 
 new Vue({
   el: '#app'

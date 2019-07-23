@@ -48,8 +48,13 @@ class ImageController extends Models
         if (!empty($validate->loadedMessage)) {
             redirect('/');
         }
+        if (($allImg = $this->fetchAll('Image', ['user_id' => $_SESSION['user_id']]))) {
+            if (count($allImg) == 5) {
+                outputJsError('Nombre maximun d\'image : 5');
+            }
+        }
         if ($this->fetch('Image', ['user_id' => $_SESSION['user_id'], 'name' => $data['name']])) {
-            view('editProfil.php', ['warning' => Message::$userMessages['duplicate_img']]);
+            outputJsError("Le nom est déjà utilise par une autre image");
         }
         if (!file_exists(dirname(__DIR__).'/ressources/images/'.$_SESSION['user_id'])) {
             mkdir(dirname(__DIR__).'/ressources/images/'.$_SESSION['user_id']);

@@ -28,13 +28,13 @@ class LikeController extends Models
             if (!$this->fetch('Notification', ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id'], 'name' => 'match'])) {
                 $this->insert('Notification', ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id'], 'name' => 'match']);
             } else {
-                $this->update('Notification', ['is_seen' => 0], ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id'], 'name' => 'match']);
+                $this->update('Notification', ['is_seen' => 0, 'created_at' => date("Y-m-d H:i:s")], ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id'], 'name' => 'match']);
             }
         }
         if (!$this->fetch('Notification', ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id'], 'name' => 'like'])) {
             $this->insert('Notification', ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id'], 'name' => 'like']);
         } else {
-            $this->update('Notification', ['is_seen' => 0], ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id'], 'name' => 'like']);
+            $this->update('Notification', ['is_seen' => 0, 'created_at' => date("Y-m-d H:i:s")], ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id'], 'name' => 'like']);
         }
         $this->insert('Likes', ['user_id' => $data['profilId'], 'liked_by' => $_SESSION['user_id']]);
     }
@@ -63,7 +63,7 @@ class LikeController extends Models
             if (!$this->fetch('Notification', ['user_id' => $data['profilId'], 'unmatched_by' => $_SESSION['user_id'], 'name' => 'unmatch'])) {
                 $this->insert('Notification', ['user_id' => $data['profilId'], 'unmatched_by' => $_SESSION['user_id'], 'name' => 'unmatch']);
             } else {
-                $this->update('Notification', ['is_seen' => 0], ['user_id' => $data['profilId'], 'unmatched_by' => $_SESSION['user_id'], 'name' => 'unmatch']);
+                $this->update('Notification', ['is_seen' => 0, 'created_at' => date("Y-m-d H:i:s")], ['user_id' => $data['profilId'], 'unmatched_by' => $_SESSION['user_id'], 'name' => 'unmatch']);
             }
             $this->delete('Matched', ['user_id' => $data['profilId'], 'user_profil_id' => $_SESSION['user_id']]);
             $this->delete('Matched', ['user_id' => $_SESSION['user_id'], 'user_profil_id' => $data['profilId']]);

@@ -28,22 +28,25 @@ class ChatController extends Models
         if (!keysExist(['roomId', 'message', 'time'], $data)) {
             redirect('/');
         }
-        //var_dump($data);
-        /*$validate = new Validate(
+        $sanitizeMsg = filter_var($data['message'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        if (!$sanitizeMsg || !validateDate($data['time'])) {
+            redirect('/');
+        }
+        $validate = new Validate(
             $data,
             [
-            'user_id' => 'digit|max:11',
-            'message' => 'digit|max:11',
-            'time' => 'date'
+              'userId' => 'digit|min:1|max:11',
+              'roomId' => 'digit|min:1|max:11'
           ],
             'sendToJs',
             Message::$userMessages
-        );*/
+        );
         $this->insert('Message', [
           'user_id' => $_SESSION['user_id'],
           'room_id' => $data['roomId'],
-          'content' => $data['message'],
+          'content' => $sanitizeMsg,
           'date' => $data['time']]);
+        // is room open / le user => triger pas les notifs.
         $dstUser = $this->notification->getUserRoom($_SESSION['user_id'], $data['roomId']);
         if ($dstUser !== false) {
             $this->insert('Notification', ['user_id' => $dstUser['id'], 'room_id' => $data['roomId'], 'name' => 'addroomMessage']);
@@ -108,5 +111,28 @@ class ChatController extends Models
             $roomId = $room['id'];
         }
         echo encodeToJs(['room_id' => $roomId, 'messageExist' => $haveMessages]);
+    }
+
+    public function updateNotification()
+    {
+        $request = new Request();
+        $data = $request->toJson();
+
+        if (!keysExist(['userId', 'roomId'], $data)) {
+            redirect('/');
+        }
+        $validate = new Validate(
+            $data,
+            [
+          'userId' => 'digit|min:1|max:11',
+          'roomId' => 'digit|min:1|max:11'
+        ],
+            'sendToJs',
+            Message::$userMessages
+      );
+        if (!empty($validate->loadedMessage)) {
+            return ;
+        }
+        $this->update('Notification', ['is_seen' => 1], ['user_id' => $data['userId'], 'room_id' => $data['roomId']]);
     }
 }

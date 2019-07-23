@@ -1,9 +1,12 @@
 <head>
   <meta charset="utf-8">
+  <meta name="description" content="Site de rencontre">
+  <meta name="author" content="Thomas Broussoux">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <meta name="csrf-token" content="<?php echo htmlspecialchars(isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : null); ?>">
   <title>Matcha</title>
   <link href="/css/helper.css" rel="stylesheet">
+  <link rel="icon" href="https://www.freefavicon.com/freefavicons/holiday/heart-152-167758.png">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="/css/nouislider.css" rel="stylesheet">
   <link href="/css/main.css" rel="stylesheet">
@@ -13,5 +16,4 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <script language="JavaScript" src="http://www.geoplugin.net/javascript.gp" type="text/javascript"></script>
-  <seeder></seeder>
 </head>

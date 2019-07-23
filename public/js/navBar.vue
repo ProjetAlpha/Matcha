@@ -102,6 +102,7 @@
 export default{
 
     created(){
+      this.getNotification()
       this.$checkIfLogged().then(response => {
         this.user = response ? response : false;
       });
@@ -154,11 +155,11 @@ export default{
       getNotification(){
         this.$http.get('/notification/get').then((response) => {
           if (response.data && response.data.hasOwnProperty('notifications')){
-            this.notifications = response.data.notifications
-            this.notificationCount = response.data.notifications.notifCount
-            this.messageCount = response.data.notifications.hasOwnProperty('countMessage') ? response.data.notifications.countMessage : 0;
-            delete this.notifications.notifCount
-            delete this.notifications.countMessage
+              this.notifications = response.data.notifications
+              this.notificationCount = response.data.notifications.notifCount
+              this.messageCount = response.data.notifications.hasOwnProperty('countMessage') ? response.data.notifications.countMessage : 0;
+              delete this.notifications.notifCount
+              delete this.notifications.countMessage
           }
         });
       },

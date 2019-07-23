@@ -50,9 +50,15 @@ $route->add('/search/result', 'get', function () {
  *  --------- Authenticated users routes ---------
  */
 
-$route->add('/', 'get', function () {
+/*$route->add('/', 'get', function () {
     view('sugestions.php');
 })->addMiddleware(function () {
+    if (isAuth()) {
+        setLastVisited();
+    }
+});*/
+
+$route->add('/', 'get', 'SearchController@loadSugestions')->addMiddleware(function () {
     if (isAuth()) {
         setLastVisited();
     }
@@ -99,6 +105,7 @@ $route->addMiddlewareStack(
       '/getMoreSugestions',
       '/search/manageResult',
       '/search/searchResult',
+      '/chat/updateNotification',
       'callback' => function () use ($csrf) {
           if ($csrf->check() === false) {
               redirect('/');
@@ -158,6 +165,7 @@ $route->addMiddlewareStack(
       '/search/manageResult',
       '/search/searchResult',
       '/tagList/get',
+      '/chat/updateNotification',
       'callback' => function () {
           if (!isAuth()) {
               redirect('/');
@@ -225,6 +233,8 @@ $route->add('/chat/addMessage', 'post', 'ChatController@addMessage');
 $route->add('/chat/fetchMatchedUser', 'get', 'ChatController@fetchMatchedUser');
 $route->add('/chat/searchMatchedUser', 'post', 'ChatController@searchMatchedUser');
 $route->add('/chat/findUserRoom', 'post', 'ChatController@findUserRoom');
+$route->add('/chat/updateNotification', 'post', 'ChatController@updateNotification');
+
 
 $route->add('/tagList/get', 'get', 'TagController@getTagList');
 $route->add('/notification/get', 'get', 'NotificationController@getAll');

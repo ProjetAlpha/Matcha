@@ -140,6 +140,7 @@
               Confirmer</button>
             </div>
           </div>
+          <error :message="error"></error>
       </div>
     </div>
   </div>
@@ -204,6 +205,7 @@
         isPreview:false,
         imageData: '',
         imageName:'',
+        imgSize:'',
         tags:[],
         bio:'',
         tmpBio:'',
@@ -214,7 +216,8 @@
         isGenreSelected:false,
         isOrientationSelected:false,
         isModifLocalisation:false,
-        haveBio:false
+        haveBio:false,
+        error:''
       }
     },
 
@@ -333,16 +336,18 @@
         }else {
           this.$http.post('/profil/edit/deleteImg', {name:e.target.parentElement.children[0].name});
         }
-        e.target.parentElement.style.display = 'none';
+        this.fetchedImg = this.fetchedImg.filter((value) => {
+            return (value.name !== e.target.parentElement.children[0].name);
+        })
       },
 
       previewImage(){
            const input = event.target;
            if (input.files && input.files[0]) {
                const reader = new FileReader();
-               reader.fileName = input.files[0].name;
+               this.imageName = input.files[0].name;
+               this.imgSize = Math.round(input.files[0].size / 1024);
                reader.onload = (e) => {
-                   this.imageName = e.target.fileName;
                    this.imageData = e.target.result;
                    this.isPreview = true;
                }
@@ -360,10 +365,17 @@
 
       addImg(){
           this.isPreview = false;
+          if (this.imgSize > 7000){
+            return ;
+          }
           this.$http.post('/profil/edit/addImg', {image:this.imageData, name:this.imageName}).then((response) => {
-            // si on a une image en double => msg ...
             if (response.data.path){
               this.fetchedImg.push({name:this.imageName, path:response.data.path});
+            }
+            if (response.data.error){
+              this.error = response.data.error
+            }else {
+              this.error = ''
             }
           });
           this.imageData = '';
@@ -373,12 +385,10 @@
       openModal(){
         const elem = document.querySelector('.modal');
         this.instance = M.Modal.init(elem, {inDuration:300, outDuration:400});
-        // load les images dans la modal avec une checkbox pour chaque image.
         this.instance.open();
       },
 
       closeModal(){
-        // annuler => reset la check box a son etat intial.
         this.instance.close();
       }
     }

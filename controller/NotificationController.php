@@ -14,16 +14,16 @@ class NotificationController extends Models
                     continue;
                 }
                 if ($value['name'] == 'like' && !$this->fetch('Blocked', ['user_id' => $userId, 'blocked_user' => $value['liked_by']])) {
-                    $result[] = $this->notification->getUserInfo($value['liked_by'], $value['name']);
+                    $result[] = $this->notification->getUserInfo($value['liked_by'], $value['name'], $value['is_seen']);
                 }
                 if ($value['name'] == 'unmatch' && !$this->fetch('Blocked', ['user_id' => $userId, 'blocked_user' => $value['unmatched_by']])) {
-                    $result[] = $this->notification->getUserInfo($value['unmatched_by'], $value['name']);
+                    $result[] = $this->notification->getUserInfo($value['unmatched_by'], $value['name'], $value['is_seen']);
                 }
                 if ($value['name'] == 'match' && !$this->fetch('Blocked', ['user_id' => $userId, 'blocked_user' => $value['liked_by']])) {
-                    $result[] = $this->notification->getUserInfo($value['liked_by'], $value['name']);
+                    $result[] = $this->notification->getUserInfo($value['liked_by'], $value['name'], $value['is_seen']);
                 }
                 if ($value['name'] == 'visiter' && !$this->fetch('Blocked', ['user_id' => $userId, 'blocked_user' => $value['visiter_id']])) {
-                    $result[] = $this->notification->getVisiter($value['visiter_id'], $userId);
+                    $result[] = $this->notification->getVisiter($value['visiter_id'], $userId, $value['is_seen']);
                 }
                 if ($value['name'] == 'addroomMessage' && $value['is_seen'] == 0) {
                     $dstMsg = $this->notification->getUserRoom($_SESSION['user_id'], $value['room_id']);

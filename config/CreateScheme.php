@@ -33,15 +33,15 @@ $scheme->add(
     'create',
     "id INT AUTO_INCREMENT PRIMARY KEY,
       user_id INT(11) NOT NULL,
-      bio TEXT,
-      score INT(3),
-      genre VARCHAR(5),
-      orientation VARCHAR(15),
-      localisation VARCHAR(256),
-      profile_pic_path VARCHAR(256),
-      profile_pic_name VARCHAR(256),
-      longitude FLOAT(20),
-      latitude FLOAT(20)"
+      bio TEXT DEFAULT NULL,
+      score INT(3) DEFAULT 0,
+      genre VARCHAR(5) DEFAULT NULL,
+      orientation VARCHAR(15) DEFAULT NULL,
+      localisation VARCHAR(256) DEFAULT NULL,
+      profile_pic_path VARCHAR(256) DEFAULT NULL,
+      profile_pic_name VARCHAR(256) DEFAULT NULL,
+      longitude FLOAT(20) DEFAULT 0,
+      latitude FLOAT(20) DEFAULT 0"
 );
 
 $scheme->add(

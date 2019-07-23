@@ -3,9 +3,28 @@
 
 <section class="hero blue-grey lighten-5 is-fullheight-with-navbar" id="app">
   <nav-bar></nav-bar>
-  <?php if (isAuth()): ?>
+  <?php if (isAuth() && !isset($info)): ?>
     <div class="hero-body" style="display:block!important;padding:3%!important">
       <search-match type="result" :is-search="false"></search-match>
+    </div>
+  <?php elseif (isset($info) && $info == 'profilInfo'): ?>
+    <div class="hero-body" id="body">
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <article class="message is-success mr-b-4">
+              <div class="message-body">
+                <p class="flow-text">
+                  Matcha est un site de rencontre destiné à trouver la personne qui correspond à vos besoins, vous n'arrivez pas à trouver une relation durable ou
+                  vous chercher une aventure ?
+                  <br>
+                  <a href="/profil/edit"> Éditer votre profil </a> dès maintenant et trouver la relation qui vous correspond.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
     </div>
   <?php else: ?>
     <div class="hero-body">
@@ -28,5 +47,15 @@
     </div>
   <?php endif; ?>
 </section>
+
+<?php if (isset($info) && $info == 'profilInfo'): ?>
+<script>
+window.onload = function (){
+    var elem = document.getElementById('body');
+     elem.style.backgroundImage = 'url(heart.jpg)';
+     elem.style.backgroundSize =' 100% auto';
+}
+</script>
+<?php endif; ?>
 
 <?php include_once(dirname(__DIR__)."/views/footer.php"); ?>
