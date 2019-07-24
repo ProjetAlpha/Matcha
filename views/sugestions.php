@@ -27,7 +27,7 @@
       </div>
     </div>
   <?php else: ?>
-    <div class="hero-body">
+    <div class="hero-body" id="body">
       <div class="container">
         <div class="row">
           <div class="col">
@@ -48,12 +48,17 @@
   <?php endif; ?>
 </section>
 
-<?php if (isset($info) && $info == 'profilInfo'): ?>
+<?php if (isset($info) && ($info == 'profilInfo' || $info == 'loadPic')): ?>
 <script>
 window.onload = function (){
     var elem = document.getElementById('body');
-     elem.style.backgroundImage = 'url(heart.jpg)';
-     elem.style.backgroundSize =' 100% auto';
+    // ---->
+    if (window.innerWidth > 1900){
+      elem.style.background = 'url(heart.jpg)';
+      elem.style.backgroundSize = '100% auto';
+      elem.style.backgroundRepeat = 'no-repeat';
+      elem.style.backgroundPosition = 'center';
+    }
 }
 </script>
 <?php endif; ?>

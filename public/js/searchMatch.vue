@@ -246,6 +246,7 @@ export default {
 
     fetchSugestions(){
       this.$http.get('/searchSugestions').then((response) => {
+        console.log(response.data)
         if (response.data !== null && Array.isArray(response.data.sugestions)){
           window.scrollTo(0,0)
           this.matchedResult = response.data.sugestions

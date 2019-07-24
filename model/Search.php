@@ -32,12 +32,14 @@ class Search
     public function findResult($filter)
     {
         $match = 0;
+        $value = [];
         $sql = "SELECT User.id AS 'id',age,score,localisation,Tag.name AS 'tagName',lastname,firstname,latitude,longitude FROM User
         INNER JOIN Profil ON Profil.user_id = User.id
         INNER JOIN Tag ON Tag.user_id = User.id
+        WHERE User.id NOT IN (SELECT blocked_user FROM Blocked WHERE Blocked.user_id = ?)
       ";
-        $condition = ' WHERE ';
-        $value = [];
+        $condition = ' AND ';
+        $value[] = $_SESSION['user_id'];
         if (isset($filter['localisation']) && !empty($filter['localisation'])) {
             if (!ctype_alpha($filter['localisation'])) {
                 return (false);
@@ -65,5 +67,11 @@ class Search
         }
         $sql .= $match > 0 ? $condition : '';
         return (execQuery($this->db, $sql, $value, PDO::FETCH_GROUP | PDO::FETCH_OBJ, FETCH_ALL));
+    }
+
+    public function fetchBlockedUser($userId)
+    {
+        $sql = "SELECT blocked_user,user_id FROM Blocked WHERE user_id = ?";
+        return (execQuery($this->db, $sql, [$userId], PDO::FETCH_GROUP | PDO::FETCH_ASSOC, FETCH_ALL));
     }
 }

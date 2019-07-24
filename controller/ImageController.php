@@ -6,21 +6,10 @@ class ImageController extends Models
     {
         $request = new Request();
         $data = $request->toJson();
-        if (!keysExist(['name'], $data)) {
+        if (!keysExist(['name'], $data) || strlen($data['name']) > 255) {
             redirect('/');
         }
-        // regex pour les names des images.
-        /*$validate = new Validate(
-            $data,
-            [
-            'name' => 'alphanum'
-          ],
-            'sendToJs',
-            Message::$userMessages
-        );
-        if (!empty($validate->loadedMessage)) {
-            redirect('/');
-        }*/
+        $data['name'] = filter_var($data['name'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $path = dirname(__DIR__).'/ressources/images/'.$_SESSION['user_id'].'/'.sha1($data['name']).'.png';
         if (file_exists($path)) {
             $this->update('Profil', ['profile_pic_path' => $path, 'profile_pic_name' => $data['name']], ['user_id' => $_SESSION['user_id']]);

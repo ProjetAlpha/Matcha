@@ -222,24 +222,22 @@
     },
 
     methods:{
-      initChips(data){
+      async initChips(data){
         var elems = document.getElementById('chips-filter')
         var vm = this, src = data;
+        const tags = await this.getMostUsedtags()
+        let tagList = {};
+        if (tags == undefined || tags == null || !Array.isArray(tags) || tags.length === 0)
+          return ;
+        tags.forEach((value) => {
+          tagList[value.name] = null
+        })
         var options = {
           data: src ? src : [],
           placeholder: 'Entrer un tag',
           secondaryPlaceholder: '+Tag',
           autocompleteOptions: {
-            data: {
-              'Php': null,
-              'Java': null,
-              'Js': null,
-              'Music': null,
-              'Film': null,
-              'Google': null,
-              'Microsoft': null,
-              'Ola': null
-            },
+            data: tagList,
             limit: 10
           },
           onChipAdd(e, data){ vm.chipAdded(e, data); },
@@ -390,6 +388,14 @@
 
       closeModal(){
         this.instance.close();
+      },
+
+      getMostUsedtags(){
+        return new Promise((resolve, reject) => {
+          this.$http.get('/tagList/get').then((response) => {
+            resolve(response.data)
+          });
+        })
       }
     }
   }

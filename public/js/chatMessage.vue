@@ -33,10 +33,10 @@
 <script>
 
 export default{
+
   props:['messages','user'],
 
   created(){
-    // ne pas charger les notifs de la current room qd c'est open + set les notifs a is seen => communique avec la nav bar + avec chat.vue.
     if (this.hideMessage !== true){
       this.roomId = this.messages[0].room_id
       this.$http.post('/chat/updateNotification', {userId:this.user.id, roomId:this.roomId});
@@ -45,16 +45,14 @@ export default{
   },
 
   mounted(){
-    const elem = this.$refs.chat
-    this.initialHeight = elem.scrollHeight
-    elem.scrollTop = elem.scrollHeight
+    this.scrollBottom()
   },
 
   updated(){
-    if (this.messages.length > this.initalMsgLength && this.stopScroll === false && this.hideMessage !== true){
-        this.$http.post('/chat/updateNotification', {userId:this.user.id, roomId:this.roomId});
-        this.scrollBottom()
-        this.initalMsgLength = this.messages.length
+    if (this.messages.length > this.initalMsgLength && this.hideMessage !== true){
+      this.$http.post('/chat/updateNotification', {userId:this.user.id, roomId:this.roomId});
+      this.scrollBottom()
+      this.initalMsgLength = this.messages.length
     }
   },
 

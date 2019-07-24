@@ -170,6 +170,7 @@ $route->addMiddlewareStack(
           if (!isAuth()) {
               redirect('/');
           }
+          computeScore();
           setLastVisited();
       }]
 );

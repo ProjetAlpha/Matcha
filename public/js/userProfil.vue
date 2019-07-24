@@ -61,8 +61,8 @@
               </li>
               <li class="cyan lighten-4 collection-item avatar" v-if="profilData.hasOwnProperty('bio') && profilData.bio !== null">
                 <span class="title">Bio</span>
-                <p class="black-text">
-                  {{profilData.bio.trim()}}
+                <p class="black-text" style="max-width:100%;overflow-wrap: break-word;max-height:80%;height: auto;">
+                  {{profilData.bio}}
                 </p>
               </li>
               <li class="purple lighten-4 collection-item avatar" v-if="profilData.hasOwnProperty('score') && profilData.score !== null">

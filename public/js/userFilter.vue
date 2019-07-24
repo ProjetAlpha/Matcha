@@ -160,8 +160,9 @@ export default {
       const elems = document.getElementById('chips-filter')
       var vm = this
       const tags = await this.getMostUsedtags()
-      console.log(tags)
       let tagList = {};
+      if (tags == undefined || tags == null || !Array.isArray(tags) || tags.length === 0)
+        return ;
       tags.forEach((value) => {
         tagList[value.name] = null
       })

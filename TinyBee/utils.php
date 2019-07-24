@@ -348,6 +348,43 @@ if (!function_exists('geoCoordsDistance')) {
     }
 }
 
+if (!(function_exists('computeScore')){
+  function computeScore()
+  {
+    $db = new PDO(DB_DSN, DB_USER, DB_PASSWORD);
+    $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $sql = "SELECT last_visited FROM User WHERE user_id = ?";
+    $result = execQuery($db, $sql, [$_SESSION['user_id']]);
+    $days = 0;
+    $likes = 0;
+    $block = 0;
+    $visited = 0;
+    if (isset($result['last_visited'])){
+      $date = new DateTime($result['last_visited']);
+      $now = new DateTime();
+      $days = 30 - $date->diff($now)->format("%d");
+    }
+    $sql = "SELECT count(liked_by) AS 'like_counter' FROM Likes WHERE Likes.user_id = ?";
+    $result = execQuery($db, $sql, [$_SESSION['user_id']]);
+    if ($result && isset($result['like_counter'])){
+      $likes = $result['like_counter'] * 4;
+    }
+    $sql = "SELECT count(blocked_user) AS 'block_counter' FROM Blocked WHERE Blocked.user_id = ?";
+    $result = execQuery($db, $sql, [$_SESSION['user_id']]);
+    if ($result && isset($result['block_counter'])){
+      $block = $result['block_counter'] * 2;
+    }
+    $sql = "SELECT count(visiter_id) AS 'visiter_counter' FROM Visite WHERE Visite.user_id = ?";
+    $result = execQuery($db, $sql, [$_SESSION['user_id']]);
+    if ($result && isset($result['visiter_counter'])){
+      $visited = $result['visiter_counter'] / 10;
+    }
+    $score = (($likes + $visited + $days) - $block) * 0.01;
+    return ($score >= 0 ? $score : 0);
+  }
+}
+
 if (!function_exists('oneDimArray')) {
     function oneDimArray($array)
     {

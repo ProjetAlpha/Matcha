@@ -12,10 +12,11 @@ class SearchController extends Models
         $usersCollection = $this->search->fetchAllUsersInfo();
         $currentUser = $this->search->fetchCurrentUserInfo($_SESSION['user_id']);
         $commonTags = $this->search->fetchTags($_SESSION['user_id']);
+        $blockedUsers = $this->search->fetchBlockedUser($_SESSION['user_id']);
         $currentUserTags = oneDimArray($this->search->fetchUserTags($_SESSION['user_id']));
 
         foreach ($usersCollection as $user) {
-            if ($currentUser->id == $user->id) {
+            if ($currentUser->id == $user->id || isset($blockedUsers[$user->id])) {
                 continue;
             }
             $targetUserTags = '';
@@ -33,7 +34,6 @@ class SearchController extends Models
                     $score += 25;
                 }
             }
-
             $distance = geoCoordsDistance($currentUser->latitude, $currentUser->longitude, $user->latitude, $user->longitude);
             if ($distance !== 0.0) {
                 $score += $this->getDistance($distance);
@@ -136,6 +136,8 @@ class SearchController extends Models
         if (!keysExist(['filterResult'], $data)) {
             redirect('/');
         }
+
+        // si il est bloque => nop...
         $currentUser = $this->search->fetchCurrentUserInfo($_SESSION['user_id']);
         $result = $this->search->findResult($data['filterResult']);
         if (!$result || empty($result)) {
@@ -185,6 +187,9 @@ class SearchController extends Models
 
     public function loadSugestions()
     {
+        if (!isAuth()) {
+            view('sugestions.php', ['info' => 'loadPic']);
+        }
         $profilInfo = $this->fetch('Profil', ['user_id' => $_SESSION['user_id']], PDO::FETCH_ASSOC);
         if (!$profilInfo || in_array(0, $profilInfo, true) || in_array(null, $profilInfo, true) || in_array('', $profilInfo, true)) {
             view('sugestions.php', ['info' => 'profilInfo']);

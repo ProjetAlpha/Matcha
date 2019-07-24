@@ -5,7 +5,7 @@
 <ul :id="notificationId" ref="dropdown" class='dropdown-content' style="height:400px!important">
     <div v-for="(value, name, index) in notificationData">
       <li v-if="value.type == 'like'" style="line-height:0!important;">
-        <a :href="/profil/+value.id">
+        <a :href="/profil/+value.id" @click="updateNotif">
           <span v-if="value.isSeen === '0' && isSideNav === false" class="new badge" data-badge-caption="NEW"></span>
           <i class="material-icons" style="color:#2196f3">thumb_up</i>
           <span v-if="isSideNav === true">Like : </span>
@@ -15,7 +15,8 @@
       </li>
       <li v-if="value.type == 'like'" class="divider" tabindex="-1"></li>
       <li v-if="value.type == 'visiter'">
-        <a :href="/profil/+value.id"><i class="material-icons" style="color:#4caf50">visibility</i>
+        <a :href="/profil/+value.id" @click="updateNotif">
+          <i class="material-icons" style="color:#4caf50">visibility</i>
           <span v-if="value.isSeen === '0' && isSideNav === false" class="new badge" data-badge-caption="NEW"></span>
           <span v-if="isSideNav === true">Vue : </span>
           <strong>{{value.firstname}}, {{value.lastname}}</strong>
@@ -24,7 +25,7 @@
       </li>
       <li v-if="value.type == 'visiter'" class="divider" tabindex="-1"></li>
       <li v-if="value.type == 'newMessage'" style="line-height:0!important;">
-        <a :href="/profil/+value.id">
+        <a :href="/profil/+value.id" @click="updateNotif">
           <i class="material-icons">message</i>
           <span v-if="isSideNav === true">Message : </span>
           <strong>{{value.firstname}}, {{value.lastname}}</strong>
@@ -33,7 +34,7 @@
       </li>
       <li v-if="value.type == 'newMessage'" class="divider" tabindex="-1"></li>
       <li v-if="value.type == 'match'" style="line-height:0!important;">
-        <a :href="/profil/+value.id">
+        <a :href="/profil/+value.id" @click="updateNotif">
           <span v-if="value.isSeen === '0' && isSideNav === false" class="new badge" data-badge-caption="NEW"></span>
           <i class="material-icons" style="color:#e53935">favorite</i>
           <span v-if="isSideNav === true">Match : </span>
@@ -43,7 +44,7 @@
       </li>
       <li v-if="value.type == 'match'" class="divider" tabindex="-1"></li>
       <li v-if="value.type == 'unmatch'">
-        <a :href="/profil/+value.id">
+        <a :href="/profil/+value.id" @click="updateNotif">
           <span v-if="value.isSeen === '0' && isSideNav === false" class="new badge" data-badge-caption="NEW"></span>
           <i class="material-icons" style="color:#2196f3">thumb_down</i>
           <span v-if="isSideNav === true">Dislike : </span>
@@ -92,7 +93,10 @@
       },
 
       methods:{
-
+        // ----> update juste cette notif ou toute les notifs ? 
+        updateNotif(){
+          this.$http.post('/notification/set', {notification:this.notificationData});
+        }
       }
   }
 

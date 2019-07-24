@@ -12,17 +12,17 @@ class Chat
         AND Rooms.user2_id = user_profil_id) OR (Rooms.user1_id = user_profil_id AND Rooms.user2_id = Matched.user_id))
         INNER JOIN Profil ON Profil.user_id = Message.user_id
         INNER JOIN User ON User.id = Profil.user_id
-        WHERE Matched.user_id = ?";
-        return (execQuery($this->db, $sql, [$userId], PDO::FETCH_ASSOC, FETCH_ALL));
+        WHERE Matched.user_id = ? AND user_profil_id NOT IN (SELECT blocked_user FROM Blocked WHERE Blocked.user_id = ?)";
+        return (execQuery($this->db, $sql, [$userId, $userId], PDO::FETCH_ASSOC, FETCH_ALL));
     }
 
     public function findMatchedUser($userId, $search)
     {
         $sql = "SELECT firstname,lastname,user_profil_id FROM User
           INNER JOIN Matched ON (Matched.user_profil_id = User.id AND Matched.user_id = ?)
-          WHERE lastname LIKE ? OR firstname LIKE ?
+          WHERE (lastname LIKE ? OR firstname LIKE ?) AND user_profil_id NOT IN (SELECT blocked_user FROM Blocked WHERE Blocked.user_id = ?)
           GROUP BY Matched.user_profil_id";
-        return (execQuery($this->db, $sql, [$userId, "%$search%", "%$search%"], PDO::FETCH_ASSOC, FETCH_ALL));
+        return (execQuery($this->db, $sql, [$userId, "%$search%", "%$search%", $userId], PDO::FETCH_ASSOC, FETCH_ALL));
     }
 
     public function getRoom($userId, $search)

@@ -27,9 +27,9 @@
         <ul class="collection" v-for="(value, name, index) in matchedUserChat">
           <li class="row collection-item avatar">
             <div class="col s7 m4 l4">
-              <load-async-image needInfo="1" :user-id="value[0].user_profil_id" :profil-id="value[0].user_profil_id"
-              img-style="center-img responsive-img rounded-img" :key="value[0].user_profil_id"></load-async-image>
-              <online-user-info :user-id="value[0].user_profil_id"></online-user-info>
+                <load-async-image needInfo="1" :user-id="value[0].user_profil_id" :profil-id="value[0].user_profil_id"
+                img-style="responsive-img rounded-img" :key="value[0].user_profil_id"></load-async-image>
+                <online-user-info :user-id="value[0].user_profil_id"></online-user-info>
             </div>
               <div class="col s4 m8 l6 valign-wrapper" style="height:100%;min-height: 15vh;">
                 <a @click="loadMessage(value, name)" style="max-width:80%">
@@ -61,11 +61,11 @@
 
 export default {
   created(){
+    this.fetchAll()
     this.fetchConversation()
     this.$checkIfLogged().then(response => {
       this.user = response ? response : false;
     });
-
   },
 
   updated(){
@@ -74,6 +74,7 @@ export default {
 
   data(){
       return {
+        blockedUser:[],
         currentLastname:'',
         currentFirstname:'',
         currentRoomId:'',
@@ -121,23 +122,7 @@ export default {
     },
 
     fetchConversation(){
-      this.$http.get('/chat/fetchMatchedUser').then((response) => {
-        if (response.data){
-          this.matchedUserChat = response.data.matched
-          for (const property in this.matchedUserChat){
-            if (this.matchedUserChat.hasOwnProperty(property)){
-                this.sortMsgTime(this.matchedUserChat[property])
-              }
-            }
-          }
-          if (response.data.notifications){
-            this.chatNotification = response.data.notifications
-          }
-      });
-
       setInterval(() => {this.$http.get('/chat/fetchMatchedUser').then((response) => {
-        //console.log('fetching data')
-        //console.log(response.data)
         if (response.data){
           this.matchedUserChat = response.data.matched
           if (this.matchedUserChat !== undefined && this.matchedUserChat[this.currentRoomId])
@@ -166,6 +151,22 @@ export default {
       }else {
         this.isSearchActivated = false
       }
+    },
+
+    fetchAll(){
+      this.$http.get('/chat/fetchMatchedUser').then((response) => {
+        if (response.data){
+          this.matchedUserChat = response.data.matched
+          for (const property in this.matchedUserChat){
+            if (this.matchedUserChat.hasOwnProperty(property)){
+                this.sortMsgTime(this.matchedUserChat[property])
+              }
+            }
+          }
+          if (response.data.notifications){
+            this.chatNotification = response.data.notifications
+          }
+      });
     },
 
     setProfilName(e, room){
