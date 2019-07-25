@@ -190,14 +190,19 @@ class SearchController extends Models
         if (!isAuth()) {
             view('sugestions.php', ['info' => 'loadPic']);
         }
+        $needGeoLoc = false;
+        if (isset($_SESSION['needGeoLoc']) && $_SESSION['needGeoLoc'] === true) {
+            $needGeoLoc = true;
+            $_SESSION['needGeoLoc'] = false;
+        }
         $profilInfo = $this->fetch('Profil', ['user_id' => $_SESSION['user_id']], PDO::FETCH_ASSOC);
         if (!$profilInfo || in_array(0, $profilInfo, true) || in_array(null, $profilInfo, true) || in_array('', $profilInfo, true)) {
-            view('sugestions.php', ['info' => 'profilInfo']);
+            view('sugestions.php', ['info' => 'profilInfo', 'geoLoc' => $needGeoLoc]);
         }
         $tags = $this->fetchAll('Tag', ['user_id' => $_SESSION['user_id']]);
         if (!$tags) {
-            view('sugestions.php', ['info' => 'profilInfo']);
+            view('sugestions.php', ['info' => 'profilInfo', 'geoLoc' => $needGeoLoc]);
         }
-        view('sugestions.php');
+        view('sugestions.php', ['geoLoc' => $needGeoLoc]);
     }
 }

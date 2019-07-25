@@ -12,6 +12,7 @@ import onlineUserInfo from './onlineUserInfo.vue'
 import chatMessage from './chatMessage.vue'
 import inputChatMessage from './inputChatMessage.vue'
 import getUserProfilInfo from './getUserProfilInfo.vue'
+import geoLoc from './geoLoc.vue'
 import error from './error.vue'
 import chat from './chat.vue'
 import seeder from './seeder.vue'
@@ -43,6 +44,7 @@ Vue.prototype.$isAuth = function() {
 };
 
 Vue.component('nav-bar', navBar);
+Vue.component('geo-loc', geoLoc);
 Vue.component('search-match', searchMatch);
 Vue.component('user-register', userRegister);
 Vue.component('user-settings', userSettings);

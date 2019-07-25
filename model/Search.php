@@ -71,7 +71,7 @@ class Search
 
     public function fetchBlockedUser($userId)
     {
-        $sql = "SELECT blocked_user,user_id FROM Blocked WHERE user_id = ?";
+        $sql = "SELECT blocked_user,user_id FROM Blocked WHERE Blocked.user_id = ?";
         return (execQuery($this->db, $sql, [$userId], PDO::FETCH_GROUP | PDO::FETCH_ASSOC, FETCH_ALL));
     }
 }

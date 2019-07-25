@@ -3,6 +3,10 @@
 
 <section class="hero blue-grey lighten-5 is-fullheight-with-navbar" id="app">
   <nav-bar></nav-bar>
+  <?php if (isset($geoLoc) && $geoLoc === true): ?>
+    <geo-loc type="getLoc"></geo-loc>
+    <?php $geoLoc === false; ?>
+  <?php endif; ?>
   <?php if (isAuth() && !isset($info)): ?>
     <div class="hero-body" style="display:block!important;padding:3%!important">
       <search-match type="result" :is-search="false"></search-match>

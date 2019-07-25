@@ -51,7 +51,7 @@ class ChatController extends Models
         if ($dstUser !== false) {
             $this->insert('Notification', ['user_id' => $dstUser['id'], 'room_id' => $data['roomId'], 'name' => 'addroomMessage']);
         }
-        $this->insert('Rooms', ['last_msg_date' => $data['time']], ['id' => $data['roomId']]);
+        $this->update('Rooms', ['last_msg_date' => $data['time']], ['id' => $data['roomId']]);
     }
 
     public function searchMatchedUser()

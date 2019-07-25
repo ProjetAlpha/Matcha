@@ -4,7 +4,7 @@ require_once('UserGeoLocTrait.php');
 
 class UserController extends Models
 {
-    use UserGeoLocTrait;
+    //use UserGeoLocTrait;
 
     public function create()
     {
@@ -80,7 +80,6 @@ class UserController extends Models
         if (!keysExist(['username', 'password'], $data) || isAuth()) {
             redirect('/');
         }
-
         $validate = new Validate(
             $data,
             [
@@ -103,10 +102,11 @@ class UserController extends Models
             'registerType' => 'login')
           );
         }
+        //var_dump($data['password'], $query->password);
         if (password_verify($data['password'], $query->password)) {
             $_SESSION['token'] = $query->password;
             $_SESSION['user_id'] = $query->id;
-            $this->getGeoLoc();
+            $_SESSION['needGeoLoc'] = true;
             redirect('/');
         } else {
             view(
@@ -124,6 +124,7 @@ class UserController extends Models
         if (isset($_SESSION) && keysExist(['user_id', 'token'], $_SESSION) && isAuth()) {
             unset($_SESSION['user_id']);
             unset($_SESSION['token']);
+            unset($_SESSION['needGeoLoc']);
         }
         redirect('/');
     }

@@ -67,10 +67,12 @@
 
         <span class="card-title mr-t-2">Localisation</span>
         <div class="col s12 m12 l12" v-if="isModifLocalisation === true" style="padding:0!important">
+          <span>Adresse</span>
+          <input type="text" v-model="address" class="validate" name="localisation" id="localisation" required/>
           <span>Ville</span>
-          <input type="text" v-model="city" class="validate" name="localisation" id="localisation"/>
-          <span>Pays</span>
-          <input type="text" v-model="country" class="validate" name="localisation" id="localisation"/>
+          <input type="text" v-model="city" class="validate" name="localisation" id="localisation" required/>
+          <span>Code postal</span>
+          <input type="text" v-model="code" class="validate" name="localisation" id="localisation" required/>
           <button class="btn btn-small green waves-effect waves-light" @click="modifLocalisation">Confirmer</button>
           <button class="btn btn-small green waves-effect waves-light" @click="isModifLocalisation = false">Annuler</button>
         </div>
@@ -217,7 +219,9 @@
         isOrientationSelected:false,
         isModifLocalisation:false,
         haveBio:false,
-        error:''
+        error:'',
+        address:'',
+        code:''
       }
     },
 
@@ -315,13 +319,24 @@
       },
 
       modifLocalisation(){
-        this.$http.post('/profil/edit/modif', {city:this.city, country:this.country}).then((response) => {
-          if (response.data && response.data.hasOwnProperty('city')){
-            this.city = response.data.city
-            this.country = response.data.country
-            this.isModifLocalisation = false;
-          }
-        });
+        // --> message, si pas de champ.
+        if (this.adress == '' || this.city == '' || this.code == '')
+          return ;
+        const url = 'http://www.mapquestapi.com/geocoding/v1/address?key=Mn6QAXVv8wYRojewUDGR7819P5YJEGAg&location='+this.adress+','+this.city+','+this.code;
+        fetch(url, {method: 'POST',  headers: {'Content-Type': 'application/json'}})
+          .then(res => res.json())
+          .then(response => {
+            const city = response.results[0].locations[0].adminArea5;
+            const country = response.results[0].locations[0].adminArea1;
+            const street = response.results[0].locations[0].street;
+            const code = response.results[0].locations[0].postalCode;
+            const lat = response.results[0].locations[0].latLng.lat;
+            const lng = response.results[0].locations[0].latLng.lng;
+            this.city = city
+            this.country = country
+            this.isModifLocalisation = false
+            this.$http.post('/setgeoLoc', {latitude:lat, longitude:lng, city: city, country: country, street: street,code: code})
+          })
       },
 
       resizeTextarea(e){

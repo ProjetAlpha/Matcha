@@ -60,8 +60,6 @@ class ProfilController extends Models
                 // si il a pas complete le profil => afficher juste lastname + firstname + photo par defaut.
                 view('page_404.php');
             } else {
-                // function sur validate (pour redirect ou on veut...)
-                // $validate = new Validate($result, ['user_id' => 'digit|min:1|max:11'], 'editProfil.php', Message::$userMessages);
                 if ($result['user_id'] !== $_SESSION['user_id']) {
                     if (!$this->fetch('Visite', ['user_id' => $userId, 'visiter_id' => $_SESSION['user_id']])) {
                         $this->insert('Visite', ['user_id' => $userId, 'visiter_id' => $_SESSION['user_id']]);
@@ -152,6 +150,55 @@ class ProfilController extends Models
             $path = base64_encode(file_get_contents($result['profile_pic_path']));
             $name = $result['profile_pic_name'];
             echo encodeToJs(['path' => $path ?? null, 'name' => $name ?? null, 'firstname' => $info['firstname'], 'lastname' => $info['lastname']]);
+        }
+    }
+
+    public function setGeoLoc()
+    {
+        $request = new Request();
+        $data = $request->toJson();
+
+        if (!keysExist(['latitude', 'longitude', 'city', 'country', 'code'], $data)) {
+            redirect('/');
+        }
+        if (strlen($data['city']) > 70 || strlen($data['country']) > 50 || (isset($data['street']) && strlen($data['street']) > 255)) {
+            redirect('/');
+        }
+        $city = filter_var($data['city'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $country = filter_var($data['country'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        if (isset($data['street'])) {
+            $street = filter_var($data['street'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        }
+        if (!is_float($data['latitude']) || !is_float($data['longitude'])) {
+            $convLatitude = (float)($data['latitude']);
+            $convLongitude = (float)($data['longitude']);
+            if (!is_float($convLatitude) || !is_float($convLongitude)) {
+                redirect('/');
+            }
+        }
+        $validate = new Validate(
+            $data,
+            [
+            'code' => 'digit|min:2|max:6'
+          ],
+            'sendToJs',
+            Message::$userMessages
+        );
+        if (!empty($validate->loadedMessage)) {
+            redirect('/');
+        }
+        if (!$this->fetch('Profil', ['user_id' => $_SESSION['user_id']])) {
+            $this->insert('Profil', [
+            'localisation' => $data['city'].', '.$data['country'],
+            'longitude' => $convLongitude ?? $data['longitude'],
+            'latitude' => $convLatitude ?? $data['latitude'],
+          ], ['user_id' => $_SESSION['user_id']]);
+        } else {
+            $this->update('Profil', [
+            'localisation' => $data['city'].', '.$data['country'],
+            'longitude' => $convLongitude ?? $data['longitude'],
+            'latitude' => $convLatitude ?? $data['latitude']
+          ], ['user_id' => $_SESSION['user_id']]);
         }
     }
 }

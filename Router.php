@@ -7,6 +7,10 @@ $route = new Route();
  */
 $route->add('/login', 'get', function () {
     view('user_register_forms.php', ['registerType' => 'login']);
+})->addMiddleware(function () {
+    if (isAuth()) {
+        redirect('/');
+    }
 });
 
 $route->add('/register', 'get', function () {
@@ -106,6 +110,7 @@ $route->addMiddlewareStack(
       '/search/manageResult',
       '/search/searchResult',
       '/chat/updateNotification',
+      '/setgeoLoc',
       'callback' => function () use ($csrf) {
           if ($csrf->check() === false) {
               redirect('/');
@@ -166,6 +171,11 @@ $route->addMiddlewareStack(
       '/search/searchResult',
       '/tagList/get',
       '/chat/updateNotification',
+      '/notification/get',
+      '/notification/set',
+      '/setgeoLoc',
+      '/search',
+      '/search/result',
       'callback' => function () {
           if (!isAuth()) {
               redirect('/');
@@ -182,6 +192,8 @@ $route->add('/settings', 'get', function () {
 $route->add('/profil/edit', 'get', function () {
     view('editProfil.php');
 });
+
+$route->add('/setgeoLoc', 'post', 'ProfilController@setGeoLoc');
 
 $route->add('/searchSugestions', 'get', 'SearchController@searchSugestions');
 $route->add('/getMoreSugestions', 'post', 'SearchController@paginateSugestion');

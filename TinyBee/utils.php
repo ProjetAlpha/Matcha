@@ -258,7 +258,7 @@ if (!function_exists('implodeToPdo')) {
 }
 
 if (!function_exists('execQuery')) {
-    function execQuery($db, $sql, $data, $option, $fetchMethod = false)
+    function execQuery($db, $sql, $data, $option = false, $fetchMethod = false)
     {
         $prepare = $db->prepare($sql);
         try {
@@ -348,41 +348,45 @@ if (!function_exists('geoCoordsDistance')) {
     }
 }
 
-if (!(function_exists('computeScore')){
-  function computeScore()
-  {
-    $db = new PDO(DB_DSN, DB_USER, DB_PASSWORD);
-    $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "SELECT last_visited FROM User WHERE user_id = ?";
-    $result = execQuery($db, $sql, [$_SESSION['user_id']]);
-    $days = 0;
-    $likes = 0;
-    $block = 0;
-    $visited = 0;
-    if (isset($result['last_visited'])){
-      $date = new DateTime($result['last_visited']);
-      $now = new DateTime();
-      $days = 30 - $date->diff($now)->format("%d");
+if (!(function_exists('computeScore'))) {
+    function computeScore()
+    {
+        $db = new PDO(DB_DSN, DB_USER, DB_PASSWORD);
+        $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $sql = "SELECT last_visited FROM User WHERE User.id = ?";
+        $result = execQuery($db, $sql, [$_SESSION['user_id']], PDO::FETCH_ASSOC, FETCH_ONE);
+        $days = 0;
+        $likes = 0;
+        $block = 0;
+        $visited = 0;
+        if (isset($result['last_visited'])) {
+            $date = new DateTime($result['last_visited']);
+            $now = new DateTime();
+            $diff = (int)$date->diff($now)->format("%d");
+            $days = $diff < 100 ? (100 - $date->diff($now)->format("%d")) * 0.01 : 0;
+        }
+        $sql = "SELECT count(liked_by) AS 'like_counter' FROM Likes WHERE Likes.user_id = ?";
+        $result = execQuery($db, $sql, [$_SESSION['user_id']], PDO::FETCH_ASSOC, FETCH_ONE);
+        if ($result && isset($result['like_counter'])) {
+            $likes = $result['like_counter'] * 4;
+        }
+        $sql = "SELECT count(blocked_user) AS 'block_counter' FROM Blocked WHERE Blocked.user_id = ?";
+        $result = execQuery($db, $sql, [$_SESSION['user_id']], PDO::FETCH_ASSOC, FETCH_ONE);
+        if ($result && isset($result['block_counter'])) {
+            $block = $result['block_counter'] * 2;
+        }
+        $sql = "SELECT count(visiter_id) AS 'visiter_counter' FROM Visite WHERE Visite.user_id = ?";
+        $result = execQuery($db, $sql, [$_SESSION['user_id']], PDO::FETCH_ASSOC, FETCH_ONE);
+        if ($result && isset($result['visiter_counter'])) {
+            $visited = $result['visiter_counter'] * 2;
+        }
+        $val = ($likes + $visited + $days) - $block;
+        $score = $val > 0 ? (100 * ($val / 650)) : 0;
+        $score = $score > 100 ? 100 : $score;
+        $sql = "UPDATE Profil SET score = ? WHERE Profil.user_id = ?";
+        execQuery($db, $sql, [round($score), $_SESSION['user_id']]);
     }
-    $sql = "SELECT count(liked_by) AS 'like_counter' FROM Likes WHERE Likes.user_id = ?";
-    $result = execQuery($db, $sql, [$_SESSION['user_id']]);
-    if ($result && isset($result['like_counter'])){
-      $likes = $result['like_counter'] * 4;
-    }
-    $sql = "SELECT count(blocked_user) AS 'block_counter' FROM Blocked WHERE Blocked.user_id = ?";
-    $result = execQuery($db, $sql, [$_SESSION['user_id']]);
-    if ($result && isset($result['block_counter'])){
-      $block = $result['block_counter'] * 2;
-    }
-    $sql = "SELECT count(visiter_id) AS 'visiter_counter' FROM Visite WHERE Visite.user_id = ?";
-    $result = execQuery($db, $sql, [$_SESSION['user_id']]);
-    if ($result && isset($result['visiter_counter'])){
-      $visited = $result['visiter_counter'] / 10;
-    }
-    $score = (($likes + $visited + $days) - $block) * 0.01;
-    return ($score >= 0 ? $score : 0);
-  }
 }
 
 if (!function_exists('oneDimArray')) {
