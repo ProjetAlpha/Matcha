@@ -1079,7 +1079,7 @@ var Component = function() {
 
     // Display error if el is valid HTML Element
     if (!(el instanceof Element)) {
-      console.error(Error(el + ' is not an HTML Element'));
+      //console.error(Error(el + ' is not an HTML Element'));
     }
 
     // If exists, destroy and reinitialize in child
@@ -7490,7 +7490,7 @@ var $jscomp$this = this;
     }
 
     if (!$textarea.length) {
-      console.error('No textarea element found');
+      //console.error('No textarea element found');
       return;
     }
 

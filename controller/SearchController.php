@@ -21,25 +21,34 @@ class SearchController extends Models
             }
             $targetUserTags = '';
             $score = 0.0;
-            if ($currentUser->orientation && !isset($user->orientation) && ($currentUser->orientation == 'bisexuel')) {
-                $score += 10;
-            } elseif ($user->orientation && $currentUser->orientation === $user->orientation) {
-                $score += $this->getOrientation($currentUser->orientation, $user->orientation, $currentUser->genre, $user->genre);
-            } else {
-                if ($currentUser->genre == $user->genre && $currentUser->orientation == 'homosexuel') {
+            $match = 0;
+            if ($currentUser->orientation !== null && $user->orientation !== null) {
+                if ($currentUser->orientation && !isset($user->orientation) && ($currentUser->orientation == 'bisexuel')) {
                     $score += 10;
-                } elseif ($currentUser->orientation == 'bisexuel') {
-                    $score += 10;
+                } elseif ($user->orientation && $currentUser->orientation === $user->orientation) {
+                    $score += $this->getOrientation($currentUser->orientation, $user->orientation, $currentUser->genre, $user->genre);
                 } else {
-                    $score += 25;
+                    if ($currentUser->genre == $user->genre && $currentUser->orientation == 'homosexuel') {
+                        $score += 10;
+                    } elseif ($currentUser->orientation == 'bisexuel') {
+                        $score += 10;
+                    } else {
+                        $score += 25;
+                    }
                 }
+                $score > 0.0 ? $match++ : $match;
             }
             $distance = geoCoordsDistance($currentUser->latitude, $currentUser->longitude, $user->latitude, $user->longitude);
             if ($distance !== 0.0) {
+                $match++;
                 $score += $this->getDistance($distance);
             }
-            $score += $this->getPopularity($currentUser->score, $user->score);
+            if ($currentUser->score !== null && $user->score !== null) {
+                $match++;
+                $score += $this->getPopularity($currentUser->score, $user->score);
+            }
             if (isset($commonTags[$user->id])) {
+                $match++;
                 $targetUserTags = oneDimArray($commonTags[$user->id]);
                 $score += $this->getTags(
                     $currentUserTags,
@@ -48,7 +57,7 @@ class SearchController extends Models
             } else {
                 $score += 5;
             }
-            if ($score !== 0.0 && $score < 40) {
+            if ($match !== 0 && $score < 40) {
                 $formatDist = round($distance, 3);
                 $user->computed_score = $score;
                 $user->distance = $formatDist;
@@ -193,7 +202,6 @@ class SearchController extends Models
         $needGeoLoc = false;
         if (isset($_SESSION['needGeoLoc']) && $_SESSION['needGeoLoc'] === true) {
             $needGeoLoc = true;
-            $_SESSION['needGeoLoc'] = false;
         }
         $profilInfo = $this->fetch('Profil', ['user_id' => $_SESSION['user_id']], PDO::FETCH_ASSOC);
         if (!$profilInfo || in_array(0, $profilInfo, true) || in_array(null, $profilInfo, true) || in_array('', $profilInfo, true)) {

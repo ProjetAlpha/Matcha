@@ -157,7 +157,6 @@ console.log(getDistanceFromLatLonInKm(lat1, long1, lat2, long2));
 
       sendData(result){
         axios.post('/seeder', result).then(function (response) {
-          console.log(response.data);
         })
         .catch(function (error) {
           // --- console.log(error);

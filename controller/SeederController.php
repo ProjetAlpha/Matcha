@@ -29,7 +29,7 @@ class SeederController extends Models
             if (isset($value['location'], $value['gender'], $value['score'], $value['picture'], $value['orientation'])) {
                 $genre = $value['gender'] == 'male' ? 'homme' : 'femme';
                 $sqlProfil .= "('".$currentId."','".'lorem'."','"
-              .$value['score']."','".$genre."','".$value['orientation']."','".$value['location']['city'].", France','"
+              .$value['score']."','".$genre."','".$value['orientation']."','".strtolower($value['location']['city']).", France','"
               .$value['picture']['large']."','".$value['picture']['name']."','".$value['location']['longitude'].
               "','".$value['location']['latitude']."'),";
             }

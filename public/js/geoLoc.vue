@@ -26,6 +26,8 @@ export default{
     }
   },
 
+  // format ici + dans le filter + qd on change de loc.
+
   methods:{
     findLoc(){
       if (!navigator.geolocation){
@@ -36,7 +38,7 @@ export default{
         }, error => {
           this.$http.post('/setgeoLoc', {
             latitude:geoplugin_latitude(),longitude:geoplugin_longitude(),
-            city: geoplugin_city(), country:geoplugin_countryName(), code:geoplugin_regionCode()
+            city: this.$utils.formatCity(geoplugin_city()), country:geoplugin_countryName(), code:geoplugin_regionCode()
           })
         });
       }
@@ -47,7 +49,7 @@ export default{
         return ;
       this.$http.post('/setgeoLoc', {
         latitude:geoplugin_latitude(),longitude:geoplugin_longitude(),
-        city: geoplugin_city(), country:geoplugin_countryName(), code:geoplugin_regionCode()
+        city: this.$utils.formatCity(geoplugin_city()), country:geoplugin_countryName(), code:geoplugin_regionCode()
         })
       this.isForceLoc = true
     },
@@ -58,7 +60,7 @@ export default{
       fetch(url, {method: 'POST',  headers: {'Content-Type': 'application/json'}})
         .then(res => res.json())
         .then(response => {
-          const city = response.results[0].locations[0].adminArea5;
+          const city = this.$utils.formatCity(response.results[0].locations[0].adminArea5);
           const country = response.results[0].locations[0].adminArea1;
           const street = response.results[0].locations[0].street;
           const code = response.results[0].locations[0].postalCode;
@@ -74,16 +76,12 @@ export default{
       fetch(url, {method: 'POST',  headers: {'Content-Type': 'application/json'}})
         .then(res => res.json())
         .then(response => {
-          const city = response.results[0].locations[0].adminArea5;
+          const city = this.$utils.formatCity(response.results[0].locations[0].adminArea5);
           const country = response.results[0].locations[0].adminArea1;
           const street = response.results[0].locations[0].street;
           const code = response.results[0].locations[0].postalCode;
           this.$http.post('/setgeoLoc', {latitude:lat, longitude:lng, city: city, country: country, street: street,code: code})
         })
-    },
-
-    stringToFloat(val){
-      return (parseFloat(val.replace(",", ".")))
     }
   }
 }

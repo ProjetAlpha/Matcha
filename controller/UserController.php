@@ -11,7 +11,7 @@ class UserController extends Models
         $request = new Request();
         $data = $request->get();
         if (!keysExist(['username', 'password', 'email', 'lastname', 'firstname', 'age'], $data)) {
-            redirect('/');
+            view("user_register_forms.php", array("warning" => "Champs invalides.", "registerType" => "register"));
         }
         if ($this->fetch('User', ['username' => $data['username']], PDO::FETCH_ASSOC)) {
             view("user_register_forms.php", array("warning" => "Ce nom d'utilisateur existe déjà.", "registerType" => "register"));
@@ -38,6 +38,7 @@ class UserController extends Models
 
         $hash = password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 12]);
         $_SESSION['token'] = $hash;
+        $_SESSION['needGeoLoc'] = true;
         $link = randomPassword();
         $this->insert(
             'User',
@@ -69,6 +70,7 @@ class UserController extends Models
         }
         if (hash_equals($query->password, $_SESSION['token']) && $query->confirmation_link == $userLink) {
             $this->update('User', ['is_confirmed' => 1, 'confirmation_link' => ''], ['id' => $_SESSION['user_id']]);
+            $_SESSION['needGeoLoc'] = true;
         }
         redirect('/');
     }
@@ -102,7 +104,6 @@ class UserController extends Models
             'registerType' => 'login')
           );
         }
-        //var_dump($data['password'], $query->password);
         if (password_verify($data['password'], $query->password)) {
             $_SESSION['token'] = $query->password;
             $_SESSION['user_id'] = $query->id;

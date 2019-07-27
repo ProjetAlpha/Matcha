@@ -46,7 +46,7 @@
                     <div class="col s8 m8 l6" v-if="type === 'consultUserProfil' && likesBy !== ''">
                       <span href="#" class="mr-t-4"><i class="material-icons">info_outline</i>{{likesBy}} vous a like</span>
                     </div>
-                    <div class="col s7 m6 l6" v-if="type === 'consultUserProfil' && profilPicName !== 'defaultProfil'">
+                    <div class="col s7 m6 l6" v-if="type === 'consultUserProfil' && profilPicName !== 'defaultProfil' && isLiked !== ''">
                       <a v-if="isLiked === false" @click="setLike"><i class="material-icons">thumb_up</i>J'aime</a>
                       <a v-if="isLiked === true" @click="setDislike"><i class="material-icons">thumb_down</i>Je n'aime pas</a>
                     </div>
@@ -142,9 +142,7 @@ export default{
 
   methods:{
     setLike(e){
-      this.$http.post('/like/setLike', {profilId:this.profilData.user_id}).then((response) => {
-        console.log(response.data)
-      });
+      this.$http.post('/like/setLike', {profilId:this.profilData.user_id})
       this.isLiked = true;
     },
 
@@ -155,9 +153,10 @@ export default{
 
     isLikedByUser(){
       this.$http.post('/like/isLikedByUser', {profilId:this.profilData.user_id}).then((response) => {
-        console.log(response.data)
-        if (response.data){
+        if (response.data && response.data.isLiked){
           this.isLiked = response.data.isLiked;
+        }else {
+          this.isLiked = false
         }
       })
     },

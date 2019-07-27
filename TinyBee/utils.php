@@ -74,7 +74,10 @@ if (!function_exists('sendHtmlMail')) {
         <body>";
         $message.= $content;
         $message.= "</body></html>";
-        mail($to, $subject, $message, implode("\r\n", $headers));
+        $success = mail($to, $subject, $message, implode("\r\n", $headers));
+        if (!$success) {
+            //$errorMessage = error_get_last()['message'];
+        }
     }
 }
 

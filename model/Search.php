@@ -41,7 +41,8 @@ class Search
         $condition = ' AND ';
         $value[] = $_SESSION['user_id'];
         if (isset($filter['localisation']) && !empty($filter['localisation'])) {
-            if (!ctype_alpha($filter['localisation'])) {
+            $filter['localisation'] = filter_var($filter['localisation'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            if (strlen($filter['localisation']) > 120) {
                 return (false);
             }
             $value[] = $filter['localisation'];

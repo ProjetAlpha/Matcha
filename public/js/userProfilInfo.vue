@@ -119,7 +119,6 @@ export default {
       methods:{
         getProfilLike(){
           this.$http.get('/profil/getProfilLikes').then((response) => {
-            console.log(response.data)
             if (response.data.visiterLikes !== null && response.data.visiterLikes !== undefined){
               this.visiterLikes = response.data.visiterLikes;
               this.visiterLikesTags = response.data.visiterLikes.likesTags;

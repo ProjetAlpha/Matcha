@@ -78,7 +78,7 @@
         </div>
 
         <div class="col s12" v-if="isModifLocalisation === false" style="padding:0!important">
-          <p style="font-size:1em"> {{city+', '+country}}
+          <p style="font-size:1em"> {{city && country ? city+', '+country : ''}}
             <button class="right btn btn-small green waves-effect waves-light" @click="isModifLocalisation = true"><i class="material-icons right">edit</i>Editer</button>
           </p>
         </div>
@@ -158,14 +158,14 @@
           this.isGenreSelected = true
           this.genreName = this.profilData.genre
         }
-        if (this.profilData.hasOwnProperty('orientation')){
+        if (this.profilData.hasOwnProperty('orientation') && this.profilData.orientation){
           this.isOrientationSelected = true
           this.orientationName = this.profilData.orientation
         }
-        if (this.profilData.hasOwnProperty('bio')){
+        if (this.profilData.hasOwnProperty('bio') && this.profilData.bio){
           this.bio = this.profilData.bio
         }
-        if (this.profilData.hasOwnProperty('localisation')){
+        if (this.profilData.hasOwnProperty('localisation') && this.profilData.localisation){
           this.city = this.profilData.localisation.split(',')[0]
           this.country = this.profilData.localisation.split(',')[1].trim()
         }
@@ -231,11 +231,11 @@
         var vm = this, src = data;
         const tags = await this.getMostUsedtags()
         let tagList = {};
-        if (tags == undefined || tags == null || !Array.isArray(tags) || tags.length === 0)
-          return ;
-        tags.forEach((value) => {
-          tagList[value.name] = null
-        })
+        if (!(tags === undefined || tags === null || !Array.isArray(tags) || tags.length === 0)){
+          tags.forEach((value) => {
+            tagList[value.name] = null
+          })
+        }
         var options = {
           data: src ? src : [],
           placeholder: 'Entrer un tag',
@@ -335,7 +335,7 @@
             this.city = city
             this.country = country
             this.isModifLocalisation = false
-            this.$http.post('/setgeoLoc', {latitude:lat, longitude:lng, city: city, country: country, street: street,code: code})
+            this.$http.post('/setgeoLoc', {latitude:lat, longitude:lng, city: this.$utils.formatCity(city), country: country, street: street,code: code})
           })
       },
 

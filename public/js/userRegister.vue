@@ -26,7 +26,7 @@
                                         {{message}}
                                     </div>
                           </article>
-                          <input type="hidden" name="csrf_token" :value="$http.defaults.headers.post['csrf-token']">
+                          <input type="hidden" name="csrf_token" :value="getCsrfToken()">
                       </form>
                   </div>
               </div>
@@ -45,6 +45,10 @@
     methods:{
       isTypeDefined(index){
         return (typeof this.type[index] !== 'undefined');
+      },
+
+      getCsrfToken(){
+        return (document.querySelector("meta[name='csrf-token']").getAttribute("content"));
       }
     }
   }

@@ -3,9 +3,9 @@
 
 <section class="hero blue-grey lighten-5 is-fullheight-with-navbar" id="app">
   <nav-bar></nav-bar>
-  <?php if (isset($geoLoc) && $geoLoc === true): ?>
-    <geo-loc type="getLoc"></geo-loc>
-    <?php $geoLoc === false; ?>
+  <?php if (isAuth() && isset($_SESSION['needGeoLoc']) && $_SESSION['needGeoLoc'] === true): ?>
+    <geo-loc type="getLoc"></geo-loc>    
+    <?php unset($_SESSION['needGeoLoc']); ?>
   <?php endif; ?>
   <?php if (isAuth() && !isset($info)): ?>
     <div class="hero-body" style="display:block!important;padding:3%!important">

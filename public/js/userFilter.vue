@@ -161,11 +161,11 @@ export default {
       var vm = this
       const tags = await this.getMostUsedtags()
       let tagList = {};
-      if (tags == undefined || tags == null || !Array.isArray(tags) || tags.length === 0)
-        return ;
-      tags.forEach((value) => {
-        tagList[value.name] = null
-      })
+      if (!(tags === undefined || tags === null || !Array.isArray(tags) || tags.length === 0)){
+        tags.forEach((value) => {
+          tagList[value.name] = null
+        })
+      }
       var options = {
         placeholder: 'Entrer un tag',
         secondaryPlaceholder: '+Tag',
@@ -203,7 +203,7 @@ export default {
       this.getCode = code
       if (city.match(/\d/g))
           city = city.replace(/[0-9]/g, '')
-      city = this.normalizeCity(city).trim()
+      city = this.$utils.formatCity(city).trim()
       this.$emit('sendFilterData', {type:'localisation', value:city})
       this.localisation = city
       this.isInputSent = true

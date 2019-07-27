@@ -134,7 +134,8 @@ trait SearchAlgoTrait
             }
         }
         if (isset($params['localisation'])) {
-            if (!isValidRegex(ALPHA, $params['localisation']) || strlen($params['localisation']) > 256) {
+            $params['localisation'] = filter_var($params['localisation'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            if (strlen($params['localisation']) > 120) {
                 return (false);
             }
         }

@@ -80,6 +80,9 @@
             <button @click="sendSearch()"
             class="btn-small green waves-effect waves-light basic-txt mr-t-3 right">Confirmer
           </button>
+          <div v-if="isResultError">
+            <error message="Aucun résultat"></error>
+          </div>
         </div>
       </div>
     </div>
@@ -141,6 +144,7 @@ export default {
         },
         name:'filter'
       },
+      isResultError:false,
       isFilterRefreshed:false,
       isSortRefreshed:false,
       matchedResult:[],
@@ -195,6 +199,7 @@ export default {
       this.$http.post('/search/searchResult', {filterResult:this.filterResult}).then((response) => {
         if (response.data == 'result error'){
           // --> no result founded.
+          this.isResultError = true
         }else {
           window.location.href = '/search/result'
         }
@@ -246,7 +251,6 @@ export default {
 
     fetchSugestions(){
       this.$http.get('/searchSugestions').then((response) => {
-        console.log(response.data)
         if (response.data !== null && Array.isArray(response.data.sugestions)){
           window.scrollTo(0,0)
           this.matchedResult = response.data.sugestions

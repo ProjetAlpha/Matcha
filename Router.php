@@ -15,6 +15,10 @@ $route->add('/login', 'get', function () {
 
 $route->add('/register', 'get', function () {
     view('user_register_forms.php', ['registerType' => 'register']);
+})->addMiddleware(function () {
+    if (isAuth()) {
+        redirect('/');
+    }
 });
 
 $route->add('/reset', 'get', function () {
@@ -255,7 +259,7 @@ $route->add('/notification/set', 'post', 'NotificationController@setSeenNotifica
 /**
  * Seeder Route --- DEV ONLY.
  */
- $route->add('/seeder', 'post', 'SeederController@storeSeed')->addMiddleware(function () {
+ /*$route->add('/seeder', 'post', 'SeederController@storeSeed')->addMiddleware(function () {
      if (SEEDER === null) {
          redirect('/');
      }
@@ -267,6 +271,6 @@ $route->add('/notification/set', 'post', 'NotificationController@setSeenNotifica
      if (SEEDER === null) {
          redirect('/');
      }
- });
+ });*/
 
 $route->loadRoutes();

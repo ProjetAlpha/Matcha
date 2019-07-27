@@ -1,4 +1,7 @@
 import Vue from 'vue'
+import {
+  utils
+} from './utils.js'
 import navBar from './navBar.vue'
 import searchMatch from './searchMatch.vue'
 import userRegister from './userRegister.vue'
@@ -24,6 +27,7 @@ import {
 Vue.prototype.$noUiSlider = noUiSlider;
 
 setupAxios(axios);
+Vue.prototype.$utils = utils
 Vue.prototype.$http = axios;
 Vue.prototype.$checkIfLogged = function() {
   return new Promise((resolve, reject) => {

@@ -56,7 +56,7 @@ class ProfilController extends Models
     {
         if (isset($userId)) {
             $result = $this->profil->fetchUserProfilData($userId);
-            if (!$result) {
+            if (!$result || !isset($result['user_id'])) {
                 // si il a pas complete le profil => afficher juste lastname + firstname + photo par defaut.
                 view('page_404.php');
             } else {
@@ -189,10 +189,11 @@ class ProfilController extends Models
         }
         if (!$this->fetch('Profil', ['user_id' => $_SESSION['user_id']])) {
             $this->insert('Profil', [
+            'user_id' => $_SESSION['user_id'],
             'localisation' => $data['city'].', '.$data['country'],
             'longitude' => $convLongitude ?? $data['longitude'],
             'latitude' => $convLatitude ?? $data['latitude'],
-          ], ['user_id' => $_SESSION['user_id']]);
+          ]);
         } else {
             $this->update('Profil', [
             'localisation' => $data['city'].', '.$data['country'],
