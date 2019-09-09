@@ -256,14 +256,15 @@ $route->add('/chat/updateNotification', 'post', 'ChatController@updateNotificati
 $route->add('/tagList/get', 'get', 'TagController@getTagList');
 $route->add('/notification/get', 'get', 'NotificationController@getAll');
 $route->add('/notification/set', 'post', 'NotificationController@setSeenNotification');
+
 /**
  * Seeder Route --- DEV ONLY.
  */
- /*$route->add('/seeder', 'post', 'SeederController@storeSeed')->addMiddleware(function () {
-     if (SEEDER === null) {
-         redirect('/');
-     }
- });
+$route->add('/seeder', 'post', 'SeederController@storeSeed')->addMiddleware(function () {
+    if (SEEDER === null) {
+        redirect('/');
+    }
+});
 
  $route->add('/seeder/create', 'get', function () {
      view('seeder.php');
@@ -271,6 +272,6 @@ $route->add('/notification/set', 'post', 'NotificationController@setSeenNotifica
      if (SEEDER === null) {
          redirect('/');
      }
- });*/
+ });
 
 $route->loadRoutes();
