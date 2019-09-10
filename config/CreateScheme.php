@@ -8,6 +8,11 @@ $info['username'] = $DB_USER;
 $info['password'] = $DB_PASSWORD;
 $info['db_name'] = "Matcha";
 
+$path = dirname(__DIR__).'/docker-config/data/database/Matcha';
+if (!file_exists($path)) {
+    mkdir($path, 0777, true);
+}
+
 $scheme = new ManageScheme($info);
 
 $scheme->add(

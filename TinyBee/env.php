@@ -21,6 +21,11 @@
 !defined('PASSWORD') && define('PASSWORD', '/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/');
 
 /**
+ *  ---- REGEX NAMES ---
+ */
+!defined('NAME') && define('NAME', '/^[[:alpha:]ééêÈÉÊàáâÁÀÂ]+([\-\' ][[:alpha:]ééêÈÉÊàáâ]+)*$/');
+
+/**
  * DB GLOBALS
  */
 !defined('DB_DSN') && define('DB_DSN', $DB_DSN);

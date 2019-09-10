@@ -18,13 +18,15 @@
                 </div>
                 <div class="col s12 m6 l6">
                   <!-- si on consulte le profil -->
-                  <div class="row" v-if="type === 'consultUserProfil' && last_visited === true && elaspedTimeLastVisited <= 45">
+                  <div class="row" v-if="type === 'consultUserProfil' && last_visited !== false && elaspedTimeLastVisited <= 45 && last_visited !== ''">
                     <span style="float:right"><i class="material-icons" style="color:#4caf50;">lens</i>En ligne</span>
                   </div>
                   <div class="row" v-if="type === 'consultUserProfil' && (last_visited === false || elaspedTimeLastVisited > 45)">
                     <span style=""><i class="material-icons" style="color:#dc4c46;">lens</i>Hors ligne</span>
                     <div class="col s12 m12 l12">
-                    <span style="" v-if="elaspedTimeLastVisited !== false"></i>Derniére connexion {{last_visited}}</span>
+                    <span style="" v-if="elaspedTimeLastVisited !== false">
+                    </i>Derniére connexion
+                      {{new Date(last_visited).toLocaleDateString("fr-FR", { month: 'long', day: 'numeric', hour: "numeric", minute:"numeric"})}}</span>
                     </div>
                   </div>
                   <p class="black-text mr-t-4" v-if="profilData.hasOwnProperty('firstname') && profilData.hasOwnProperty('lastname')">

@@ -37,7 +37,7 @@ $route->add('/create', 'post', 'UserController@create');
 $route->add('/confirm/:alphanum', 'get', 'UserController@confirm');
 $route->add('/reset/view/:alphanum', 'get', 'UserController@resetLink');
 $route->add('/reset/doReset', 'post', 'UserController@confirmReset');
-$route->add('/reset/sendResetLink', 'get', 'UserController@sendResetLink');
+$route->add('/reset/sendResetLink', 'post', 'UserController@sendResetLink');
 $route->add('/logout', 'get', 'UserController@logout');
 $route->add('/isAuth', 'get', function () {
     echo json_encode(['user' => ['isAuth' => isAuth(), 'id' => $_SESSION['user_id'] ?? null]]);
@@ -86,7 +86,6 @@ $route->addMiddlewareStack(
       '/settings/newAge',
       '/settings/newEmail',
       '/settings/newPassword',
-      '/profil/isOnline',
       '/profil/getProfilPicById',
       '/profil/edit/modif',
       '/profil/edit/addTag',
@@ -260,7 +259,7 @@ $route->add('/notification/set', 'post', 'NotificationController@setSeenNotifica
 /**
  * Seeder Route --- DEV ONLY.
  */
-$route->add('/seeder', 'post', 'SeederController@storeSeed')->addMiddleware(function () {
+/*$route->add('/seeder', 'post', 'SeederController@storeSeed')->addMiddleware(function () {
     if (SEEDER === null) {
         redirect('/');
     }
@@ -272,6 +271,6 @@ $route->add('/seeder', 'post', 'SeederController@storeSeed')->addMiddleware(func
      if (SEEDER === null) {
          redirect('/');
      }
- });
+ });*/
 
 $route->loadRoutes();

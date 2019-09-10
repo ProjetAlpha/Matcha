@@ -27,6 +27,11 @@ class ManageScheme
             $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
             $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->dbName = $info['db_name'];
+            $flushDataQuery = "DROP DATABASE IF EXISTS Matcha";
+            $this->execute("Drop DB", $table, $flushDataQuery);
+            $newDB = "CREATE DATABASE IF NOT EXISTS Matcha";
+            $this->execute("Create DB", $table, $newDB);
+            $this->execute("Use DB", $table, 'use Matcha');
         } catch (PDOException $e) {
             echo $e->getMessage();
             die();

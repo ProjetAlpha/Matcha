@@ -202,4 +202,15 @@ class Validate
             $this->loadMessage($column, $customTypeKey, $column.' à trop de charactéres (taille maximale : '.$length.')');
         }
     }
+
+    /**
+     * Check if data have a valid name format
+     */
+    public function validName($column, $data)
+    {
+        if (!isValidRegex(NAME, $data)) {
+            $customTypeKey = $this->customType ? key($this->customType) : 'noKey';
+            $this->loadMessage($column, $customTypeKey, $column.' n\'est pas un nom valid');
+        }
+    }
 }

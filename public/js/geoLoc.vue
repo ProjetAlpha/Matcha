@@ -33,9 +33,8 @@ export default{
       if (!navigator.geolocation){
         this.forceLoc()
       }else {
-        navigator.geolocation.getCurrentPosition(position => {
-          this.translateCoordsToCity(position.coords.latitude, position.coords.longitude)
-        }, error => {
+        navigator.geolocation.getCurrentPosition(this.translateCoordsToCity,
+          error => {
           this.$http.post('/setgeoLoc', {
             latitude:geoplugin_latitude(),longitude:geoplugin_longitude(),
             city: this.$utils.formatCity(geoplugin_city()), country:geoplugin_countryName(), code:geoplugin_regionCode()
@@ -50,12 +49,11 @@ export default{
       this.$http.post('/setgeoLoc', {
         latitude:geoplugin_latitude(),longitude:geoplugin_longitude(),
         city: this.$utils.formatCity(geoplugin_city()), country:geoplugin_countryName(), code:geoplugin_regionCode()
-        })
+      })
       this.isForceLoc = true
     },
 
     refreshLoc(address, city, code){
-      // set ville + pays / champ pour address, ville et le code.
       const url = 'http://www.mapquestapi.com/geocoding/v1/address?key=Mn6QAXVv8wYRojewUDGR7819P5YJEGAg&location='+adress+','+city+','+code;
       fetch(url, {method: 'POST',  headers: {'Content-Type': 'application/json'}})
         .then(res => res.json())
@@ -68,11 +66,13 @@ export default{
           const lng = response.results[0].locations[0].latLng.lng;
           this.$http.post('/setgeoLoc', {latitude:lat, longitude:lng, city: city, country: country, street: street,code: code})
         })
-      // --> adresse => latitude / longitude.
     },
 
-    translateCoordsToCity(lat, lng){
-      const url = 'https://www.mapquestapi.com/geocoding/v1/reverse?key=Mn6QAXVv8wYRojewUDGR7819P5YJEGAg&location='+lat+'%2C'+lng+'&outFormat=json&thumbMaps=false';
+    translateCoordsToCity(pos){
+      const lat = pos.coords.latitude
+      const lng = pos.coords.longitude
+      console.log(pos)
+      const url = 'https://www.mapquestapi.com/geocoding/v1/reverse?key=Mn6QAXVv8wYRojewUDGR7819P5YJEGAg&location='+lat+','+lng+'&outFormat=json&thumbMaps=false';
       fetch(url, {method: 'POST',  headers: {'Content-Type': 'application/json'}})
         .then(res => res.json())
         .then(response => {
@@ -80,7 +80,7 @@ export default{
           const country = response.results[0].locations[0].adminArea1;
           const street = response.results[0].locations[0].street;
           const code = response.results[0].locations[0].postalCode;
-          this.$http.post('/setgeoLoc', {latitude:lat, longitude:lng, city: city, country: country, street: street,code: code})
+          this.$http.post('/setgeoLoc', {latitude:pos.coords.latitude, longitude:pos.coords.longitude, city: city, country: country, street: street,code: code});
         })
     }
   }

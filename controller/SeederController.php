@@ -50,19 +50,15 @@ class SeederController extends Models
         $sqlProfilRes = substr($sqlProfil, 0, -1);
         $sqlTagRes = substr($sqlTag, 0, -1);
         mysqli_query($connection, "INSERT INTO User (username,password,firstname,lastname,age,is_confirmed,email) VALUES {$sqlUserRes}");
-        echo mysqli_errno($connection) . ": " . mysqli_error($connection) . "\n";
         mysqli_query($connection, "INSERT INTO Profil (user_id,bio,score,genre,orientation,localisation,profile_pic_path,profile_pic_name,longitude,latitude)
         VALUES {$sqlProfilRes}");
-        echo mysqli_errno($connection) . ": " . mysqli_error($connection) . "\n";
         mysqli_query($connection, "INSERT INTO Tag (user_id, name) VALUES {$sqlTagRes}");
-        echo mysqli_errno($connection) . ": " . mysqli_error($connection) . "\n";
         $sqlTagList = '';
         foreach ($tags as $k => $v) {
             $sqlTagList .= "('".$k."','".$v."'),";
         }
         $sqlTagList = substr($sqlTagList, 0, -1);
         mysqli_query($connection, "INSERT INTO Tag_list (name, count) VALUES {$sqlTagList}");
-        echo mysqli_errno($connection) . ": " . mysqli_error($connection) . "\n";
         mysqli_close($connection);
     }
 }

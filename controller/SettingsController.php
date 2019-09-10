@@ -76,7 +76,7 @@ class SettingsController extends Models
         $validate = new Validate(
             $data,
             [
-            'lastname' => 'alpha|min:3|max:30'
+            'lastname' => 'name|min:3|max:30'
           ],
             'sendToJs',
             Message::$userMessages
@@ -99,7 +99,7 @@ class SettingsController extends Models
         $validate = new Validate(
             $data,
             [
-            'firstname' => 'alpha|min:3|max:30'
+            'firstname' => 'name|min:3|max:30'
           ],
             'sendToJs',
             Message::$userMessages

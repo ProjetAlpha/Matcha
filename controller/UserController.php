@@ -27,8 +27,8 @@ class UserController extends Models
               'username' => 'alphanum|min:3|max:30',
               'password' => 'password|max:256|min:8',
               'email' => 'email|max:50|min:3',
-              'lastname' => 'alpha|min:3|max:30',
-              'firstname' => 'alpha|min:3|max:30',
+              'lastname' => 'name|min:3|max:30',
+              'firstname' => 'name|min:3|max:30',
               'age' => 'digit|min:2|max:3'
             ],
             'user_register_forms.php',
@@ -69,8 +69,12 @@ class UserController extends Models
             redirect('/');
         }
         if (hash_equals($query->password, $_SESSION['token']) && $query->confirmation_link == $userLink) {
-            $this->update('User', ['is_confirmed' => 1, 'confirmation_link' => ''], ['id' => $_SESSION['user_id']]);
             $_SESSION['needGeoLoc'] = true;
+            $profil = $this->fetch('Profil', ['user_id' => $_SESSION['user_id']]);
+            if (!isset($profil['user_id'])) {
+                $this->insert('Profil', ['user_id' => $_SESSION['user_id'], 'orientation' => 'bisexuel']);
+            }
+            $this->update('User', ['is_confirmed' => 1, 'confirmation_link' => ''], ['id' => $_SESSION['user_id']]);
         }
         redirect('/');
     }
@@ -166,7 +170,7 @@ class UserController extends Models
         sendHtmlMail(
             $data['email'],
             $query->firstname,
-            "<a href=http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].'/reset/view'.$link.">
+            "<a href=http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].'/reset/view/'.$link.">
           Confirmer la réinitialisation du mot de passe </a>",
             "Réinitialisation du mot de passe"
         );
